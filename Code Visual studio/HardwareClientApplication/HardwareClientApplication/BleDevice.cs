@@ -53,9 +53,7 @@ namespace ConnectionImplemented
 
         public void SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs subsciptionEvent)
         {
-            Console.WriteLine("Received from {0}: {1}, {2}", subsciptionEvent.ServiceName,
-                BitConverter.ToString(subsciptionEvent.Data).Replace("-", " "),
-                Encoding.UTF8.GetString(subsciptionEvent.Data));
+           
 
             Console.WriteLine(ConvertData(subsciptionEvent.Data));
         }
