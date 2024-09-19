@@ -12,7 +12,7 @@ namespace ConnectionImplemented
             HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
             Ergometer ergometer = new Ergometer();
 
-            Console.Write("enter heartrate device: ");
+            Console.Write("enter heart rate device: ");
             var hrm = Console.ReadLine();
             Console.Write("enter ergometer device: ");
             var erg = Console.ReadLine();
