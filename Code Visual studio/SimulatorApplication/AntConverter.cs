@@ -6,9 +6,11 @@ namespace SimulatorApplication {
         private static Random rand = new Random();
 
         public async Task StartSimulation() {
-            while(true) {
-                // Case 1: Page 16 - Willekeurige snelheid
-                double randomSpeedKmh = GenerateRandomSpeed(1, 70);
+            int currentSpeed = 25;
+            while (true) {
+                // Case 1: Page 16 - Willekeurige snelheid                
+                double randomSpeedKmh = GenerateRandomSpeed(1, 70, currentSpeed);
+                currentSpeed = (int) randomSpeedKmh;
                 Console.WriteLine($"Willekeurige snelheid: {randomSpeedKmh} km/h");
 
                 // Bereken hexadecimale waarden voor LSB en MSB op basis van de snelheid
@@ -40,9 +42,10 @@ namespace SimulatorApplication {
             Console.WriteLine($"Received from {serviceId}: {data}");
         }
 
-        private double GenerateRandomSpeed(int minKmh, int maxKmh) {
+        private double GenerateRandomSpeed(int minKmh, int maxKmh, int currentSpeed) {
             // Genereer een willekeurige snelheid tussen minKmh en maxKmh km/h
-            return rand.Next(minKmh, maxKmh + 1);
+            // Ook kan de willekeurige snelheid maar maximaal 5 km/h onder of boven de huidige snelheid zijn
+            return rand.Next(Math.Max(minKmh, currentSpeed - 5), Math.Min(maxKmh, currentSpeed + 6));
         }
 
         private (string, string) CalculateSpeedHex(double speedKmh) {
