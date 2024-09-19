@@ -48,6 +48,7 @@ namespace ConnectionImplemented
             }
             while (errorCode != 0);
             Console.WriteLine("subscribed to characteristic!");
+            Console.ReadLine();
 
         }
 

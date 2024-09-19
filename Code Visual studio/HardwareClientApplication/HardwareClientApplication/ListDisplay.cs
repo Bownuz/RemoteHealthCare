@@ -10,7 +10,7 @@ namespace ConnectionImplemented
         public static void ShowDeviceList()
         {
             BLE bleBike = new BLE();
-            Thread.Sleep(1000);
+            Thread.Sleep(4000);
             List<string> BluetoothDeviceList = bleBike.ListDevices();
             Console.WriteLine("the available devices are : ");
             foreach (string device in BluetoothDeviceList)

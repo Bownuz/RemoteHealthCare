@@ -9,11 +9,11 @@ namespace ConnectionImplemented
         {
             ListDisplay.ShowDeviceList();
 
-            HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
+            //HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
             Ergometer ergometer = new Ergometer();
 
 
-            await heartRateMonitor.ConnectToBLE_Device();
+            //await heartRateMonitor.ConnectToBLE_Device();
             await ergometer.ConnectToBLE_Device();
 
         }
