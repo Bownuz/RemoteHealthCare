@@ -16,7 +16,7 @@ namespace SimulatorApplication {
 
                 // Simuleer Page 16 data met de gegenereerde snelheid
                 // Hier zorgen we ervoor dat de data in totaal 12 hex bytes is, inclusief de header en de snelheid
-                SimuleerData("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", $"A4 09 4E 05 10 00 {speedLSBHex} {speedMSBHex} 00 00 00 00");
+                SimuleerData("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", $"A4 09 4E 05 10 00 00 00 {speedLSBHex} {speedMSBHex} 00 00");
 
                 // Wacht even om simulatie te vertragen
                 await Task.Delay(1000);
