@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DEC0782D-D22F-4F80-A2EF-77C887BF1D19}</ProjectGuid>
+    <ProjectGuid>{90ECCB89-F162-4D6C-9D1B-D539D6ECC3F4}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>FietsDemo</RootNamespace>
-    <AssemblyName>FietsDemo</AssemblyName>
+    <RootNamespace>HardwareClientApplication</RootNamespace>
+    <AssemblyName>HardwareClientApplication</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -46,6 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ergometer.cs" />
+    <Compile Include="BleDevice.cs" />
+    <Compile Include="HeartRateMonitor.cs" />
+    <Compile Include="ListDisplay.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
