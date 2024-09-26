@@ -3,15 +3,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConnectionImplemented
-{
-    internal class ClientMain
-    {
-        static async Task Main(string[] args)
-        {
+namespace ConnectionImplemented {
+    internal class ClientMain {
+        static async Task Main(string[] args) {
             Thread connectionThread = new Thread(ServerConnection.HandleConnection);
             connectionThread.Start();
-         
+
             //ListDisplay.ShowDeviceList();
 
             //HeartRateMonitor heartRateMonitor = new HeartRateMonitor();

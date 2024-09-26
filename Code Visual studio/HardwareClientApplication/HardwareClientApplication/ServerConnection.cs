@@ -10,21 +10,19 @@ using System.Threading.Tasks;
 
 namespace HardwareClientApplication {
     internal class ServerConnection {
-
         public static void HandleConnection() {
             TcpClient client = new TcpClient("145.49.11.240", 4789);
-            for (; ;) {
+            while(true) {
                 WriteTextMessage(client, "Test");
                 WriteTextMessage(client, "Bye");
 
-                if (ReadTextMessage(client) == "Bye") 
+                if (ReadTextMessage(client) == "Bye")
                     break;
             }
             client.Close();
         }
 
-        public static void WriteTextMessage(TcpClient client, string message)
-        {
+        public static void WriteTextMessage(TcpClient client, string message) {
             var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
             {
                 stream.WriteLine(message);
@@ -32,8 +30,7 @@ namespace HardwareClientApplication {
             }
         }
 
-        public static string ReadTextMessage(TcpClient client)
-        {
+        public static string ReadTextMessage(TcpClient client) {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
             {
                 return stream.ReadLine();
