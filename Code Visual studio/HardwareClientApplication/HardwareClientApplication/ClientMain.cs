@@ -10,8 +10,8 @@ namespace ConnectionImplemented
         static async Task Main(string[] args)
         {
             Thread connectionThread = new Thread(ServerConnection.HandleConnection);
-
-            
+            connectionThread.Start();
+         
             //ListDisplay.ShowDeviceList();
 
             //HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
