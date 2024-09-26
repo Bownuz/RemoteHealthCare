@@ -58,7 +58,7 @@ namespace ConnectionImplemented
             Console.WriteLine(ConvertData(subsciptionEvent.Data));
         }
 
-        public abstract String ConvertData(byte[] rawData);
+        public abstract double ConvertData(byte[] rawData);
 
     }
 }

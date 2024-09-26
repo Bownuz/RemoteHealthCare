@@ -10,9 +10,9 @@ namespace ConnectionImplemented
 
         }
 
-        public override string ConvertData(byte[] rawData)
+        public override double ConvertData(byte[] rawData)
         {
-            return "raw bpm data: " + rawData[2].ToString();
+            return rawData[2];
 
         }
     }
