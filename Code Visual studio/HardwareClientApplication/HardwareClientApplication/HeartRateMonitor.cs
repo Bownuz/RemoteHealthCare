@@ -23,17 +23,6 @@ namespace ConnectionImplemented {
             
             bool is16Bit = (data[0] & 0x01) != 0;
 
-            int heartRate;
-            if(is16Bit && data.Length >= 3) {
-                // 16-bit hartslag
-                heartRate = data[2] | (data[3] << 8);
-            }
-            else {
-                // 8-bit hartslag
-                heartRate = data[1];
-            }
-
-            // Controleer of de hartslag binnen een realistische range valt
             if(heartRate >= 30 && heartRate <= 220) {
                 return heartRate;
             }       
