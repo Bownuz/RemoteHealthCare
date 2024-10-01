@@ -15,17 +15,24 @@ namespace ConnectionImplemented {
             }
         }
 
-        private int ExtractHeartRate(byte[] data) {
-            if(data.Length < 2) {
+        private int ExtractHeartRate(byte[] data)
+        {
+            // Controleer of de data minstens 2 bytes bevat
+            if (data.Length < 2)
+            {
                 return -1;
             }
 
-            
-            bool is16Bit = (data[0] & 0x01) != 0;
+            // Lees de hartslag uit de tweede byte (8-bits)
+            int heartRate = data[1];
 
-            if(heartRate >= 30 && heartRate <= 220) {
+            // Controleer of de hartslag binnen een realistische range valt
+            if (heartRate >= 30 && heartRate <= 220)
+            {
                 return heartRate;
-            }       
+            }
+
+            // Als de hartslag buiten de realistische range valt, retourneer -1
             return -1;
         }
     }
