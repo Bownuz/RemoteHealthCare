@@ -24,9 +24,12 @@ namespace HardwareClientApplication {
         }
 
         public static void WriteTextMessage(TcpClient client, string message) {
+            Dictionary<String, String> test = new Dictionary<String, String fietsSnelheid> =
+            string sendJsonMessage = JsonSerializer.Serialize(csn);
+            Console.WriteLine(sendJsonMessage);
             var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
             {
-                stream.WriteLine(message);
+                stream.WriteLine(sendJsonMessage);
                 stream.Flush();
             }
         }
