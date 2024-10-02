@@ -5,21 +5,18 @@ namespace ConnectionImplemented {
         public HeartRateMonitor() : base("HeartRate", "HeartRateMeasurement") {
         }
 
-        public override string ConvertData(byte[] rawData) {
+        public override double ConvertData(byte[] rawData) {
             int heartRate = ExtractHeartRate(rawData);
-            if(heartRate != -1) {
-                return "Hartslag: " + heartRate + " bpm";
-            }
-            else {
-                return "Geen geldige hartslag gevonden.";
+            if (heartRate != -1) {
+                return heartRate;
+            } else {
+                return 0;
             }
         }
 
-        private int ExtractHeartRate(byte[] data)
-        {
+        private int ExtractHeartRate(byte[] data) {
             // Controleer of de data minstens 2 bytes bevat
-            if (data.Length < 2)
-            {
+            if (data.Length < 2) {
                 return -1;
             }
 
@@ -27,8 +24,7 @@ namespace ConnectionImplemented {
             int heartRate = data[1];
 
             // Controleer of de hartslag binnen een realistische range valt
-            if (heartRate >= 30 && heartRate <= 220)
-            {
+            if (heartRate >= 30 && heartRate <= 220) {
                 return heartRate;
             }
 

@@ -1,12 +1,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ConnectionImplemented
-{
-    internal class Program
-    {
-        static async Task Main(string[] args)
-        {
+namespace ConnectionImplemented {
+    internal class Program {
+        static async Task Main(string[] args) {
             ListDisplay.ShowDeviceList();
 
             HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
