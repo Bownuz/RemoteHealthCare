@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 
 namespace SimulatorApplication {
@@ -21,19 +21,19 @@ namespace SimulatorApplication {
                 SimuleerData("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", $"A4 09 4E 05 10 00 00 00 {speedLSBHex} {speedMSBHex} 00 00");
 
                 // Wacht even om simulatie te vertragen
-                await Task.Delay(500);
+                await Task.Delay(1000);
 
                 // Case 2: Page 25 - Vaste data (met 12 hex bytes totaal)
                 SimuleerData("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", "A4 09 4E 05 19 00 00 00 00 00 00 00");
 
                 // Wacht even om simulatie te vertragen
-                await Task.Delay(500);
+                await Task.Delay(1000);
 
                 // Case 3: Hartslagdata (12 hex bytes)
                 SimuleerData("00002a37-0000-1000-8000-00805f9b34fb", "16 8C 5B 03 70 01");
 
                 // Wacht even om simulatie te vertragen
-                await Task.Delay(500);
+                await Task.Delay(1000);
             }
         }
 
