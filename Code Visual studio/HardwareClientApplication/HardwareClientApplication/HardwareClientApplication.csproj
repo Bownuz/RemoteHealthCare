@@ -74,9 +74,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataHandler.cs" />
     <Compile Include="Ergometer.cs" />
     <Compile Include="BleDevice.cs" />
     <Compile Include="HeartRateMonitor.cs" />
+    <Compile Include="JsonData.cs" />
     <Compile Include="ListDisplay.cs" />
     <Compile Include="ClientMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

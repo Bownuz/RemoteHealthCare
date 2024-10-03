@@ -1,27 +1,30 @@
 using HardwareClientApplication;
 using System;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConnectionImplemented {
     internal class ClientMain {
+
         static async Task Main(string[] args) {
-            Thread connectionThread = new Thread(ServerConnection.HandleConnection);
-            connectionThread.Start();
             ListDisplay.ShowDeviceList();
 
             HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
             Ergometer ergometer = new Ergometer();
+            BleDevice[] bleDevices = { heartRateMonitor};
 
-            Console.Write("enter heart rate device: ");
-            var hrm = Console.ReadLine();
-            Console.Write("enter ergometer device:0 ");
-            var erg = Console.ReadLine();
-            await heartRateMonitor.ConnectToBLE_Device(hrm);
-            await ergometer.ConnectToBLE_Device(erg);
-            Console.ReadLine();
+            DataHandler handler = new DataHandler(bleDevices);
 
-            ergometer.sendEncodedMessage();
+            TcpClient client = new TcpClient("145.49.11.240", 4789);
+            Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client));
+            connectionThread.Start();
+
+            while (true) {
+                await Task.Delay(1000);
+                Console.WriteLine(handler.printAsJson());
+            
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,35 +12,14 @@ using ConnectionImplemented;
 
 namespace HardwareClientApplication {
     internal class ServerConnection {
-        static TcpClient client;
-        public static void HandleConnection() {
-            client = new TcpClient("145.49.11.240", 4789);
+        public static void HandleConnection(TcpClient tcpClient) {
+            
             while (true) {
-                //WriteTextMessage(client, "Test");
-                //WriteTextMessage(client, "Bye");
 
-                if (ReadTextMessage(client) == "Bye") { 
-                break;
-                //} else if (ReadTextMessage(client)) {
-
+                if (ReadTextMessage(tcpClient) == "Bye"){
+                    break;
                 }
             }
-            client.Close();
-        }
-
-        //public static void WriteTextMessage(TcpClient client, string message) {
-        //    Dictionary<String, String> data = new Dictionary<String, String>;
-        //    String sendJsonMessage = JsonSerializer.Serialize(data);
-        //    Console.WriteLine(sendJsonMessage);
-        //    var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
-        //    {
-        //        stream.WriteLine(sendJsonMessage);
-        //        stream.Flush();
-        //    }
-        //}
-
-        public struct Data {
-
         }
 
         public static void WriteData(TcpClient client, Dictionary<String, String> data) {
