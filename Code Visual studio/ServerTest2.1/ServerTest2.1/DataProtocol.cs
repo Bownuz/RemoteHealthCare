@@ -21,6 +21,5 @@ namespace DataProtocol {
                 stream.Flush();
             }
         }
-
     }
 }
