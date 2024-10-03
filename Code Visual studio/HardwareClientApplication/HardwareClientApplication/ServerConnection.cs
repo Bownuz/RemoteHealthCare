@@ -9,25 +9,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json;
 using ConnectionImplemented;
+using System.Reflection;
 
 namespace HardwareClientApplication {
     internal class ServerConnection {
-        public static void HandleConnection(TcpClient tcpClient) {
-            
-            while (true) {
+        public static void HandleConnection(TcpClient tcpClient, DataHandler handler) {
 
-                if (ReadTextMessage(tcpClient) == "Bye"){
-                    break;
-                }
+            while (true)
+            {
+                Thread.Sleep(1000);
+                Console.WriteLine(handler.printAsJson());
+                WriteData(tcpClient, handler.printAsJson());
             }
         }
 
-        public static void WriteData(TcpClient client, Dictionary<String, String> data) {
-            String sendJsonMessage = JsonSerializer.Serialize(data);
-            Console.Write(sendJsonMessage);
+        public static void WriteData(TcpClient client, String data) {
             var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
             {
-                stream.WriteLine(sendJsonMessage);
+                stream.WriteLine(data);
                 stream.Flush();
             }
         }
