@@ -9,14 +9,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json;
 using ConnectionImplemented;
+using System.Reflection;
 
 namespace HardwareClientApplication {
     internal class ServerConnection {
         public static void HandleConnection(TcpClient tcpClient, DataHandler handler) {
-            
-            while (true) {
 
-            WriteData(tcpClient, handler.printAsJson());
+            while (true)
+            {
+                Thread.Sleep(1000);
+                Console.WriteLine(handler.printAsJson());
+                WriteData(tcpClient, handler.printAsJson());
+            }
         }
 
         public static void WriteData(TcpClient client, String data) {
