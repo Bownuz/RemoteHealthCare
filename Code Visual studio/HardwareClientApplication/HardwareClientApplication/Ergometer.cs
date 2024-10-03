@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace ConnectionImplemented {
     internal class Ergometer : BleDevice {
+        public double speedtest{ get; set; }
+       
         public Ergometer() : base("6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e") {
         }
 
         public override double ConvertData(byte[] rawData) {
+            speedtest = 0.0;
             if (rawData[4] == 0x10) {
                 Console.WriteLine("Received from {0}: {1}, {2}", rawData,
                 BitConverter.ToString(rawData).Replace("-", " "),
@@ -21,7 +24,8 @@ namespace ConnectionImplemented {
                 double speedMetersPerSecond = speedRaw * 0.01;
                 double speedKmPerHour = speedMetersPerSecond * 3.6;
 
-                return speedKmPerHour;
+                speedtest = speedKmPerHour;
+                return speedtest;
             }
             return 0.0;
         }
@@ -51,6 +55,11 @@ namespace ConnectionImplemented {
             } else {
                 Console.WriteLine($"Weerstand ingesteld op {resistanceValue}%.");
             }
+        }
+
+        protected override void updateDataToHandler()
+        {
+            base.handler.updateCurrentSpeed(speedtest);
         }
     }
 }
