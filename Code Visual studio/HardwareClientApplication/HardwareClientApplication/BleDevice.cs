@@ -23,7 +23,6 @@ namespace ConnectionImplemented {
         }
 
         public async Task ConnectToBLE_Device(String deviceName) {
-            //await Task.Run(async () => {
             int errorCode = 0;
             do {
                 Console.Write(".");
@@ -46,8 +45,7 @@ namespace ConnectionImplemented {
             }
             while (errorCode != 0);
             Console.WriteLine("subscribed to characteristic!");
-            //});
-        }
+        }   
 
         public void SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs subsciptionEvent) {
             ConvertData(subsciptionEvent.Data);

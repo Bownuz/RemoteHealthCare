@@ -1,4 +1,4 @@
-﻿using Avans.TI.BLE;
+using Avans.TI.BLE;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +12,6 @@ namespace ConnectionImplemented {
         }
 
         public override double ConvertData(byte[] rawData) {
-            speedtest = 0.0;
             if (rawData[4] == 0x10) {
                 Console.WriteLine("Received from {0}: {1}, {2}", rawData,
                 BitConverter.ToString(rawData).Replace("-", " "),
@@ -24,10 +23,9 @@ namespace ConnectionImplemented {
                 double speedMetersPerSecond = speedRaw * 0.01;
                 double speedKmPerHour = speedMetersPerSecond * 3.6;
 
-                speedtest = speedKmPerHour;
-                return speedtest;
+                return speedKmPerHour;
             }
-            return 0.0;
+            return 0;
         }
 
         public async Task sendResistanceValueAsync(byte resistanceValue, BLE device) {
