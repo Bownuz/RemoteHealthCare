@@ -12,7 +12,7 @@ namespace ConnectionImplemented {
         public override double ConvertData(byte[] rawData) {
             int heartRate = ExtractHeartRate(rawData);
             if (heartRate != -1) {
-            heartRate = rawData[1];
+                this.heartRate = heartRate;
                 return heartRate;
             } else {
                 return 0;
@@ -31,6 +31,11 @@ namespace ConnectionImplemented {
                 return heartRate;
             }         
            return -1;
+        }
+
+        protected override void updateDataToHandler()
+        {
+            base.handler.updateCurrentHeartRate(heartRate);
         }
     }
 }

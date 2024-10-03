@@ -12,7 +12,7 @@ namespace ConnectionImplemented {
 
             HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
             Ergometer ergometer = new Ergometer();
-            BleDevice[] bleDevices = { heartRateMonitor, ergometer};
+            BleDevice[] bleDevices = { heartRateMonitor};
 
             DataHandler handler = new DataHandler(bleDevices);
 
