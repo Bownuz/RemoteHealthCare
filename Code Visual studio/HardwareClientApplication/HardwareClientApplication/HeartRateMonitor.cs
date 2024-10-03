@@ -1,13 +1,18 @@
-﻿using System;
+using System;
+
 
 namespace ConnectionImplemented {
     internal class HeartRateMonitor : BleDevice {
+        private double heartRate { get; set; }
+
+
         public HeartRateMonitor() : base("HeartRate", "HeartRateMeasurement") {
         }
 
         public override double ConvertData(byte[] rawData) {
             int heartRate = ExtractHeartRate(rawData);
             if (heartRate != -1) {
+                this.heartRate = heartRate;
                 return heartRate;
             } else {
                 return 0;
@@ -26,6 +31,11 @@ namespace ConnectionImplemented {
                 return heartRate;
             }         
            return -1;
+        }
+
+        protected override void updateDataToHandler()
+        {
+            base.handler.updateCurrentHeartRate(heartRate);
         }
     }
 }
