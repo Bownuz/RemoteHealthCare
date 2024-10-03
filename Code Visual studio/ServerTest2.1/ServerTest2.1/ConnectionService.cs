@@ -1,14 +1,7 @@
-﻿using DataProtocol;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;  
-using System.Threading.Tasks;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using ServerTest2._1;
+
 
 namespace ConnectionService
 {
@@ -16,27 +9,6 @@ namespace ConnectionService
     {
         static void Main(string[] args)
         {
-            //json uitlezen
-            //String jsonTest = "{\"BicycleSpeed\":15,\"Heartrate\":64,\"dateTime\":\"2024-10-03T17:03:05.7715391+02:00\"}";
-            //JsonData jsonData = JsonSerializer.Deserialize<JsonData>(jsonTest);
-
-            //Console.WriteLine(jsonTest);
-            //Console.WriteLine(jsonData.dateTime);
-
-
-            //Console.WriteLine(jsonTest);
-
-            //tofile
-            //Session session = new Session();
-            //session.addMessagesSend("Heart rate ofzo");
-            //session.addMessagesRecived("ga langzamer fietsen ofz");
-            //session.addMessagesRecived("DoeIS");
-
-            //Person testPerson1 = new Person("testpersoon 1");
-            //testPerson1.addSessions(session);
-
-            //DataStorage.DataStorage.SaveToFile("" + testPerson1);
-
             //server
             List<Thread> threads = new List<Thread>();
 
@@ -71,8 +43,6 @@ namespace ConnectionService
                     Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.dateTime);
 
                 }
-                //client.Close();
-                //Console.WriteLine("Connection closed");
             }
         }
         internal struct JsonData
