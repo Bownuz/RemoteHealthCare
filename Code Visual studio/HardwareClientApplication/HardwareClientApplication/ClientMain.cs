@@ -12,16 +12,17 @@ namespace ConnectionImplemented {
 
             HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
             Ergometer ergometer = new Ergometer();
-            BleDevice[] bleDevices = { heartRateMonitor};
+            BleDevice[] bleDevices = { heartRateMonitor, ergometer};
 
             DataHandler handler = new DataHandler(bleDevices);
 
-            TcpClient client = new TcpClient("145.49.11.240", 4789);
-            Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client));
-            connectionThread.Start();
+            //TcpClient client = new TcpClient("145.49.11.240", 4789);
+            //Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client));
+            //connectionThread.Start();
 
             while (true) {
                 await Task.Delay(1000);
+
                 Console.WriteLine(handler.printAsJson());
             
             }

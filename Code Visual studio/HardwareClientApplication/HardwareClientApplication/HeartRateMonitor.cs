@@ -10,7 +10,7 @@ namespace ConnectionImplemented {
         }
 
         public override double ConvertData(byte[] rawData) {
-            heartRate = rawData[2];
+            heartRate = rawData[1];
             return rawData[2];
         }
 

@@ -1,5 +1,6 @@
 ﻿using ConnectionImplemented;
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace HardwareClientApplication
@@ -25,16 +26,16 @@ namespace HardwareClientApplication
         private async Task initializeDeviceAsync(BleDevice device)
         {
             String deviceName;
-            if (device.Equals(typeof(Ergometer)))
+            if (device is HeartRateMonitor)
             {
-                
+                Console.Write("enter heart rate device: ");
             }
-            else if (device.Equals(typeof(HeartRateMonitor)))
+            else if (device is Ergometer)
             {
                 Console.Write("enter ergometer device: ");
 
             }
-            Console.Write("enter heart rate device: ");
+            
             deviceName = Console.ReadLine();
             await device.ConnectToBLE_Device(deviceName);
         }
@@ -52,7 +53,7 @@ namespace HardwareClientApplication
         internal String printAsJson()
         {
             JsonData data = new JsonData(currentSpeed, (int)currentHeartRate, DateTime.Now);
-            return data.clientData;
+            return JsonSerializer.Serialize<JsonData>(data);
         }
     }
 }

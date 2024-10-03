@@ -16,11 +16,5 @@ namespace HardwareClientApplication
             Heartrate = heartrate;
             this.dateTime = dateTime;
         }
-
-        public String clientData {
-            get {
-                return JsonSerializer.Serialize<JsonData>(this);
-            }
-        }
     }
 }

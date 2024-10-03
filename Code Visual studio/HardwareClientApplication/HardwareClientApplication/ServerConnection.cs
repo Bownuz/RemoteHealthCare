@@ -32,7 +32,7 @@ namespace HardwareClientApplication {
             }
         }
 
-        public static async string ReadTextMessage(TcpClient client) {
+        public static string ReadTextMessage(TcpClient client) {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
             {
                 return stream.ReadLine();
