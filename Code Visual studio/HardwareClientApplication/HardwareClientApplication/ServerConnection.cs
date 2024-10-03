@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json;
+using ConnectionImplemented;
 
 namespace HardwareClientApplication {
     internal class ServerConnection {
@@ -27,12 +28,6 @@ namespace HardwareClientApplication {
             client.Close();
         }
 
-<<<<<<< Updated upstream
-        public static void WriteTextMessage(TcpClient client, string message) {
-            Dictionary<String, String> test = new Dictionary<String, String fietsSnelheid> =
-            string sendJsonMessage = JsonSerializer.Serialize(csn);
-            Console.WriteLine(sendJsonMessage);
-=======
         //public static void WriteTextMessage(TcpClient client, string message) {
         //    Dictionary<String, String> data = new Dictionary<String, String>;
         //    String sendJsonMessage = JsonSerializer.Serialize(data);
@@ -51,7 +46,6 @@ namespace HardwareClientApplication {
         public static void WriteData(TcpClient client, Dictionary<String, String> data) {
             String sendJsonMessage = JsonSerializer.Serialize(data);
             Console.Write(sendJsonMessage);
->>>>>>> Stashed changes
             var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
             {
                 stream.WriteLine(sendJsonMessage);
@@ -59,7 +53,7 @@ namespace HardwareClientApplication {
             }
         }
 
-        public static string ReadTextMessage(TcpClient client) {
+        public static async string ReadTextMessage(TcpClient client) {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
             {
                 return stream.ReadLine();
