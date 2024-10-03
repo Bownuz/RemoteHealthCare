@@ -13,6 +13,8 @@ using ConnectionImplemented;
 namespace HardwareClientApplication {
     internal class ServerConnection {
         public static void HandleConnection(TcpClient tcpClient, DataHandler handler) {
+            
+            while (true) {
 
             WriteData(tcpClient, handler.printAsJson());
         }
