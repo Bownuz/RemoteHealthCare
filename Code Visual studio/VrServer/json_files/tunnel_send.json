@@ -1,12 +1,10 @@
 {
 	"id" : "tunnel/send",
-	"data" :
-	{
-		"dest" : "2150373e-d796-4e3d-a2b7-c50be14feaa1",
-		"data" : 
-		{
-			"id" : "scene/reset",
-			"data" : {}
+	"data": {
+		"dest": "46cef206-c1da-499c-974b-73f0acc5e702",
+		"data": {
+			"id": "scene/reset",
+			"data": {}
 		}
 	}
 }

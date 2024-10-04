@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace VrServer { 
+namespace VrServer {
     class VrServer {
         private static Socket? client;
 
@@ -15,11 +15,11 @@ namespace VrServer {
             client.Connect(localEndPoint);
 
             string filename = "";
-            for(; ; ) {
+            for (; ; ) {
                 Console.Write("File name of Json object to send: ");
                 filename = Console.ReadLine();
                 // stops program if there is no input
-                if (filename.Equals("")) 
+                if (filename.Equals(""))
                     break;
                 // gets json object as an array of bytes since that's what will eventually be send
                 byte[] jsonObject = File.ReadAllBytes($"{Directory.GetCurrentDirectory()}\\..\\..\\..\\json_files\\{filename}");
@@ -30,12 +30,12 @@ namespace VrServer {
                 client.Send(jsonObject);
 
                 // recieves and prints the size packet
-                byte[] sizeIncomingMessage = new byte[1024];
+                byte[] sizeIncomingMessage = new byte[4];
                 int byteSizeIncomingMessage = client.Receive(sizeIncomingMessage);
                 Console.WriteLine("Message size from Server -> {0}", BitConverter.ToInt32(sizeIncomingMessage));
 
                 // recieves and prints the json object packet
-                byte[] message = new byte[1024];
+                byte[] message = new byte[Int32.MaxValue];
                 int byteMessage = client.Receive(message);
                 Console.WriteLine("Message from Server -> {0}",
                   Encoding.ASCII.GetString(message, 0, byteMessage));

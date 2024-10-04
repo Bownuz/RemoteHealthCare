@@ -1,8 +1,7 @@
 {
 	"id" : "tunnel/create",
-	"data" :
-	{
-		"session" : "ce55ab4b-2743-4bf0-83fe-1cf0cfe02b03",
-		"key" : ""
+	"data": {
+		"session": "b2ba19ab-84d8-4ddd-967d-5a986773451f",
+		"key": ""
 	}
 }
