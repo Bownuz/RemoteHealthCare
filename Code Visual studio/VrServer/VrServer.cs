@@ -35,7 +35,7 @@ namespace VrServer {
                 Console.WriteLine("Message size from Server -> {0}", BitConverter.ToInt32(sizeIncomingMessage));
 
                 // recieves and prints the json object packet
-                byte[] message = new byte[Int32.MaxValue];
+                byte[] message = new byte[byteSizeIncomingMessage];
                 int byteMessage = client.Receive(message);
                 Console.WriteLine("Message from Server -> {0}",
                   Encoding.ASCII.GetString(message, 0, byteMessage));
