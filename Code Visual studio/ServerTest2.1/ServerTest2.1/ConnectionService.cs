@@ -58,8 +58,14 @@ namespace ConnectionService
                 }
             }
 
-            void HandleDoctorThread(TcpClient doctor) { 
-            
+            void HandleDoctorThread(TcpClient doctor) {
+                while (true) { 
+                    String recived = DataProtocol.Messages.ReciveMessage(doctor);
+                    Console.WriteLine("Doctor: " + recived);
+
+
+                }
+
             
             }
 
