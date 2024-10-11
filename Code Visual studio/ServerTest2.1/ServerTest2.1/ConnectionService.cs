@@ -1,4 +1,6 @@
 ﻿using DataProtocol;
+using ServerTest2._1.DataStorage;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
@@ -30,15 +32,18 @@ namespace ConnectionService
 
             void HandleClientThread(TcpClient client)
             {
+                DataStorage data = new DataStorage();
+                Session currentSession = new Session();
                 while (true)
                 {
-                    string recived = DataProtocol.Messages.ReciveMessage(client);
-                    Console.WriteLine("Recived: {0}", recived);
-                    //DataProtocol.Messages.SendMessage(client, "Message: " + recived + " Recived");
-                    ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(recived);
-
-
-                    Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.DateTime);
+                    string recieved;
+                    if ((recieved = DataProtocol.Messages.ReciveMessage(client)) != null)
+                    { 
+                        Console.WriteLine("Recived: {0}", recieved);
+                        ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(recieved);
+                        Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.dateTime);
+                        
+                    }
 
                 }
             }

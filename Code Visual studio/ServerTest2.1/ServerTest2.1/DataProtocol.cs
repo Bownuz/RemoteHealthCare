@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ClientData;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
+﻿using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,19 +22,18 @@ namespace DataProtocol {
 
     internal struct ClientRecieveData
     {
-        public String patientName { get;}
-        public double BicycleSpeed {get;}
-        public int Heartrate { get; }
-        public DateTime DateTime { get;}
+        public String patientName { get; set; }
+        public double BicycleSpeed {get; set; }
+        public int Heartrate { get; set; }
+        public DateTime dateTime { get; set; }
 
         public ClientRecieveData(string patientName, double bicycleSpeed, int heartrate, DateTime dateTime)
         {
             this.patientName = patientName;
             BicycleSpeed = bicycleSpeed;
             Heartrate = heartrate;
-            DateTime = dateTime;
+            this.dateTime = dateTime;
         }
-
     }
 
     internal struct ÇlientSendData

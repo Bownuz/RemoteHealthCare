@@ -5,35 +5,38 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace ServerTest2._1
+namespace ServerTest2._1.DataStorage
 {
     class Person
     {
-        String name { get;}
+        string name { get; }
         List<Session> sessions = new List<Session>();
-        public Person(String name)
+        public Person(string name)
         {
             this.name = name;
-           
+
         }
 
-        public void addSessions(Session s) { 
+        public void addSessions(Session s)
+        {
             sessions.Add(s);
         }
 
-        public string printSessions() {
-            String Returnstring = "";
-            foreach (Session s in sessions) {
+        public string printSessions()
+        {
+            string Returnstring = "";
+            foreach (Session s in sessions)
+            {
                 Returnstring = Returnstring + s.getMessagesSend() + " " + s.getMessagesRecived();
             }
-        return Returnstring; 
-        
+            return Returnstring;
+
         }
-   
+
 
         public override string ToString()
         {
-            return "name: " + this.name + " Sessions: " + printSessions();
+            return "name: " + name + " Sessions: " + printSessions();
         }
 
 
