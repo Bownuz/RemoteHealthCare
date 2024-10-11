@@ -41,6 +41,7 @@ namespace ConnectionService
             {
                 DataStorage data = new DataStorage();
                 Session currentSession = new Session();
+
                 while (true)
                 {
                     if (client.Connected) {
