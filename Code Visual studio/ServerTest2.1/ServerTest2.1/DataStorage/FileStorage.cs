@@ -6,21 +6,34 @@ namespace Server.DataStorage
 {
     internal class FileStorage : Observer
     {
-        HashSet<Person> patients = new HashSet<Person>(); 
+        Dictionary<String, Person> patients;
 
-        public static void SaveToFile()
-        { 
+        //TODO: add saving functionality
+        public void SaveToFile()
+        {
         }
 
+        //TODO: add loading functionality  
         public void LoadFromFile()
         {
         }
 
-        public HashSet<Person> getPatients() { 
-            return this.patients;
+        public Person GetPatient(String Name)
+        {
+            return patients[Name];
         }
 
-        public void Notify()
+        public Boolean PatientExists(String name)
+        {
+            return patients.ContainsKey(name);
+        }
+
+        public void AddPatient(String name)
+        {
+            patients[name] = new Person(name);
+        }
+
+        public void Update()
         {
             SaveToFile();
         }
