@@ -1,4 +1,4 @@
-﻿namespace Server.ObserverPattern
+﻿namespace ServerTest2._1.Patterns.Observer
 {
     public class Subject
     {
@@ -9,15 +9,18 @@
             observers = new List<Observer>();
         }
 
-        public void AddObserver(Observer newObserver) {
+        public void AddObserver(Observer newObserver)
+        {
             observers.Add(newObserver);
         }
 
-        public void RemoveObserver(Observer newObserver) { 
-            observers.Remove(newObserver); 
+        public void RemoveObserver(Observer newObserver)
+        {
+            observers.Remove(newObserver);
         }
 
-        public void NotifyAll() {
+        public void NotifyAll()
+        {
             foreach (Observer observer in observers)
             {
                 observer.notify();

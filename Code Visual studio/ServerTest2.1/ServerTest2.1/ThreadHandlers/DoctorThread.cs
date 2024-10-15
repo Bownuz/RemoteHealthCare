@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
 using Server.DataProtocol;
 using Server.DataStorage;
-using Server.ObserverPattern;
+using ServerTest2._1.Patterns.Observer;
 
 
 namespace Server.ThreadHandlers

@@ -2,7 +2,7 @@
 using System.Text.Json;
 using Server.DataStorage;
 using Server.DataProtocol;
-using Server.ObserverPattern;
+using ServerTest2._1.Patterns.Observer;
 
 namespace Server.ThreadHandlers
 {

@@ -1,6 +1,4 @@
-﻿
-
-using Server.ObserverPattern;
+﻿using ServerTest2._1.Patterns.Observer;
 
 namespace Server.DataStorage
 {
