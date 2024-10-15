@@ -4,15 +4,16 @@ using Server.DataStorage;
 using Server.ObserverPattern;
 
 
-namespace Server.Threads
+namespace Server.ThreadHandlers
 {
     public class DoctorThread : Observer
     {
-        public static void HandleDoctorThread(TcpClient doctor)
+
+        public void HandleThread(TcpClient doctor)
         {
             while (true)
             {
-                String recived = DataProtocol.Messages.ReciveMessage(doctor);
+                string recived = Messages.ReciveMessage(doctor);
                 Console.WriteLine($"Doctor: {recived}");
 
 
@@ -21,9 +22,9 @@ namespace Server.Threads
 
         }
 
-        public void notify()
+        public void Notify()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

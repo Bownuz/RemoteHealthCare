@@ -1,47 +1,42 @@
-﻿
-
-using Server.ObserverPattern;
-
-namespace Server.DataStorage
+﻿namespace Server.DataStorage
 {
-    class Session : Observer
+    class Session
     {
-        List<string> messagesSend = new List<string>();
-        List<string> messagesRecieved = new List<string>();
+        DateTime sessionStart { get; }
+        DateTime sessionEnd { get; }
+        String ergometerName { get; }
+        string heartRateMonitorName { get; }
+        List<string> clientMessages { get; }
+        List<string> doctorMessages { get; }
 
-        public void addMessagesSend(string message)
+        public Session(DateTime sessionStart, string ergometerName, string heartRateMonitorName)
         {
-            messagesSend.Add(message);
-
+            clientMessages = new List<string>();
+            doctorMessages = new List<string>();
+            this.sessionStart = sessionStart;
+            this.ergometerName = ergometerName;
+            this.heartRateMonitorName = heartRateMonitorName;
         }
 
-        public void addMessagesRecived(string message)
+        public void addMessage(String message, ClientType messageType)
         {
-            messagesRecieved.Add(message);
-        }
-
-        public string getMessagesSend()
-        {
-            string s = "";
-            foreach (string message in messagesSend)
+            switch (messageType)
             {
-                s += message + "\n";
+                case ClientType.CLIENT:
+                    clientMessages.Add(message);
+                    break;
+                case ClientType.DOCTOR:
+                    doctorMessages.Add(message);
+                    break;
+                default:
+                    throw new Exception("this messageType is not supported");
             }
-            return s;
         }
-        public string getMessagesRecived()
-        {
-            string s = "";
-            foreach (string message in messagesRecieved)
-            {
-                s += message + "\n";
-            }
-            return s;
-        }
+    }
 
-        public void notify()
-        {
-            throw new NotImplementedException();
-        }
+    internal enum ClientType
+    {
+        CLIENT,
+        DOCTOR
     }
 }

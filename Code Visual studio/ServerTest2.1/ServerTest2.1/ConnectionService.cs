@@ -1,4 +1,4 @@
-﻿using Server.Threads;
+﻿using Server.ThreadHandlers;
 using System.Net;
 using System.Net.Sockets;
 
@@ -20,18 +20,33 @@ namespace Server.ConnectionService
             {
                 Console.WriteLine("Starting up server and waiting for connections.....");
 
-                //accepting client and making a new thread for this client
-                TcpClient client = Clientlistener.AcceptTcpClient();
-                Thread clientThread = new Thread(() => ClientThread.HandleClientThread(client));
-                threads.Add(clientThread);
-                clientThread.Start();
+                if (Clientlistener.Pending())
+                {
+                    TcpClient client = Clientlistener.AcceptTcpClient();
+                    Thread clientThread = new Thread(() => HandleClient(client));
+                    threads.Add(clientThread);
+                    clientThread.Start();
+                }
 
-                //accepting doctor and making a new thread for this doctor
-                TcpClient doctor = DoctorListener.AcceptTcpClient();
-                Thread doctorThread = new Thread(() => DoctorThread.HandleDoctorThread(doctor) );
-                threads.Add(doctorThread);
-                doctorThread.Start();
+                if (DoctorListener.Pending())
+                {
+                    TcpClient doctor = DoctorListener.AcceptTcpClient();
+                    Thread doctorThread = new Thread(() => HandleDoctor(doctor));
+                    threads.Add(doctorThread);
+                    doctorThread.Start();
+                }
             }
         }
+
+        static void HandleClient(TcpClient client) {
+            ClientThread clientThread = new ClientThread();
+            clientThread.HandleThread(client);
+        }
+
+        static void HandleDoctor(TcpClient doctor) {
+            DoctorThread doctorThread = new DoctorThread();
+            doctorThread.HandleThread(doctor);
+        }
+
     }
 }

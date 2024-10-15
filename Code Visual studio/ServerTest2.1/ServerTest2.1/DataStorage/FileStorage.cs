@@ -20,7 +20,7 @@ namespace Server.DataStorage
             return this.patients;
         }
 
-        public void notify()
+        public void Notify()
         {
             SaveToFile();
         }

@@ -4,13 +4,13 @@ using Server.DataStorage;
 using Server.DataProtocol;
 using Server.ObserverPattern;
 
-namespace Server.Threads
+namespace Server.ThreadHandlers
 {
     public class ClientThread : Subject
     {
-        
 
-        public static void HandleClientThread(TcpClient client)
+
+        public void HandleThread(TcpClient client)
         {
             DataStorage.FileStorage data = new DataStorage.FileStorage();
             Session currentSession = new Session();
@@ -25,6 +25,7 @@ namespace Server.Threads
                         ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(recieved);
                         Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.dateTime);
                         currentSession.addMessagesRecived(recieved);
+                        NotifyAll();
                     }
                 }
                 break;

@@ -4,6 +4,6 @@ namespace Server.ObserverPattern
 {
     public interface Observer
     {
-        void notify();
+        void Notify();
     }
 }
