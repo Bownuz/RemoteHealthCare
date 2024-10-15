@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace ServerTest2._1.DataStorage
+using Server.ObserverPattern;
+
+namespace Server.DataStorage
 {
-    class Session
+    class Session : Observer
     {
         List<string> messagesSend = new List<string>();
         List<string> messagesRecieved = new List<string>();
@@ -41,11 +39,9 @@ namespace ServerTest2._1.DataStorage
             return s;
         }
 
-
-
-
-
-
-
+        public void notify()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

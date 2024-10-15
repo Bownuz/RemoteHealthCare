@@ -1,8 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace DataProtocol {
+namespace Server.DataProtocol {
     class Messages {
         public static string ReciveMessage(TcpClient client) {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);

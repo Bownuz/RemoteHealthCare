@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Sockets;
+using Server.DataProtocol;
+using Server.DataStorage;
+using Server.ObserverPattern;
 
-namespace ServerTest2._1
+
+namespace Server.Threads
 {
-    public static class DoctorThread
+    public class DoctorThread : Observer
     {
         public static void HandleDoctorThread(TcpClient doctor)
         {
@@ -20,6 +19,11 @@ namespace ServerTest2._1
             }
 
 
+        }
+
+        public void notify()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,12 +1,8 @@
-﻿using DataProtocol;
-using ServerTest2._1;
-using ServerTest2._1.DataStorage;
-using System.Linq;
+﻿using Server.Threads;
 using System.Net;
 using System.Net.Sockets;
-using System.Text.Json;
 
-namespace ConnectionService
+namespace Server.ConnectionService
 {
     class ConnectionService
     {

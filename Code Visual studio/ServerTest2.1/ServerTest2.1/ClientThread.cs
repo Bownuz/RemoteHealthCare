@@ -1,22 +1,18 @@
-﻿using DataProtocol;
-using ServerTest2._1.DataStorage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
+﻿using System.Net.Sockets;
 using System.Text.Json;
-using System.Threading.Tasks;
+using Server.DataStorage;
+using Server.DataProtocol;
+using Server.ObserverPattern;
 
-namespace ServerTest2._1
+namespace Server.Threads
 {
-    public static class ClientThread
+    public class ClientThread : Subject
     {
         
 
         public static void HandleClientThread(TcpClient client)
         {
-            DataStorage.DataStorage data = new DataStorage.DataStorage();
+            DataStorage.FileStorage data = new DataStorage.FileStorage();
             Session currentSession = new Session();
             while (true)
             {
