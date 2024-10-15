@@ -48,7 +48,7 @@ namespace ConnectionService
                         string recieved;
                         if ((recieved = DataProtocol.Messages.ReciveMessage(client)) != null)
                         {
-                            Console.WriteLine("Recived: {0}", recieved);
+                            Console.WriteLine($"Recived: {recieved}");
                             ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(recieved);
                             Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.dateTime);
                             currentSession.addMessagesRecived(recieved);
@@ -61,7 +61,7 @@ namespace ConnectionService
             void HandleDoctorThread(TcpClient doctor) {
                 while (true) { 
                     String recived = DataProtocol.Messages.ReciveMessage(doctor);
-                    Console.WriteLine("Doctor: " + recived);
+                    Console.WriteLine($"Doctor: {recived}");
 
 
                 }
