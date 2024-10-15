@@ -1,4 +1,5 @@
 ﻿using DataProtocol;
+using ServerTest2._1;
 using ServerTest2._1.DataStorage;
 using System.Linq;
 using System.Net;
@@ -25,51 +26,16 @@ namespace ConnectionService
 
                 //accepting client and making a new thread for this client
                 TcpClient client = Clientlistener.AcceptTcpClient();
-                Thread clientThread = new Thread(() => HandleClientThread(client));
+                Thread clientThread = new Thread(() => ClientThread.HandleClientThread(client));
                 threads.Add(clientThread);
                 clientThread.Start();
 
-                //accepting docotr and making a new thread for this doctor
+                //accepting doctor and making a new thread for this doctor
                 TcpClient doctor = DoctorListener.AcceptTcpClient();
-                Thread doctorThread = new Thread(() => HandleDoctorThread(doctor));
+                Thread doctorThread = new Thread(() => DoctorThread.HandleDoctorThread(doctor) );
                 threads.Add(doctorThread);
                 doctorThread.Start();
             }
-
-
-            void HandleClientThread(TcpClient client)
-            {
-                DataStorage data = new DataStorage();
-                Session currentSession = new Session();
-
-                while (true)
-                {
-                    if (client.Connected) {
-                        string recieved;
-                        if ((recieved = DataProtocol.Messages.ReciveMessage(client)) != null)
-                        {
-                            Console.WriteLine($"Recived: {recieved}");
-                            ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(recieved);
-                            Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.dateTime);
-                            currentSession.addMessagesRecived(recieved);
-                        }
-                    }
-                    break;
-                }
-            }
-
-            void HandleDoctorThread(TcpClient doctor) {
-                while (true) { 
-                    String recived = DataProtocol.Messages.ReciveMessage(doctor);
-                    Console.WriteLine($"Doctor: {recived}");
-
-
-                }
-
-            
-            }
-
         }
-        
     }
 }

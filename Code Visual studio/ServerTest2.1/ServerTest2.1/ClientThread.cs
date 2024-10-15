@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace ServerTest2._1
 {
-    internal class ClientThread
+    public static class ClientThread
     {
-        String messageToDoctor { get; set; }
+        
 
-        void HandleClientThread(TcpClient client)
+        public static void HandleClientThread(TcpClient client)
         {
             DataStorage.DataStorage data = new DataStorage.DataStorage();
             Session currentSession = new Session();
@@ -29,7 +29,6 @@ namespace ServerTest2._1
                         ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(recieved);
                         Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.dateTime);
                         currentSession.addMessagesRecived(recieved);
-                        messageToDoctor = recieved;
                     }
                 }
                 break;
