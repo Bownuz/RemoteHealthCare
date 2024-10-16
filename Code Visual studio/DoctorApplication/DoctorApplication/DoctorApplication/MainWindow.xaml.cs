@@ -13,7 +13,7 @@ namespace DoctorApplication {
     public partial class MainWindow : Window {
         private SslStream sslStream;
         private TcpClient doctorClient;
-        private ObservableCollection<ClientRecieveData> clients = new ObservableCollection<ClientRecieveData>();
+        private ObservableCollection<ClientReceiveData> clients = new ObservableCollection<ClientReceiveData>();
 
         public MainWindow() {
             InitializeComponent();
@@ -34,7 +34,7 @@ namespace DoctorApplication {
 
         private void ConnectToServer() {
             try {
-                doctorClient = new TcpClient("127.0.0.1", 4790);
+                doctorClient = new TcpClient("127.0.0.1", 4790); // Zorg ervoor dat dit het juiste IP-adres is
                 sslStream = new SslStream(doctorClient.GetStream(), false, ValidateServerCertificate, null);
                 sslStream.AuthenticateAsClient("ServerName");
 
@@ -47,8 +47,7 @@ namespace DoctorApplication {
         }
 
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
-            if(sslPolicyErrors == SslPolicyErrors.None) return true;
-            return false;
+            return sslPolicyErrors == SslPolicyErrors.None;
         }
 
         private async void StartMonitoring() {
@@ -75,7 +74,7 @@ namespace DoctorApplication {
         }
 
         private void ProcessClientData(string receivedData) {
-            var clientData = JsonSerializer.Deserialize<ClientRecieveData>(receivedData);
+            var clientData = JsonSerializer.Deserialize<ClientReceiveData>(receivedData);
 
             // Update the ListView
             var existingClient = clients.FirstOrDefault(c => c.PatientName == clientData.PatientName);
@@ -125,7 +124,8 @@ namespace DoctorApplication {
         }
 
         private void AdjustResistance_Click(object sender, RoutedEventArgs e) {
-            int resistanceValue = 50;
+            // Hier kun je een input veld voor weerstand toevoegen of een standaardwaarde gebruiken
+            int resistanceValue = 50; // Dit is een voorbeeld, vervang dit door een dynamische invoer
 
             var resistanceCommand = new {
                 CommandType = "ADJUST_RESISTANCE",
@@ -148,7 +148,7 @@ namespace DoctorApplication {
         }
 
         private string GetSelectedClientId() {
-            if(ClientsListView.SelectedItem is ClientRecieveData selectedClient) {
+            if(ClientsListView.SelectedItem is ClientReceiveData selectedClient) {
                 return selectedClient.PatientName;
             }
             return null;
@@ -169,7 +169,7 @@ namespace DoctorApplication {
         }
     }
 
-    public class ClientRecieveData {
+    public class ClientReceiveData {
         public string PatientName { get; set; }
         public double BicycleSpeed { get; set; }
         public int Heartrate { get; set; }

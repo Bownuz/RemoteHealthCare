@@ -34,3 +34,4 @@
 		<TextBox x:Name="MessageTextBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="23" Margin="10,360,0,0"/>
 	</Grid>
 </Window>
+
