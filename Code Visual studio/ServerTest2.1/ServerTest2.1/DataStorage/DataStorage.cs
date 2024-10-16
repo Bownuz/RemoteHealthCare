@@ -1,41 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ServerTest2._1.DataStorage
-{
-    internal class DataStorage
-    {
-        HashSet<Person> patients = new HashSet<Person>(); 
+namespace ServerTest2._1.DataStorage {
+    internal class DataStorage {
+        private HashSet<Person> patients = new HashSet<Person>();
 
-        public static void SaveToFile(string messagge)
-        {
-
-            using (StreamWriter sw = File.CreateText("C:\\Users\\siemh\\IdeaProjects\\Fiets\\Code Visual studio" + "/TEST.txt"))
-            {
-                Console.WriteLine(Environment.CurrentDirectory + "/TEST.txt");
-                sw.WriteLine(messagge);
-                
+        public static void SaveToFile(string message) {
+            string path = "C:\\Users\\siemh\\IdeaProjects\\Fiets\\Code Visual studio\\TEST.txt";
+            using(StreamWriter sw = File.CreateText(path)) {
+                Console.WriteLine($"Saving data to: {path}");
+                sw.WriteLine(message);
             }
-
-            
-
         }
 
-        public void LoadFromFile()
-        {
+        public void LoadFromFile() {
+            string path = "C:\\Users\\siemh\\IdeaProjects\\Fiets\\Code Visual studio\\TEST.txt";
+            if(File.Exists(path)) {
+                using(StreamReader sr = new StreamReader(path)) {
+                    string line;
+                    while((line = sr.ReadLine()) != null) {
+                        
+                        var dataParts = line.Split(','); 
+                        if(dataParts.Length >= 4) {
+                            string patientName = dataParts[0];
+                            double bicycleSpeed = double.Parse(dataParts[1]);
+                            int heartrate = int.Parse(dataParts[2]);
+                            DateTime dateTime = DateTime.Parse(dataParts[3]);
+
+                            patients.Add(new Person(patientName)); 
+                        }
+                    }
+                }
+            }
         }
 
-        public HashSet<Person> getPatients() { 
+        public HashSet<Person> GetPatients() {
             return this.patients;
         }
-
-
-
-
     }
 }

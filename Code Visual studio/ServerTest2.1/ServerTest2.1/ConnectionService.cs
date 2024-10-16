@@ -43,10 +43,10 @@ namespace ConnectionService {
                         Console.WriteLine("Received from client: {0}", received);
                         ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(received);
 
-                        if(!connectedClients.ContainsKey(jsonData.PatientName)) {
-                            connectedClients.Add(jsonData.PatientName, client);
-                            patients[jsonData.PatientName] = new Person(jsonData.PatientName);
-                            Console.WriteLine($"Client {jsonData.PatientName} connected.");
+                        if(!connectedClients.ContainsKey(jsonData.patientName)) {
+                            connectedClients.Add(jsonData.patientName, client);
+                            patients[jsonData.patientName] = new Person(jsonData.patientName);
+                            Console.WriteLine($"Client {jsonData.patientName} connected.");
                         }
 
                         UpdateClientData(jsonData);
@@ -58,6 +58,7 @@ namespace ConnectionService {
                 }
             }
         }
+
 
 
         private static void HandleDoctorThread(TcpClient doctor) {
@@ -153,7 +154,7 @@ namespace ConnectionService {
         }
 
         private static void UpdateClientData(ClientRecieveData jsonData) {
-            Console.WriteLine($"Updated client data: Name={jsonData.PatientName}, Speed={jsonData.BicycleSpeed}, Heart Rate={jsonData.Heartrate}, Date={jsonData.DateTime}");
+            Console.WriteLine($"Updated client data: Name={jsonData.patientName}, Speed={jsonData.BicycleSpeed}, Heart Rate={jsonData.Heartrate}, Date={jsonData.dateTime}");
         }
     }
 }
