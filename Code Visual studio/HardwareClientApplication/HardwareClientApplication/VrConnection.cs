@@ -71,7 +71,7 @@ namespace HardwareClientApplication {
         private static string RecieveJsonObjectFromServer() {
             byte[] sizeIncomingMessage = new byte[4];
             int byteSizeIncomingMessage = client.Receive(sizeIncomingMessage);
-            int sizeMessage = BitConverter.ToInt32(sizeIncomingMessage);
+            int sizeMessage = BitConverter.ToInt32(sizeIncomingMessage, 0);
 
             byte[] message = new byte[sizeMessage];
             int byteMessage = client.Receive(message);
