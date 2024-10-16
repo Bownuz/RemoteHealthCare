@@ -23,7 +23,7 @@
         {
             foreach (Observer observer in observers)
             {
-                observer.notify();
+                observer.Update();
             }
         }
 

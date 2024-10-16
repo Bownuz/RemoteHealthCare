@@ -1,35 +1,43 @@
 ﻿using System.Net.Sockets;
-using System.Text.Json;
 using Server.DataStorage;
 using Server.DataProtocol;
 using ServerTest2._1.Patterns.Observer;
+using System.Text;
 
 namespace Server.ThreadHandlers
 {
-    public class ClientThread : Subject
+    internal class ClientThread : Subject, Observer
     {
+        FileStorage fileStorage;
+        Person Person;
+        TcpClient client;
 
-
-        public void HandleThread(TcpClient client)
+        public ClientThread(FileStorage fileStorage, TcpClient client)
         {
-            DataStorage.FileStorage data = new DataStorage.FileStorage();
-            Session currentSession = new Session();
+            this.fileStorage = fileStorage;
+            this.client = client;
+        }
+
+        public void HandleThread()
+        {
+            Protocol protocol = new Protocol();
             while (true)
             {
                 if (client.Connected)
                 {
-                    string recieved;
-                    if ((recieved = DataProtocol.Messages.ReciveMessage(client)) != null)
+                    string recievedMessage;
+                    if ((recievedMessage = MessageCommunication.ReciveMessage(client)) != null)
                     {
-                        Console.WriteLine("Recived: {0}", recieved);
-                        ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(recieved);
-                        Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.dateTime);
-                        currentSession.addMessagesRecived(recieved);
+                        protocol.processMessage(recievedMessage);
                         NotifyAll();
                     }
                 }
-                break;
             }
+        }
+
+        public void Update()
+        {
+            MessageCommunication.SendMessage(client, Person.currentSession.getLatestMessage(ClientType.CLIENT));
         }
     }
 }

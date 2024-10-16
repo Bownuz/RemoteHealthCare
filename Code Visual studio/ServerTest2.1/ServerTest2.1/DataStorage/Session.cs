@@ -32,6 +32,20 @@
                     throw new Exception("this messageType is not supported");
             }
         }
+
+        public String getLatestMessage(ClientType messageType) { 
+            switch(messageType)
+            { 
+                case ClientType.CLIENT:
+                    return doctorMessages[^1];
+                case ClientType.DOCTOR:
+                    return clientMessages[^1];
+                default:
+                    throw new Exception("this messageType is not supported");
+                            
+            
+            }
+        }
     }
 
     internal enum ClientType

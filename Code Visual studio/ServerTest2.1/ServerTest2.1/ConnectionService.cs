@@ -1,4 +1,5 @@
-﻿using Server.ThreadHandlers;
+﻿using Server.DataStorage;
+using Server.ThreadHandlers;
 using System.Net;
 using System.Net.Sockets;
 
@@ -16,6 +17,8 @@ namespace Server.ConnectionService
             Clientlistener.Start();
             DoctorListener.Start();
 
+            FileStorage fileStorage = new FileStorage();
+
             while (true)
             {
                 Console.WriteLine("Starting up server and waiting for connections.....");
@@ -23,7 +26,7 @@ namespace Server.ConnectionService
                 if (Clientlistener.Pending())
                 {
                     TcpClient client = Clientlistener.AcceptTcpClient();
-                    Thread clientThread = new Thread(() => HandleClient(client));
+                    Thread clientThread = new Thread(() => HandleClient(client, fileStorage));
                     threads.Add(clientThread);
                     clientThread.Start();
                 }
@@ -31,21 +34,21 @@ namespace Server.ConnectionService
                 if (DoctorListener.Pending())
                 {
                     TcpClient doctor = DoctorListener.AcceptTcpClient();
-                    Thread doctorThread = new Thread(() => HandleDoctor(doctor));
+                    Thread doctorThread = new Thread(() => HandleDoctor(doctor, fileStorage));
                     threads.Add(doctorThread);
                     doctorThread.Start();
                 }
             }
         }
 
-        static void HandleClient(TcpClient client) {
-            ClientThread clientThread = new ClientThread();
-            clientThread.HandleThread(client);
+        static void HandleClient(TcpClient client, FileStorage fileStorage) {
+            ClientThread clientThread = new ClientThread(fileStorage,client);
+            clientThread.HandleThread();
         }
 
-        static void HandleDoctor(TcpClient doctor) {
-            DoctorThread doctorThread = new DoctorThread();
-            doctorThread.HandleThread(doctor);
+        static void HandleDoctor(TcpClient doctor, FileStorage fileStorage) {
+            DoctorThread doctorThread = new DoctorThread(fileStorage, doctor);
+            doctorThread.HandleThread();
         }
 
     }
