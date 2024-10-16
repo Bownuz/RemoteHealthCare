@@ -27,7 +27,7 @@ namespace ServerTest2._1
                     {
                         Console.WriteLine("Recived: {0}", recieved);
                         ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(recieved);
-                        Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.dateTime);
+                        Console.WriteLine("Speed: " + jsonData.BicycleSpeed + "\nHeartrate: " + jsonData.Heartrate + "\nDate: " + jsonData.DateTime);
                         currentSession.addMessagesRecived(recieved);
                         messageToDoctor = recieved;
                     }
