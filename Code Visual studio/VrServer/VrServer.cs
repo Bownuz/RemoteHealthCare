@@ -24,7 +24,7 @@ namespace VrServer {
             client.Send(jsonObject);
         }
 
-        private static string RecieveJsonObjectFromFile() {
+        private static string RecieveJsonObjectFromServer() {
             byte[] sizeIncomingMessage = new byte[4];
             int byteSizeIncomingMessage = client.Receive(sizeIncomingMessage);
             int sizeMessage = BitConverter.ToInt32(sizeIncomingMessage);
@@ -45,12 +45,12 @@ namespace VrServer {
             client.Connect(localEndPoint);
 
             SendJsonObjectFromFile("session_list.json");
-            string ms = RecieveJsonObjectFromFile();
+            string ms = RecieveJsonObjectFromServer();
             JsonDocument jsonDoc = JsonDocument.Parse(ms);
             string sessionID = jsonDoc.RootElement.GetProperty("data")[0].GetProperty("id").GetString();
             SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{\"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
 
-            RecieveJsonObjectFromFile();
+            RecieveJsonObjectFromServer();
 
             string filename = "";
             for (; ; ) {
@@ -60,7 +60,7 @@ namespace VrServer {
                     break;
 
                 SendJsonObjectFromFile(filename);
-                RecieveJsonObjectFromFile();
+                RecieveJsonObjectFromServer();
             }
             client.Close();
         }
