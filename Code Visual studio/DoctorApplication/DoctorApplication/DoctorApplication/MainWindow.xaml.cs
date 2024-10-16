@@ -34,7 +34,7 @@ namespace DoctorApplication {
 
         private void ConnectToServer() {
             try {
-                doctorClient = new TcpClient("127.0.0.1", 4790); // Vervang dit met jouw serveradres
+                doctorClient = new TcpClient("127.0.0.1", 4790);
                 sslStream = new SslStream(doctorClient.GetStream(), false, ValidateServerCertificate, null);
                 sslStream.AuthenticateAsClient("ServerName");
 
@@ -88,27 +88,72 @@ namespace DoctorApplication {
                 clients.Add(clientData);
             }
         }
-       
+
         private void StartSession_Click(object sender, RoutedEventArgs e) {
-            SendCommandToServer("START_SESSION");
+            var sessionCommand = new {
+                CommandType = "START_SESSION",
+                ClientId = GetSelectedClientId(),
+                StartTime = DateTime.Now
+            };
+
+            string commandJson = JsonSerializer.Serialize(sessionCommand);
+            SendCommandToServer(commandJson);
         }
-       
+
         private void StopSession_Click(object sender, RoutedEventArgs e) {
-            SendCommandToServer("STOP_SESSION");
+            var sessionCommand = new {
+                CommandType = "STOP_SESSION",
+                ClientId = GetSelectedClientId(),
+                EndTime = DateTime.Now
+            };
+
+            string commandJson = JsonSerializer.Serialize(sessionCommand);
+            SendCommandToServer(commandJson);
         }
-       
+
         private void SendMessage_Click(object sender, RoutedEventArgs e) {
             string message = MessageTextBox.Text;
-            SendCommandToServer($"MESSAGE:{message}");
+
+            var messageCommand = new {
+                CommandType = "SEND_MESSAGE",
+                ClientId = GetSelectedClientId(),
+                Message = message
+            };
+
+            string commandJson = JsonSerializer.Serialize(messageCommand);
+            SendCommandToServer(commandJson);
         }
-        
-        private void AdjustResistance_Click(object sender, RoutedEventArgs e) {           
-            SendCommandToServer("RESISTANCE:50");
+
+        private void AdjustResistance_Click(object sender, RoutedEventArgs e) {
+            int resistanceValue = 50;
+
+            var resistanceCommand = new {
+                CommandType = "ADJUST_RESISTANCE",
+                ClientId = GetSelectedClientId(),
+                Resistance = resistanceValue
+            };
+
+            string commandJson = JsonSerializer.Serialize(resistanceCommand);
+            SendCommandToServer(commandJson);
         }
-        
+
         private void EmergencyStop_Click(object sender, RoutedEventArgs e) {
-            SendCommandToServer("EMERGENCY_STOP");
-        }      
+            var stopCommand = new {
+                CommandType = "EMERGENCY_STOP",
+                ClientId = GetSelectedClientId()
+            };
+
+            string commandJson = JsonSerializer.Serialize(stopCommand);
+            SendCommandToServer(commandJson);
+        }
+
+        private string GetSelectedClientId() {
+            if(ClientsListView.SelectedItem is ClientRecieveData selectedClient) {
+                return selectedClient.PatientName;
+            }
+            return null;
+        }
+
         private void SendCommandToServer(string command) {
             try {
                 if(doctorClient.Connected) {
