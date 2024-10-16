@@ -7,21 +7,17 @@ using ServerTest2._1.Patterns.Observer;
 
 namespace Server.ThreadHandlers
 {
-    internal class DoctorThread : Subject, Observer
+    internal class DoctorThread(FileStorage fileStorage, TcpClient doctor) : Subject, Observer
     {
-        FileStorage fileStorage;
+        FileStorage fileStorage = fileStorage;
         Person Person;
-        TcpClient doctor;
-
-        public DoctorThread(FileStorage fileStorage, TcpClient doctor)
-        {
-            this.fileStorage = fileStorage;
-            this.doctor = doctor;
-        }
+        TcpClient doctor = doctor;
 
         public void HandleThread()
         {
             Protocol protocol = new Protocol();
+            AddObserver(fileStorage);
+            
             while (true)
             {
                 if (doctor.Connected)

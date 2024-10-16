@@ -6,21 +6,17 @@ using System.Text;
 
 namespace Server.ThreadHandlers
 {
-    internal class ClientThread : Subject, Observer
+    internal class ClientThread(FileStorage fileStorage, TcpClient client) : Subject, Observer
     {
-        FileStorage fileStorage;
+        FileStorage fileStorage = fileStorage;
         Person Person;
-        TcpClient client;
-
-        public ClientThread(FileStorage fileStorage, TcpClient client)
-        {
-            this.fileStorage = fileStorage;
-            this.client = client;
-        }
+        TcpClient client = client;
 
         public void HandleThread()
         {
             Protocol protocol = new Protocol();
+            AddObserver(fileStorage);
+
             while (true)
             {
                 if (client.Connected)

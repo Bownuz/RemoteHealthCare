@@ -9,11 +9,13 @@ namespace Server.DataStorage
         //TODO: add saving functionality
         public void SaveToFile()
         {
+
         }
 
         //TODO: add loading functionality  
         public void LoadFromFile()
         {
+
         }
 
         public Person GetPatient(String Name)
