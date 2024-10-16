@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -10,9 +13,11 @@ namespace DoctorApplication {
     public partial class MainWindow : Window {
         private SslStream sslStream;
         private TcpClient doctorClient;
+        private ObservableCollection<ClientRecieveData> clients = new ObservableCollection<ClientRecieveData>();
 
         public MainWindow() {
             InitializeComponent();
+            ClientsListView.ItemsSource = clients;
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e) {
@@ -20,7 +25,6 @@ namespace DoctorApplication {
             string password = PasswordTextBox.Password;
 
             if(username == "doctor" && password == "password123") {
-                // Verbind met de server via SSL
                 ConnectToServer();
             }
             else {
@@ -30,19 +34,11 @@ namespace DoctorApplication {
 
         private void ConnectToServer() {
             try {
-                // Maak een verbinding met de server
-                doctorClient = new TcpClient("127.0.0.1", 4790); // Vervang door de juiste server-IP en poort
-
-                // Gebruik SSL-stream voor beveiligde communicatie
-                sslStream = new SslStream(doctorClient.GetStream(), false,
-                    new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
-
-                // Start de SSL-authenticatie
-                sslStream.AuthenticateAsClient("ServerName"); // Vervang "ServerName" door de naam van je server of je certificaat
+                doctorClient = new TcpClient("127.0.0.1", 4790); // Vervang dit met jouw serveradres
+                sslStream = new SslStream(doctorClient.GetStream(), false, ValidateServerCertificate, null);
+                sslStream.AuthenticateAsClient("ServerName");
 
                 MessageBox.Show("Beveiligde verbinding gemaakt met de server!");
-
-                // Start het monitoren van cliëntgegevens
                 StartMonitoring();
             }
             catch(Exception ex) {
@@ -50,14 +46,8 @@ namespace DoctorApplication {
             }
         }
 
-        // Controleer het servercertificaat
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
-            if(sslPolicyErrors == SslPolicyErrors.None) {
-                return true; // Het certificaat is geldig
-            }
-
-            // Voor testdoeleinden: accepteer elk certificaat (niet gebruiken in productie)
-            MessageBox.Show("Fout in SSL-certificaat: " + sslPolicyErrors.ToString());
+            if(sslPolicyErrors == SslPolicyErrors.None) return true;
             return false;
         }
 
@@ -65,7 +55,6 @@ namespace DoctorApplication {
             while(true) {
                 string receivedData = await ReceiveDataFromServer();
                 if(!string.IsNullOrEmpty(receivedData)) {
-                    // Verwerk de ontvangen data
                     ProcessClientData(receivedData);
                 }
             }
@@ -74,7 +63,6 @@ namespace DoctorApplication {
         private async Task<string> ReceiveDataFromServer() {
             try {
                 if(doctorClient.Connected) {
-                    // Lezen van de SSL-stream
                     using(StreamReader reader = new StreamReader(sslStream)) {
                         return await reader.ReadLineAsync();
                     }
@@ -83,13 +71,63 @@ namespace DoctorApplication {
             catch(Exception ex) {
                 MessageBox.Show("Fout bij het ontvangen van gegevens: " + ex.Message);
             }
-
             return null;
         }
 
         private void ProcessClientData(string receivedData) {
-            // Deserialiseer de ontvangen data en werk de GUI bij
-            MessageBox.Show($"Gegevens ontvangen: {receivedData}");
+            var clientData = JsonSerializer.Deserialize<ClientRecieveData>(receivedData);
+
+            // Update the ListView
+            var existingClient = clients.FirstOrDefault(c => c.PatientName == clientData.PatientName);
+            if(existingClient != null) {
+                existingClient.BicycleSpeed = clientData.BicycleSpeed;
+                existingClient.Heartrate = clientData.Heartrate;
+                existingClient.DateTime = clientData.DateTime;
+            }
+            else {
+                clients.Add(clientData);
+            }
         }
+       
+        private void StartSession_Click(object sender, RoutedEventArgs e) {
+            SendCommandToServer("START_SESSION");
+        }
+       
+        private void StopSession_Click(object sender, RoutedEventArgs e) {
+            SendCommandToServer("STOP_SESSION");
+        }
+       
+        private void SendMessage_Click(object sender, RoutedEventArgs e) {
+            string message = MessageTextBox.Text;
+            SendCommandToServer($"MESSAGE:{message}");
+        }
+        
+        private void AdjustResistance_Click(object sender, RoutedEventArgs e) {           
+            SendCommandToServer("RESISTANCE:50");
+        }
+        
+        private void EmergencyStop_Click(object sender, RoutedEventArgs e) {
+            SendCommandToServer("EMERGENCY_STOP");
+        }      
+        private void SendCommandToServer(string command) {
+            try {
+                if(doctorClient.Connected) {
+                    using(StreamWriter writer = new StreamWriter(sslStream)) {
+                        writer.WriteLine(command);
+                        writer.Flush();
+                    }
+                }
+            }
+            catch(Exception ex) {
+                MessageBox.Show("Fout bij het versturen van gegevens: " + ex.Message);
+            }
+        }
+    }
+
+    public class ClientRecieveData {
+        public string PatientName { get; set; }
+        public double BicycleSpeed { get; set; }
+        public int Heartrate { get; set; }
+        public DateTime DateTime { get; set; }
     }
 }
