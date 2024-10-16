@@ -9,7 +9,7 @@ namespace ConnectionImplemented {
             BLE bleBike = new BLE();
             Thread.Sleep(4000);
             List<string> BluetoothDeviceList = bleBike.ListDevices();
-            Console.WriteLine("the available devices are : ");
+            Console.WriteLine("The available devices are : ");
             foreach (string device in BluetoothDeviceList) {
                 Console.WriteLine($"Device: {device}");
             }
@@ -18,7 +18,7 @@ namespace ConnectionImplemented {
         public static void ShowServiceList() {
             BLE ble = new BLE();
             var services = ble.GetServices;
-            Console.WriteLine("the available services are : ");
+            Console.WriteLine("The available services are : ");
             foreach (var service in services) {
                 Console.WriteLine($"Service: {service.Name}");
             }
@@ -27,7 +27,7 @@ namespace ConnectionImplemented {
         public static void ShowCharacteristicsList() {
             BLE ble = new BLE();
             var Characteristics = ble.GetCharacteristics;
-            Console.WriteLine("the available charateristics are : ");
+            Console.WriteLine("The available charateristics are : ");
             foreach (var characteristic in Characteristics) {
                 Console.WriteLine($"Service: {characteristic.Name}");
             }
