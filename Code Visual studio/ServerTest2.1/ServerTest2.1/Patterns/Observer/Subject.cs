@@ -1,4 +1,4 @@
-﻿namespace ServerTest2._1.Patterns.Observer
+﻿namespace Server.Patterns.Observer
 {
     public class Subject
     {

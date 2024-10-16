@@ -1,7 +1,4 @@
-﻿using System.Net.Sockets;
-using System.Text;
-
-namespace Server.DataProtocol {
+﻿namespace Server.DataProtocol {
     internal class Protocol
     {
         internal void processMessage(String incommingMessage)

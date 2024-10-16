@@ -1,6 +1,4 @@
-﻿
-
-namespace Server.DataStorage
+﻿namespace Server.DataStorage
 {
     class Person
     {
