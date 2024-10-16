@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HardwareClientApplication;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,8 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClientApplication {
-    public partial class screen : Form {
-        public screen() {
+    internal partial class ClientInfoScreen : UserControl {
+        public ClientInfoScreen(DataHandler dataHandler, Form mainForm) {
             InitializeComponent();
         }
     }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace HardwareClientApplication {
     internal class DataHandler {
+        public string deviceName {  get; set; }
         public double currentSpeed { get; set; }
         public double currentHeartRate { get; set; }
         BleDevice[] bleDevices;
@@ -13,22 +14,23 @@ namespace HardwareClientApplication {
             currentHeartRate = 0;
             currentSpeed = 0;
             this.bleDevices = bleDevices;
+        }
+
+        public void startDataHandler(string heartRateMonitorID, string ergometerID) {
             foreach (BleDevice device in bleDevices) {
-                initializeDeviceAsync(device);
+                initializeDeviceAsync(device, heartRateMonitorID, ergometerID);
                 device.setDataHandler(this);
             }
         }
 
-        private async Task initializeDeviceAsync(BleDevice device) {
-            String deviceName;
+        private async Task initializeDeviceAsync(BleDevice device, string heartRateMonitorID, string ergometerID) {
+            String deviceName = null;
             if (device is HeartRateMonitor) {
-                Console.Write("enter heart rate device: ");
+                deviceName = heartRateMonitorID;
             } else if (device is Ergometer) {
-                Console.Write("enter ergometer device: ");
-
+               deviceName= ergometerID;
             }
 
-            deviceName = Console.ReadLine();
             await device.ConnectToBLE_Device(deviceName);
         }
 
