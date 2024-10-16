@@ -1,14 +1,21 @@
+﻿using ConnectionImplemented;
 using HardwareClientApplication;
 using System;
-using System.Net;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace ConnectionImplemented {
-    internal class ClientMain {
-
+namespace ClientApplication {
+    internal static class ClientMain {
+        [STAThread]
         static async Task Main(string[] args) {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new screen());
+
             ListDisplay.ShowDeviceList();
 
             //HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
