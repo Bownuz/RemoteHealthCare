@@ -4,7 +4,7 @@ namespace Server.Patterns.State
 {
     internal abstract class State
     {
-        private DataProtocol.DataProtocol protocol;
+        protected DataProtocol.DataProtocol protocol;
 
         public State(DataProtocol.DataProtocol protocol)
         {

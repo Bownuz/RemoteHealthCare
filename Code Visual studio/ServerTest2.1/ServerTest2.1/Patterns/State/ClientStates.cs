@@ -1,21 +1,13 @@
-﻿
-
-
-
-namespace Server.Patterns.State.Client
+﻿namespace Server.Patterns.State.Client
 
 {
-    class WelcomeClient : State
+    class WelcomeClient(DataProtocol.DataProtocol protocol) : State(protocol)
     {
-        public WelcomeClient(DataProtocol.DataProtocol protocol) : base(protocol)
-        {
-
-        }
-
         public override string CheckInput(string input)
         {
-            throw new NotImplementedException();
-        }
+            this.protocol.changeState(new InitializePatient(this.protocol));
+            return "Welcome Client";
+        }   
     }
 
     class InitializePatient : State
