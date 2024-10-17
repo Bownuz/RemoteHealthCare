@@ -13,10 +13,14 @@ namespace HardwareClientApplication {
     internal class VrConnection {
         private static Socket client;
         private static Thread listener;
+        private static string tunnelID;
         private static bool DebugMessages = true;
-        private static bool AutoCreateTunnel = true;
 
         public static void NewConnection(string ipAdress) {
+            NewConnection(ipAdress, false);
+        }
+
+        public static void NewConnection(string ipAdress, bool AutoCreateTunnel) {
             if (client != null)
                 CloseConnection();
 
@@ -26,42 +30,87 @@ namespace HardwareClientApplication {
             client = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             client.Connect(localEndPoint);
 
-            listener = new Thread(ResponseListener);
-            listener.Start();
-
             if (AutoCreateTunnel)
-                CreateTunnel();
+                VrConnection.AutoCreateTunnel();
+
+            NewListener();
         }
 
         public static void CloseConnection() {
-            listener.Abort();
+            AbortListener();
             client.Close();
+            tunnelID = null;
         }
 
         private static void ResponseListener() {
-            for (; ; ) {
-                RecieveJsonObjectFromServer();
+            try {
+                for (; ; ) {
+                    RecieveJsonObjectFromServer();
+                }
+            }
+            catch (ThreadAbortException) {
+                Console.WriteLine("Thread '{0}' aborted.", Thread.CurrentThread.Name);
             }
         }
 
-        private static void CreateTunnel() {
-            SendJsonObjectFromBytes(Encoding.ASCII.GetBytes("{\"id\":\"session/list\"}"));
+        private static void AutoCreateTunnel() {
             SendJsonObjectFromFile("session_list.json");
-            string ms = RecieveJsonObjectFromServer();
-            JsonDocument jsonDoc = JsonDocument.Parse(ms);
-            string sessionID = jsonDoc.RootElement.GetProperty("data")[0].GetProperty("id").GetString();
+            JsonDocument sessionList = JsonDocument.Parse(RecieveJsonObjectFromServer());
+            string sessionID = sessionList.RootElement.GetProperty("data")[0].GetProperty("id").GetString();
             SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{\"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
+            JsonDocument tunnelIdDoc = JsonDocument.Parse(RecieveJsonObjectFromServer());
+            tunnelID = tunnelIdDoc.RootElement.GetProperty("data").GetProperty("id").GetString();
         }
 
-        private static void SendJsonObjectFromFile(string filename) {
-            byte[] jsonObject = File.ReadAllBytes($"{Directory.GetCurrentDirectory()}\\..\\..\\..\\json_files\\{filename}");
+        private static void AbortListener() {
+            listener.Abort();
+        }
+
+        private static void NewListener() {
+            listener = new Thread(ResponseListener);
+            listener.Start();
+        }
+
+        public static void CreateTunnel() {
+            AbortListener();
+            TunnelCreater();
+            NewListener();
+        }
+
+        private static void TunnelCreater() {
+            SendJsonObjectFromFile("session_list.json");
+            JsonDocument sessionList = JsonDocument.Parse(RecieveJsonObjectFromServer());
+            string sessionID = sessionList.RootElement.GetProperty("data")[0].GetProperty("id").GetString();
+            SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{\"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
+            JsonDocument tunnelIdDoc = JsonDocument.Parse(RecieveJsonObjectFromServer());
+            tunnelID = tunnelIdDoc.RootElement.GetProperty("data").GetProperty("id").GetString();
+        }
+
+        public static void SendJsonObjectViaTunnelFromFile(string filename) {
+            SendJsonObjectViaTunnelFromBytes(File.ReadAllBytes($"{Directory.GetCurrentDirectory()}\\..\\..\\Vr\\json_files\\{filename}"));
+        }
+
+        public static void SendJsonObjectViaTunnelFromBytes(byte[] jsonObject) {
+            if (tunnelID == null)
+                return;
+            SendJsonObjectFromBytes(Encoding.ASCII.GetBytes($"{{\"id\" : \"tunnel/send\", \"data\" : {{ \"dest\" : \"{tunnelID}\", \"data\" : {Encoding.ASCII.GetString(jsonObject)} }} }}"));
+        }
+
+        public static void SendJsonObjectFromFile(string filename) {
+            if (client == null)
+                return;
+
+            byte[] jsonObject = File.ReadAllBytes($"{Directory.GetCurrentDirectory()}\\..\\..\\Vr\\json_files\\{filename}");
             byte[] sizeJsonObject = BitConverter.GetBytes(jsonObject.Length);
 
             client.Send(sizeJsonObject);
             client.Send(jsonObject);
         }
 
-        private static void SendJsonObjectFromBytes(byte[] jsonObject) {
+        public static void SendJsonObjectFromBytes(byte[] jsonObject) {
+            if (client == null)
+                return;
+
             byte[] sizeJsonObject = BitConverter.GetBytes(jsonObject.Length);
 
             client.Send(sizeJsonObject);

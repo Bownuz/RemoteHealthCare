@@ -83,11 +83,15 @@
     <Compile Include="ClientMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConnection.cs" />
-    <Compile Include="VrConnection.cs" />
+    <Compile Include="Vr\VrConnection.cs" />
+    <Compile Include="Vr\VrScene.cs" />
+    <Compile Include="Vr\VrTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Vr\json_files\scene_get.json" />
+    <None Include="Vr\json_files\session_list.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
