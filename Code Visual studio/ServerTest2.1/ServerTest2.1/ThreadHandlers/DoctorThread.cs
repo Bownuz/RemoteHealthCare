@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System.Net.Http;
+using System.Net.Sockets;
 using Server.DataProtocol;
 using Server.DataStorage;
 using Server.Patterns.Observer;
@@ -6,37 +7,30 @@ using Server.Patterns.Observer;
 
 namespace Server.ThreadHandlers
 {
-    internal class DoctorThread(FileStorage fileStorage, TcpClient doctor) : Subject, Observer
+    internal class DoctorThread : CommunicationThread
     {
-        FileStorage fileStorage = fileStorage;
-        Person Person;
-        TcpClient doctor = doctor;
-        DataProtocol.DataProtocol protocol;
-
-        public void HandleThread()
+        public DoctorThread(FileStorage fileStorage, TcpClient client) : base(fileStorage, client)
         {
-            protocol = new DataProtocol.DataProtocol(ClientType.DOCTOR);
+            clientType = ClientType.CLIENT;
+        }
+
+        public override void HandleThread()
+        {
+            protocol = new DataProtocol.DataProtocol(ClientType.DOCTOR, this);
             AddObserver(fileStorage);
-            
+
             while (true)
             {
-                if (doctor.Connected)
+                if (tcpClient.Connected)
                 {
                     string recievedMessage;
-                    if ((recievedMessage = MessageCommunication.ReciveMessage(doctor)) != null)
+                    if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
                     {
                         protocol.processMessage(recievedMessage);
                         NotifyAll();
                     }
                 }
             }
-
-
-        }
-
-        public void Update()
-        {
-            MessageCommunication.SendMessage(doctor, Person.currentSession.getLatestMessage(ClientType.DOCTOR));
         }
     }
 }

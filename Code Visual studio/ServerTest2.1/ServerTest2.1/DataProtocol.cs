@@ -2,13 +2,14 @@
 using Server.DataStorage;
 using Server.Patterns.State;
 using Server.Patterns.State.Client;
+using Server.ThreadHandlers;
 
 namespace Server.DataProtocol {
     internal class DataProtocol
     {
         State State;
 
-        public DataProtocol(ClientType clientType)
+        public DataProtocol(ClientType clientType, CommunicationThread communicationThread)
         {
             switch (clientType) {
                 case ClientType.CLIENT:

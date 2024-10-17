@@ -1,39 +1,32 @@
 ﻿using System.Net.Sockets;
 using Server.DataStorage;
-using Server.DataProtocol;
-using Server.Patterns.Observer;
 
 namespace Server.ThreadHandlers
 {
-    internal class ClientThread(FileStorage fileStorage, TcpClient client) : Subject, Observer
+    internal class ClientThread : CommunicationThread
     {
-        FileStorage fileStorage = fileStorage;
-        Person Person;
-        TcpClient client = client;
-        DataProtocol.DataProtocol protocol;
-
-        public void HandleThread()
+        public ClientThread(FileStorage fileStorage, TcpClient client) : base(fileStorage, client)
         {
-            protocol = new DataProtocol.DataProtocol(ClientType.CLIENT);
+            clientType = ClientType.CLIENT;
+        }
+
+        public override void HandleThread()
+        {
+            protocol = new DataProtocol.DataProtocol(ClientType.DOCTOR, this);
             AddObserver(fileStorage);
 
             while (true)
             {
-                if (client.Connected)
+                if (tcpClient.Connected)
                 {
                     string recievedMessage;
-                    if ((recievedMessage = MessageCommunication.ReciveMessage(client)) != null)
+                    if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
                     {
                         protocol.processMessage(recievedMessage);
                         NotifyAll();
                     }
                 }
             }
-        }
-
-        public void Update()
-        {
-            MessageCommunication.SendMessage(client, Person.currentSession.getLatestMessage(ClientType.CLIENT));
         }
     }
 }
