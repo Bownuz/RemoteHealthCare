@@ -11,12 +11,12 @@ namespace Server.ThreadHandlers
     {
         public DoctorThread(FileStorage fileStorage, TcpClient client) : base(fileStorage, client)
         {
-            clientType = ClientType.CLIENT;
+            clientType = ClientType.DOCTOR;
         }
 
         public override void HandleThread()
         {
-            protocol = new DataProtocol.DataProtocol(ClientType.DOCTOR, this);
+            protocol = new DataProtocol.DataProtocol(clientType, this);
             AddObserver(fileStorage);
 
             while (true)

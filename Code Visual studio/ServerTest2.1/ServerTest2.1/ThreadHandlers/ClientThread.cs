@@ -12,7 +12,7 @@ namespace Server.ThreadHandlers
 
         public override void HandleThread()
         {
-            protocol = new DataProtocol.DataProtocol(ClientType.DOCTOR, this);
+            protocol = new DataProtocol.DataProtocol(clientType, this);
             AddObserver(fileStorage);
 
             while (true)
