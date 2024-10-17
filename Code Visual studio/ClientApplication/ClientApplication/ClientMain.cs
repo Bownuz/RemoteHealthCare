@@ -1,11 +1,13 @@
 ﻿using ConnectionImplemented;
-using HardwareClientApplication;
+using ClientApplication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace ClientApplication {
@@ -14,20 +16,20 @@ namespace ClientApplication {
         static async Task Main(string[] args) {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new screen());
 
-            ListDisplay.ShowDeviceList();
+            StartGui();
+        }
 
-            //HeartRateMonitor heartRateMonitor = new HeartRateMonitor();
-            Ergometer ergometer = new Ergometer();
-            BleDevice[] bleDevices = { ergometer };
+        public static void StartGui() {
+            Form mainForm = new Form();
+            SignInScreen userControl = new SignInScreen(mainForm);
+            // Zorgt ervoor dat de UserControl het hele form vult
+            userControl.Dock = DockStyle.Fill;
 
-            DataHandler handler = new DataHandler(bleDevices);
-
-            //TcpClient client = new TcpClient("192.168.178.101", 4789);
-            TcpClient client = new TcpClient("localhost", 4789);
-            Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, handler, ergometer));
-            connectionThread.Start();
+            mainForm.WindowState = FormWindowState.Maximized;
+            mainForm.Controls.Add(userControl);
+            mainForm.Text = "Client Application";
+            Application.Run(mainForm);
         }
     }
 }

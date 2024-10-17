@@ -3,7 +3,7 @@ using System;
 
 namespace ConnectionImplemented {
     internal class HeartRateMonitor : BleDevice {
-        private double heartRate { get; set; }
+        private int heartRate { get; set; }
 
         public HeartRateMonitor() : base("HeartRate", "HeartRateMeasurement") {
         }
@@ -28,6 +28,10 @@ namespace ConnectionImplemented {
 
         protected override void updateDataToHandler() {
             base.handler.updateCurrentHeartRate(heartRate);
+        }
+
+        public double getCurrentHeartRate() {
+            return heartRate;
         }
     }
 }

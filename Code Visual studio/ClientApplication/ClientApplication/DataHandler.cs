@@ -1,47 +1,72 @@
-﻿using ConnectionImplemented;
+﻿using Avans.TI.BLE;
+using ConnectionImplemented;
 using System;
+using System.Net.Sockets;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace HardwareClientApplication {
+namespace ClientApplication {
     internal class DataHandler {
-        public double currentSpeed { get; set; }
-        public double currentHeartRate { get; set; }
+        public string deviceName { get; set; }
+        public int currentSpeed { get; set; }
+        public int currentHeartRate { get; set; }
+        Ergometer ergometer;
+        HeartRateMonitor heartRateMonitor;
+        Boolean simulatorIsActive;
         BleDevice[] bleDevices;
 
-        public DataHandler(BleDevice[] bleDevices) {
+        public DataHandler(BleDevice[] bleDevices, string heartRateMonitorID, string ergometerID, Ergometer ergometer, HeartRateMonitor heartRateMonitor, Boolean simulatorIsActive) {
             currentHeartRate = 0;
             currentSpeed = 0;
             this.bleDevices = bleDevices;
+            this.ergometer = ergometer;
+            this.heartRateMonitor = heartRateMonitor;
+            this.simulatorIsActive = simulatorIsActive;
+
             foreach (BleDevice device in bleDevices) {
-                initializeDeviceAsync(device);
+                initializeDeviceAsync(device, heartRateMonitorID, ergometerID);
                 device.setDataHandler(this);
             }
+
+            if (simulatorIsActive) {
+                //TcpClient client = new TcpClient("192.168.178.101", 4790);
+                TcpClient client = new TcpClient("localhost", 4790);
+                Thread connectionThread = new Thread(() => SimulatorConnection.HandleConnection(client, this));
+                connectionThread.Start();
+            }
         }
 
-        private async Task initializeDeviceAsync(BleDevice device) {
-            String deviceName;
+        private async Task initializeDeviceAsync(BleDevice device, string heartRateMonitorID, string ergometerID) {
+            String deviceName = null;
             if (device is HeartRateMonitor) {
-                Console.Write("enter heart rate device: ");
+                deviceName = heartRateMonitorID;
             } else if (device is Ergometer) {
-                Console.Write("enter ergometer device: ");
-
+                deviceName = ergometerID;
             }
 
-            deviceName = Console.ReadLine();
-            await device.ConnectToBLE_Device(deviceName);
+            if (!simulatorIsActive) {
+                await device.ConnectToBLE_Device(deviceName);
+            }
         }
 
-        internal void updateCurrentHeartRate(double heartRate) {
+        public void SimulateBLEData(byte[] bikeData, byte[] heartRateData) {
+            Console.WriteLine(bikeData);
+            Console.WriteLine(heartRateData);
+            ergometer.SubscriptionValueChanged(bikeData);
+            heartRateMonitor.SubscriptionValueChanged(heartRateData);
+        }
+
+        internal void updateCurrentHeartRate(int heartRate) {
             currentHeartRate = heartRate;
         }
 
-        internal void updateCurrentSpeed(double speed) {
+        internal void updateCurrentSpeed(int speed) {
             currentSpeed = speed;
         }
 
         internal String printAsJson() {
-            JsonData data = new JsonData(currentSpeed, (int)currentHeartRate, DateTime.Now);
+            JsonData data = new JsonData(currentSpeed, currentHeartRate, DateTime.Now);
             return JsonSerializer.Serialize<JsonData>(data);
         }
     }

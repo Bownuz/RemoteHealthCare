@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace ConnectionImplemented {
     internal class Ergometer : BleDevice {
         public double speedKmPerHour { get; set; }
+        private byte resistance;
 
         public Ergometer() : base("6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e") {
         }
@@ -22,11 +23,11 @@ namespace ConnectionImplemented {
                 int speedRaw = (speedMSB << 5) | speedLSB;
                 double speedMetersPerSecond = speedRaw * 0.01;
                 speedKmPerHour = speedMetersPerSecond * 3.6;
-
             }
         }
 
         public async Task sendResistanceValueAsync(byte resistanceValue) {
+            resistance = resistanceValue;
             resistanceValue *= 2;
             byte[] resistanceData = new byte[13];
 
@@ -54,7 +55,15 @@ namespace ConnectionImplemented {
         }
 
         protected override void updateDataToHandler() {
-            base.handler.updateCurrentSpeed(speedKmPerHour);
+            base.handler.updateCurrentSpeed((int)speedKmPerHour);
+        }
+
+        public int getCurrentSpeed() {
+            return (int)Math.Round(speedKmPerHour);
+        }
+
+        public byte getResistanceValue() {
+            return resistance;
         }
     }
 }
