@@ -22,7 +22,6 @@ namespace HardwareClientApplication {
                 WriteData(tcpClient, handler.printAsJson());
                 if (stream.DataAvailable) {
                     string serverMessage = ReadTextMessage(tcpClient);
-                    Console.WriteLine("hshsjjsjsjss");
                     if (!string.IsNullOrEmpty(serverMessage)) {
                         ProcessMessage(serverMessage, ergometer);
                     }

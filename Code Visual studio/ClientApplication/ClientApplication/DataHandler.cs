@@ -5,18 +5,16 @@ using System.Threading.Tasks;
 
 namespace HardwareClientApplication {
     internal class DataHandler {
-        public string deviceName {  get; set; }
+        public string deviceName { get; set; }
         public double currentSpeed { get; set; }
         public double currentHeartRate { get; set; }
         BleDevice[] bleDevices;
 
-        public DataHandler(BleDevice[] bleDevices) {
+        public DataHandler(BleDevice[] bleDevices, string heartRateMonitorID, string ergometerID) {
             currentHeartRate = 0;
             currentSpeed = 0;
             this.bleDevices = bleDevices;
-        }
 
-        public void startDataHandler(string heartRateMonitorID, string ergometerID) {
             foreach (BleDevice device in bleDevices) {
                 initializeDeviceAsync(device, heartRateMonitorID, ergometerID);
                 device.setDataHandler(this);
@@ -28,7 +26,7 @@ namespace HardwareClientApplication {
             if (device is HeartRateMonitor) {
                 deviceName = heartRateMonitorID;
             } else if (device is Ergometer) {
-               deviceName= ergometerID;
+                deviceName = ergometerID;
             }
 
             await device.ConnectToBLE_Device(deviceName);

@@ -29,6 +29,10 @@ namespace ConnectionImplemented {
         protected override void updateDataToHandler() {
             base.handler.updateCurrentHeartRate(heartRate);
         }
+
+        public double getCurrentHeartRate() {
+            return heartRate;
+        }
     }
 }
 

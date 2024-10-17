@@ -21,6 +21,7 @@ namespace ConnectionImplemented {
             }
         }
 
+        [Obsolete("Deze methode wordt niet gebruikt")]
         public void ShowServiceList() {
             BLE ble = new BLE();
             var services = ble.GetServices;
@@ -29,6 +30,7 @@ namespace ConnectionImplemented {
             }
         }
 
+        [Obsolete("Deze methode wordt niet gebruikt")]
         public void ShowCharacteristicsList() {
             BLE ble = new BLE();
             var Characteristics = ble.GetCharacteristics;

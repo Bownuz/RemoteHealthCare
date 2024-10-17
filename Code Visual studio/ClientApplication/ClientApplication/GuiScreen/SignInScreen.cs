@@ -1,18 +1,27 @@
 ﻿using ConnectionImplemented;
 using HardwareClientApplication;
 using System;
+using System.Drawing;
+using System.Net.Sockets;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ClientApplication {
     internal partial class SignInScreen : UserControl {
-        private DataHandler dataHandler;
+        private DataHandler handler;
         private Form mainForm;
         private ListDisplay listDisplay;
-        public SignInScreen(DataHandler dataHandler, Form mainForm) {
+        private Ergometer ergometer;
+        private HeartRateMonitor heartRateMonitor;
+
+        public SignInScreen(Form mainForm) {
             InitializeComponent();
-            this.dataHandler = dataHandler;
             this.mainForm = mainForm;
-            listDisplay = new ListDisplay(availableDevicesListBox);
+            listDisplay = new ListDisplay(listBox1);
+            listBox1.Items.Add("");
+            listBox1.Items.Add("");
+            listDisplay.ShowDeviceList();
+            //listBox1.BackColor = Color.AliceBlue;
         }
 
         private void CloseButton(object sender, EventArgs e) {
@@ -24,12 +33,50 @@ namespace ClientApplication {
 
         private void SubmitButton(object sender, EventArgs e) {
             //MessageBox.Show($"Welcome: " + textBox1.Text);
-            if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text)) {
-                //dataHandler.startDataHandler(textBox2.Text, textBox3.Text);
+            if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && textBox2.Text.StartsWith("Tacx Flux")) {
+                StartClient();
                 ChangeScreen();
+                //StartConnectionWithServer();
             } else {
-                MessageBox.Show("You haven't filled everything in.");
+                MessageBox.Show("You haven't filled everything in, or the bike id doens't begin with Tacx Flux");
             }
+        }
+
+        private void StartClient() {
+            this.heartRateMonitor = new HeartRateMonitor();
+            this.ergometer = new Ergometer();
+            BleDevice[] bleDevices = { ergometer, heartRateMonitor };
+
+            this.handler = new DataHandler(bleDevices, textBox3.Text, textBox2.Text);
+        }
+
+        public void StartConnectionWithServer() {
+            //TcpClient client = new TcpClient("192.168.178.101", 4789);
+            TcpClient client = new TcpClient("localhost", 4789);
+            Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, handler, ergometer));
+            connectionThread.Start();
+        }
+
+        private void UsernameTextBox(object sender, EventArgs e) {
+            string username = textBox1.Text;
+        }
+
+        private void BikeNumberTextBox(object sender, EventArgs e) {
+            string bikeID = textBox2.Text;
+        }
+
+        private void HeartRateMonitorTextBox(object sender, EventArgs e) {
+            string heartRateMonitorID = textBox3.Text;
+        }
+
+        private void ChangeScreen() {
+            ClientInfoScreen clientInfoScreen = new ClientInfoScreen(handler, mainForm, ergometer, heartRateMonitor);
+            mainForm.Controls.Clear();
+            mainForm.Controls.Add(clientInfoScreen);
+            clientInfoScreen.Dock = DockStyle.Fill;
+        }
+
+        private void SignInScreen_Load(object sender, EventArgs e) {
         }
 
         private void label2_Click(object sender, EventArgs e) {
@@ -38,25 +85,11 @@ namespace ClientApplication {
         private void label1_Click(object sender, EventArgs e) {
         }
 
-        private void BikeNumberTextBox(object sender, EventArgs e) {
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e) {
-        }
-
-        private void ChangeScreen() {
-            ClientInfoScreen clientInfoScreen = new ClientInfoScreen(dataHandler, mainForm);
-            mainForm.Controls.Clear();
-            mainForm.Controls.Add(clientInfoScreen);
-            clientInfoScreen.Dock = DockStyle.Fill;
-        }
-
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
-
         }
 
-        private void ShowAvailableDevices(object sender, EventArgs e) {
-            listDisplay.ShowDeviceList();
+        private void label4_Click(object sender, EventArgs e) {
+
         }
     }
 }
