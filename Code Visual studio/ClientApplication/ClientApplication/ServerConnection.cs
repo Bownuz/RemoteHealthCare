@@ -11,7 +11,7 @@ using System.Text.Json;
 using ConnectionImplemented;
 using System.Reflection;
 
-namespace HardwareClientApplication {
+namespace ClientApplication {
     internal class ServerConnection {
         public static void HandleConnection(TcpClient tcpClient, DataHandler handler, Ergometer ergometer) {
             NetworkStream stream = tcpClient.GetStream();

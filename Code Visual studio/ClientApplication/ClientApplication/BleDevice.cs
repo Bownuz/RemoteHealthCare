@@ -1,5 +1,5 @@
 using Avans.TI.BLE;
-using HardwareClientApplication;
+using ClientApplication;
 using System;
 using System.Text;
 using System.Threading;
@@ -49,6 +49,11 @@ namespace ConnectionImplemented {
 
         public void SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs subsciptionEvent) {
             ConvertData(subsciptionEvent.Data);
+            updateDataToHandler();
+        }
+
+        public void SubscriptionValueChanged(byte[] rawData) {
+            ConvertData(rawData);
             updateDataToHandler();
         }
 

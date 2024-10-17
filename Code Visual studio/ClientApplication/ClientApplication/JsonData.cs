@@ -2,7 +2,7 @@
 using System.Text.Json;
 
 
-namespace HardwareClientApplication {
+namespace ClientApplication {
     internal struct JsonData {
         public double BicycleSpeed { get; }
         public int Heartrate { get; }

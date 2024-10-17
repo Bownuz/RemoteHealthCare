@@ -1,5 +1,5 @@
 ﻿using ConnectionImplemented;
-using HardwareClientApplication;
+using ClientApplication;
 using System;
 using System.Drawing;
 using System.Net.Sockets;
@@ -13,6 +13,7 @@ namespace ClientApplication {
         private ListDisplay listDisplay;
         private Ergometer ergometer;
         private HeartRateMonitor heartRateMonitor;
+        private Boolean simulatorActive = false;
 
         public SignInScreen(Form mainForm) {
             InitializeComponent();
@@ -33,7 +34,7 @@ namespace ClientApplication {
 
         private void SubmitButton(object sender, EventArgs e) {
             //MessageBox.Show($"Welcome: " + textBox1.Text);
-            if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && textBox2.Text.StartsWith("Tacx Flux")) {
+            if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && textBox2.Text.StartsWith("Tacx Flux") || simulatorActive && !string.IsNullOrWhiteSpace(textBox1.Text)) {
                 StartClient();
                 ChangeScreen();
                 //StartConnectionWithServer();
@@ -47,7 +48,7 @@ namespace ClientApplication {
             this.ergometer = new Ergometer();
             BleDevice[] bleDevices = { ergometer, heartRateMonitor };
 
-            this.handler = new DataHandler(bleDevices, textBox3.Text, textBox2.Text);
+            this.handler = new DataHandler(bleDevices, textBox3.Text, textBox2.Text, ergometer, heartRateMonitor, simulatorActive);
         }
 
         public void StartConnectionWithServer() {
@@ -89,7 +90,30 @@ namespace ClientApplication {
         }
 
         private void label4_Click(object sender, EventArgs e) {
+        }
 
+        private void SwitchDevice(object sender, EventArgs e) {
+            DialogResult changeInputDataDialog;
+            if (simulatorActive) {
+                changeInputDataDialog = MessageBox.Show("Do you want to switch to real device", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            } else {
+                changeInputDataDialog = MessageBox.Show("Do you want to switch to simulator", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            }
+            if (changeInputDataDialog == DialogResult.Yes) {
+                simulatorActive = !simulatorActive;
+                textBox2.Visible = !textBox2.Visible;
+                label2.Visible = !label2.Visible;
+                label3.Visible = !label3.Visible;
+                label4.Visible = !label4.Visible;
+                textBox3.Visible = !textBox3.Visible;
+                listBox1.Visible = !listBox1.Visible;
+                
+                if (simulatorActive) {
+                    button3.Text = "Simulator";
+                } else {
+                    button3.Text = "Real device";
+                }
+            }
         }
     }
 }

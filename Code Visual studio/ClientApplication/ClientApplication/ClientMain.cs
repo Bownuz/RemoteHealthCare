@@ -1,5 +1,5 @@
 ﻿using ConnectionImplemented;
-using HardwareClientApplication;
+using ClientApplication;
 using System;
 using System.Collections.Generic;
 using System.Linq;

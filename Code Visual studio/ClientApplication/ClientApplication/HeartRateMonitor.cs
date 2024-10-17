@@ -3,7 +3,7 @@ using System;
 
 namespace ConnectionImplemented {
     internal class HeartRateMonitor : BleDevice {
-        private double heartRate { get; set; }
+        private int heartRate { get; set; }
 
         public HeartRateMonitor() : base("HeartRate", "HeartRateMeasurement") {
         }

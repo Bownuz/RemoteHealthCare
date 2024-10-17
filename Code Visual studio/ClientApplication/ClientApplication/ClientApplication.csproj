@@ -85,6 +85,7 @@
     <Compile Include="GuiScreen\SignInScreen.Designer.cs">
       <DependentUpon>SignInScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="SimulatorConnection.cs" />
     <Compile Include="ServerConnection.cs" />
     <Compile Include="GuiScreen\CLientInfoScreen.cs">
       <SubType>UserControl</SubType>

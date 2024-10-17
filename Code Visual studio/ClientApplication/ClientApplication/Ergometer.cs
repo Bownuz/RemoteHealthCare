@@ -23,7 +23,6 @@ namespace ConnectionImplemented {
                 int speedRaw = (speedMSB << 5) | speedLSB;
                 double speedMetersPerSecond = speedRaw * 0.01;
                 speedKmPerHour = speedMetersPerSecond * 3.6;
-
             }
         }
 
@@ -56,11 +55,11 @@ namespace ConnectionImplemented {
         }
 
         protected override void updateDataToHandler() {
-            base.handler.updateCurrentSpeed(speedKmPerHour);
+            base.handler.updateCurrentSpeed((int)speedKmPerHour);
         }
 
-        public double getCurrentSpeed() {
-            return speedKmPerHour;
+        public int getCurrentSpeed() {
+            return (int)Math.Round(speedKmPerHour);
         }
 
         public byte getResistanceValue() {
