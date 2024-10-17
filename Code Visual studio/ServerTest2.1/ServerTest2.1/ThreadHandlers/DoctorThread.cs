@@ -11,10 +11,11 @@ namespace Server.ThreadHandlers
         FileStorage fileStorage = fileStorage;
         Person Person;
         TcpClient doctor = doctor;
+        DataProtocol.DataProtocol protocol;
 
         public void HandleThread()
         {
-            Protocol protocol = new Protocol();
+            protocol = new DataProtocol.DataProtocol(ClientType.DOCTOR);
             AddObserver(fileStorage);
             
             while (true)

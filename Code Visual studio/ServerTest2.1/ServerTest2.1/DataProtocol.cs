@@ -1,11 +1,33 @@
-﻿namespace Server.DataProtocol {
+﻿using Server.DataProtocol.doctor;
+using Server.DataStorage;
+using Server.Patterns.State;
+using Server.Patterns.State.Client;
+
+namespace Server.DataProtocol {
     internal class DataProtocol
     {
+        State State;
 
+        public DataProtocol(ClientType clientType)
+        {
+            switch (clientType) {
+                case ClientType.CLIENT:
+                    this.State = new WelcomeClient(this);
+                    break;
+                case ClientType.DOCTOR:
+                    this.State = new WelcomeDoctor(this);
+                    break;
+            
+            }
+        }
 
         internal void processMessage(String incommingMessage)
         {
-            throw new NotImplementedException();
+            State.CheckInput(incommingMessage);
+        }
+
+        public void changeState(State newState) { 
+         this.State = newState;
         }
     }
 
