@@ -1,6 +1,8 @@
 ﻿namespace Server.DataProtocol {
-    internal class Protocol
+    internal class DataProtocol
     {
+
+
         internal void processMessage(String incommingMessage)
         {
             throw new NotImplementedException();
@@ -22,41 +24,6 @@
             this.dateTime = dateTime;
         }
     }
-
-    internal struct ÇlientSendData
-    { 
-        public String Message { get; }
-        public int Resistance { get;}
-
-        public ÇlientSendData(string message, int resistance)
-        {
-            this.Message = message;
-            this.Resistance = resistance;
-        }
-    }
-
-    internal struct DoctorRecieveData { 
-        public String Message { get; }
-        public int Resistance { get; }
-
-        public DoctorRecieveData(string message, int resistance)
-        {
-            this.Message = message;
-            this.Resistance = resistance;
-        }
-    }
-
-    internal struct DoctorSendData { 
-        public String dataType { get; }
-        public String clientData { get; }
-
-        public DoctorSendData(string dataType, String data)
-        {
-            this.dataType = dataType;
-            this.clientData = clientData;
-        }
-    }
-
 
 
 }
