@@ -4,6 +4,10 @@ using System.Threading.Tasks;
 namespace SimulatorApplication {
     public class Simulator {
         private static Random rand = new Random();
+        private string rawBikeData;
+        private string bikeID;
+        private string heartRateData;
+        private string heartRateID;
 
         public async Task StartSimulation() {
             int currentSpeed = 25;
@@ -18,8 +22,9 @@ namespace SimulatorApplication {
 
                 // Simuleer Page 16 data met de gegenereerde snelheid
                 // Hier zorgen we ervoor dat de data in totaal 12 hex bytes is, inclusief de header en de snelheid
-                SimuleerData("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", $"A4 09 4E 05 10 00 00 00 {speedLSBHex} {speedMSBHex} 00 00");
-
+                bikeID = "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e";
+                rawBikeData = $"A4 09 4E 05 10 00 00 00 {speedLSBHex} {speedMSBHex} 00 00";
+                SimuleerData(bikeID, rawBikeData);
                 // Wacht even om simulatie te vertragen
                 await Task.Delay(1000);
 
@@ -30,7 +35,9 @@ namespace SimulatorApplication {
                 await Task.Delay(1000);
 
                 // Case 3: Hartslagdata (12 hex bytes)
-                SimuleerData("00002a37-0000-1000-8000-00805f9b34fb", "16 8C 5B 03 70 01");
+                heartRateData = "16 8C 5B 03 70 01";
+                heartRateID = "00002a37-0000-1000-8000-00805f9b34fb";
+                SimuleerData(heartRateID, heartRateData);
 
                 // Wacht even om simulatie te vertragen
                 await Task.Delay(1000);
@@ -64,6 +71,10 @@ namespace SimulatorApplication {
             string speedMSBHex = speedMSB.ToString("X2"); // MSB als hex waarde
 
             return (speedLSBHex, speedMSBHex);
+        }
+
+        public string getData() {
+            return "Bike:" + bikeID + rawBikeData + "HeartBeat:" + heartRateID + heartRateData;
         }
     }
 }
