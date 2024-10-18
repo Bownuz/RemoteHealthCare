@@ -1,24 +1,26 @@
-﻿using Server.DataProtocol.doctor;
+using Server.DataProtocol.doctor;
 using Server.DataStorage;
 using Server.Patterns.State;
 using Server.Patterns.State.Client;
 using Server.ThreadHandlers;
 
-namespace Server.DataProtocol {
+namespace Server.DataProtocol
+{
     internal class DataProtocol
     {
         State State;
 
         public DataProtocol(ClientType clientType, CommunicationThread communicationThread)
         {
-            switch (clientType) {
+            switch (clientType)
+            {
                 case ClientType.CLIENT:
                     this.State = new WelcomeClient(this);
                     break;
                 case ClientType.DOCTOR:
                     this.State = new WelcomeDoctor(this);
                     break;
-            
+
             }
         }
 
@@ -27,15 +29,16 @@ namespace Server.DataProtocol {
             State.CheckInput(incommingMessage);
         }
 
-        public void changeState(State newState) { 
-         this.State = newState;
+        public void changeState(State newState)
+        {
+            this.State = newState;
         }
     }
 
     internal struct ClientRecieveData
     {
         public String patientName { get; set; }
-        public double BicycleSpeed {get; set; }
+        public double BicycleSpeed { get; set; }
         public int Heartrate { get; set; }
         public DateTime dateTime { get; set; }
 

@@ -1,8 +1,5 @@
-﻿using System.Net.Http;
-using System.Net.Sockets;
-using Server.DataProtocol;
+﻿using System.Net.Sockets;
 using Server.DataStorage;
-using Server.Patterns.Observer;
 
 
 namespace Server.ThreadHandlers
@@ -27,7 +24,7 @@ namespace Server.ThreadHandlers
                     if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
                     {
                         protocol.processMessage(recievedMessage);
-                        NotifyAll();
+                        UpdateAll();
                     }
                 }
             }

@@ -1,4 +1,4 @@
-﻿namespace Server.DataStorage
+namespace Server.DataStorage
 {
     class Session
     {

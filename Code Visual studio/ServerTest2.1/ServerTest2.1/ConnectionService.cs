@@ -1,4 +1,4 @@
-﻿using Server.DataStorage;
+using Server.DataStorage;
 using Server.ThreadHandlers;
 using System.Net;
 using System.Net.Sockets;
@@ -11,6 +11,10 @@ namespace Server.ConnectionService
         {
             //server
             List<Thread> threads = new List<Thread>();
+            TcpListener clientListener = new TcpListener(IPAddress.Any, 4789);
+            TcpListener doctorListener = new TcpListener(IPAddress.Any, 4790);
+            clientListener.Start();
+            doctorListener.Start();
 
             TcpListener Clientlistener = new TcpListener(IPAddress.Any, 4789);
             TcpListener DoctorListener = new TcpListener(IPAddress.Any, 4790);

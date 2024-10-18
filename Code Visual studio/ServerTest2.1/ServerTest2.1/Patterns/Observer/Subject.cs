@@ -19,7 +19,7 @@
             observers.Remove(newObserver);
         }
 
-        public void NotifyAll()
+        public void UpdateAll()
         {
             foreach (Observer observer in observers)
             {
