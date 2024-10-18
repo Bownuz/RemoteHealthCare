@@ -1,20 +1,9 @@
-﻿namespace DoctorApplication
-{
-    partial class Form1
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
+﻿namespace DoctorApplication {
+    partial class Form1 {
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
+        protected override void Dispose(bool disposing) {
+            if(disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -22,17 +11,12 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.PasswordTextBox = new System.Windows.Forms.TextBox();
             this.UsernameTextBox = new System.Windows.Forms.TextBox();
-            this.progressBarLoading = new System.Windows.Forms.ProgressBar();
             this.DateLabel = new System.Windows.Forms.Label();
+            this.TimeLabel = new System.Windows.Forms.Label(); 
             this.CloseButton = new System.Windows.Forms.Button();
             this.LoginButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -54,13 +38,6 @@
             this.UsernameTextBox.Size = new System.Drawing.Size(135, 20);
             this.UsernameTextBox.TabIndex = 1;
             // 
-            // progressBarLoading
-            // 
-            this.progressBarLoading.Location = new System.Drawing.Point(141, 2);
-            this.progressBarLoading.Name = "progressBarLoading";
-            this.progressBarLoading.Size = new System.Drawing.Size(461, 23);
-            this.progressBarLoading.TabIndex = 2;
-            // 
             // DateLabel
             // 
             this.DateLabel.AutoSize = true;
@@ -68,6 +45,14 @@
             this.DateLabel.Name = "DateLabel";
             this.DateLabel.Size = new System.Drawing.Size(0, 13);
             this.DateLabel.TabIndex = 3;
+            // 
+            // TimeLabel
+            // 
+            this.TimeLabel.AutoSize = true;
+            this.TimeLabel.Location = new System.Drawing.Point(163, 150); 
+            this.TimeLabel.Name = "TimeLabel";
+            this.TimeLabel.Size = new System.Drawing.Size(0, 13);
+            this.TimeLabel.TabIndex = 8;
             // 
             // CloseButton
             // 
@@ -120,22 +105,21 @@
             this.Controls.Add(this.LoginButton);
             this.Controls.Add(this.CloseButton);
             this.Controls.Add(this.DateLabel);
-            this.Controls.Add(this.progressBarLoading);
+            this.Controls.Add(this.TimeLabel); 
             this.Controls.Add(this.UsernameTextBox);
             this.Controls.Add(this.PasswordTextBox);
             this.Name = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
         private System.Windows.Forms.TextBox PasswordTextBox;
         private System.Windows.Forms.TextBox UsernameTextBox;
-        private System.Windows.Forms.ProgressBar progressBarLoading;
         private System.Windows.Forms.Label DateLabel;
+        private System.Windows.Forms.Label TimeLabel; 
         private System.Windows.Forms.Button CloseButton;
         private System.Windows.Forms.Button LoginButton;
         private System.Windows.Forms.Label label1;
