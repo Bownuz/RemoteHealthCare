@@ -23,96 +23,86 @@
             this.label2 = new System.Windows.Forms.Label();
             this.timeUpdater = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
-            // 
-            // PasswordTextBox
-            // 
-            this.PasswordTextBox.Location = new System.Drawing.Point(284, 249);
-            this.PasswordTextBox.Name = "PasswordTextBox";
-            this.PasswordTextBox.Size = new System.Drawing.Size(135, 20);
-            this.PasswordTextBox.TabIndex = 0;
-            // 
-            // UsernameTextBox
-            // 
-            this.UsernameTextBox.Location = new System.Drawing.Point(284, 188);
+
+            // Form eigenschappen
+            this.BackColor = System.Drawing.Color.WhiteSmoke; // Zachte achtergrondkleur
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.ClientSize = new System.Drawing.Size(400, 300);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.MaximizeBox = false;
+            this.Text = "Login Scherm";
+
+            // Username TextBox
+            this.UsernameTextBox.Location = new System.Drawing.Point(200, 80);
+            this.UsernameTextBox.Size = new System.Drawing.Size(150, 25);
             this.UsernameTextBox.Name = "UsernameTextBox";
-            this.UsernameTextBox.Size = new System.Drawing.Size(135, 20);
-            this.UsernameTextBox.TabIndex = 1;
-            // 
+
+            // Password TextBox
+            this.PasswordTextBox.Location = new System.Drawing.Point(200, 120);
+            this.PasswordTextBox.Size = new System.Drawing.Size(150, 25);
+            this.PasswordTextBox.Name = "PasswordTextBox";
+            this.PasswordTextBox.PasswordChar = '*'; // Verberg wachtwoord
+
             // DateLabel
-            // 
             this.DateLabel.AutoSize = true;
-            this.DateLabel.Location = new System.Drawing.Point(163, 121);
+            this.DateLabel.Location = new System.Drawing.Point(50, 30);
             this.DateLabel.Name = "DateLabel";
-            this.DateLabel.Size = new System.Drawing.Size(0, 13);
-            this.DateLabel.TabIndex = 3;
-            // 
+            this.DateLabel.Size = new System.Drawing.Size(0, 17);
+
             // TimeLabel
-            // 
             this.TimeLabel.AutoSize = true;
-            this.TimeLabel.Location = new System.Drawing.Point(163, 150);
+            this.TimeLabel.Location = new System.Drawing.Point(250, 30);
             this.TimeLabel.Name = "TimeLabel";
-            this.TimeLabel.Size = new System.Drawing.Size(0, 13);
-            this.TimeLabel.TabIndex = 8;
-            // 
-            // CloseButton
-            // 
-            this.CloseButton.Location = new System.Drawing.Point(607, 67);
+            this.TimeLabel.Size = new System.Drawing.Size(0, 17);
+
+            // Close Button
+            this.CloseButton.Location = new System.Drawing.Point(320, 250);
+            this.CloseButton.Size = new System.Drawing.Size(70, 30);
             this.CloseButton.Name = "CloseButton";
-            this.CloseButton.Size = new System.Drawing.Size(75, 23);
-            this.CloseButton.TabIndex = 4;
-            this.CloseButton.Text = "Close";
-            this.CloseButton.UseVisualStyleBackColor = true;
+            this.CloseButton.Text = "Sluiten";
+            this.CloseButton.BackColor = System.Drawing.Color.LightCoral;
+            this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
-            // 
-            // LoginButton
-            // 
-            this.LoginButton.Location = new System.Drawing.Point(312, 301);
+
+            // Login Button
+            this.LoginButton.Location = new System.Drawing.Point(150, 200);
+            this.LoginButton.Size = new System.Drawing.Size(100, 35);
             this.LoginButton.Name = "LoginButton";
-            this.LoginButton.Size = new System.Drawing.Size(75, 23);
-            this.LoginButton.TabIndex = 5;
             this.LoginButton.Text = "Inloggen";
-            this.LoginButton.UseVisualStyleBackColor = true;
+            this.LoginButton.BackColor = System.Drawing.Color.LightBlue;
+            this.LoginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
-            // 
-            // label1
-            // 
+
+            // label1 (Username label)
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(152, 188);
+            this.label1.Location = new System.Drawing.Point(50, 80);
+            this.label1.Size = new System.Drawing.Size(130, 17);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(109, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Uw Gebruikersnaam: ";
-            // 
-            // label2
-            // 
+            this.label1.Text = "Uw Gebruikersnaam:";
+
+            // label2 (Password label)
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(155, 252);
+            this.label2.Location = new System.Drawing.Point(50, 120);
+            this.label2.Size = new System.Drawing.Size(120, 17);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(93, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Uw Wachtwoord: ";
-            // 
-            // timeUpdater
-            // 
+            this.label2.Text = "Uw Wachtwoord:";
+
+            // TimeUpdater Timer
             this.timeUpdater.Interval = 1000;
             this.timeUpdater.Tick += new System.EventHandler(this.UpdateDateTimeLabel);
-            // 
-            // Form1
-            // 
-            this.ClientSize = new System.Drawing.Size(703, 479);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.LoginButton);
-            this.Controls.Add(this.CloseButton);
+
+            // Voeg de controls toe aan het formulier
+            this.Controls.Add(this.PasswordTextBox);
+            this.Controls.Add(this.UsernameTextBox);
             this.Controls.Add(this.DateLabel);
             this.Controls.Add(this.TimeLabel);
-            this.Controls.Add(this.UsernameTextBox);
-            this.Controls.Add(this.PasswordTextBox);
-            this.Name = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Controls.Add(this.CloseButton);
+            this.Controls.Add(this.LoginButton);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label2);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

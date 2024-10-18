@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Net.Security;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace DoctorApplication {
     public partial class ClientenForm : Form {
@@ -29,7 +27,7 @@ namespace DoctorApplication {
                         string jsonData = await reader.ReadLineAsync();
                         if(!string.IsNullOrEmpty(jsonData)) {
                             var clientData = JsonSerializer.Deserialize<ClientData>(jsonData);
-                            UpdateDataGridView(clientData);
+                            UpdateDataGridView(clientData); // Update de DataGridView met real-time gegevens
                         }
                     }
                 }
@@ -87,7 +85,8 @@ namespace DoctorApplication {
                     Action = "GetTrainingData",
                     TargetClient = client
                 });
-                // Assuming we receive the data and show it in a new form
+
+                // Open het TrainingDataForm en geef de SSLStream mee voor verdere communicatie
                 TrainingDataForm dataForm = new TrainingDataForm(sslStream);
                 dataForm.Show();
                 this.Hide();
@@ -135,8 +134,10 @@ namespace DoctorApplication {
         }
 
         private void UpdateDataGridView(ClientData clientData) {
+            // Controleer of de cliënt al bestaat in de DataGridView
             foreach(DataGridViewRow row in ClientenGridView.Rows) {
                 if(row.Cells["PatientName"].Value?.ToString() == clientData.PatientName) {
+                    // Update bestaande cliëntgegevens
                     row.Cells["Resistance"].Value = clientData.Resistance;
                     row.Cells["HeartRate"].Value = clientData.HeartRate;
                     row.Cells["Speed"].Value = clientData.Speed;
@@ -145,6 +146,7 @@ namespace DoctorApplication {
                 }
             }
 
+            // Als cliënt nog niet bestaat, voeg deze toe
             ClientenGridView.Rows.Add(
                 clientData.PatientName,
                 clientData.Resistance,

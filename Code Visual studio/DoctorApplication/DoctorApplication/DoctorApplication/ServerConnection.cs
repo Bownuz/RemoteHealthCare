@@ -45,7 +45,6 @@ public class ServerConnection {
             }
         }
         catch(IOException ex) {
-            // Handle connection closed or network error gracefully
             Console.WriteLine("Verbinding gesloten: " + ex.Message);
         }
         catch(Exception ex) {
@@ -95,12 +94,16 @@ public class ServerConnection {
     }
 
     public List<TrainingData> GetTrainingDataForClient(string clientName) {
-        // For demonstration purposes, simulate training data
-        return new List<TrainingData>
-        {
+        SendCommandToServer(new {
+            Action = "GetTrainingData",
+            TargetClient = clientName
+        });
+
+        // simulated data
+        return new List<TrainingData> {
             new TrainingData { TimeStamp = DateTime.Now.AddMinutes(-5), Value = 25 },
             new TrainingData { TimeStamp = DateTime.Now.AddMinutes(-3), Value = 30 },
-            new TrainingData { TimeStamp = DateTime.Now.AddMinutes(-1), Value = 28 },
+            new TrainingData { TimeStamp = DateTime.Now, Value = 28 }
         };
     }
 
