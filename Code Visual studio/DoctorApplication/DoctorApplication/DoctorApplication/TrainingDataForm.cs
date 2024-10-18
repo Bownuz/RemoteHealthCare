@@ -12,6 +12,7 @@ namespace DoctorApplication {
 
         public TrainingDataForm(List<TrainingData> data, SslStream sslStream) {
             InitializeComponent();
+
             trainingData = data;
             this.sslStream = sslStream;
             InitializeChart();
