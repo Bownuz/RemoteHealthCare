@@ -15,17 +15,21 @@ namespace Server.ThreadHandlers
             protocol = new DataProtocol.DataProtocol(clientType, this);
             AddObserver(fileStorage);
 
-            while (true)
+            while (tcpClient.Connected)
             {
-                if (tcpClient.Connected)
+                string recievedMessage;
+                String response;
+                if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
                 {
-                    string recievedMessage;
-                    if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
-                    {
-                        protocol.processMessage(recievedMessage);
-                        UpdateAll();
+                    response = protocol.processMessage(recievedMessage);
+                    MessageCommunication.SendMessage(tcpClient, response);
+                    UpdateAll();
+
+                    if (response.Equals("Goodbye")) { 
+                        tcpClient.Close();
                     }
                 }
+                
             }
         }
     }
