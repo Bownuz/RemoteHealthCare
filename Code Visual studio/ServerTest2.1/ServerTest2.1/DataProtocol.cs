@@ -21,7 +21,7 @@ namespace Server.DataProtocol
                     this.State = new WelcomeClient(this, communicationThread);
                     break;
                 case ClientType.DOCTOR:
-                    this.State = new WelcomeDoctor(this);
+                    this.State = new WelcomeDoctor(this, communicationThread);
                     break;
 
             }

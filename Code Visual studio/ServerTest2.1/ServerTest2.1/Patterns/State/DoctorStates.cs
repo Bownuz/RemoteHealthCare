@@ -1,12 +1,13 @@
 ﻿
 
 using Server.Patterns.State;
+using Server.ThreadHandlers;
 
 namespace Server.DataProtocol.doctor
 {
     class WelcomeDoctor : State
     {
-        public WelcomeDoctor(DataProtocol protocol) : base(protocol)
+        public WelcomeDoctor(DataProtocol protocol, CommunicationThread thread) : base(protocol,thread)
         {
         }
 
@@ -18,7 +19,7 @@ namespace Server.DataProtocol.doctor
 
     class LoginDoctor : State
     {
-        public LoginDoctor(DataProtocol protocol) : base(protocol)
+        public LoginDoctor(DataProtocol protocol, CommunicationThread thread) : base(protocol, thread)
         {
         }
 

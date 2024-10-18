@@ -15,6 +15,8 @@ namespace Server.ThreadHandlers
             protocol = new DataProtocol.DataProtocol(clientType, this);
             AddObserver(fileStorage);
 
+
+            MessageCommunication.SendMessage(tcpClient, protocol.processMessage(""));
             while (tcpClient.Connected)
             {
                 string recievedMessage;
