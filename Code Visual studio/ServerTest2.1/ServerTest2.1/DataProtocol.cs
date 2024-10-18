@@ -18,7 +18,7 @@ namespace Server.DataProtocol
             switch (clientType)
             {
                 case ClientType.CLIENT:
-                    this.State = new WelcomeClient(this);
+                    this.State = new WelcomeClient(this, communicationThread);
                     break;
                 case ClientType.DOCTOR:
                     this.State = new WelcomeDoctor(this);
@@ -34,14 +34,6 @@ namespace Server.DataProtocol
 
         public void changeState(State newState)
         {
-            if (newState is InitializePatient)
-            { 
-                InitializePatient initializePatient = (InitializePatient)newState;
-                initializePatient.setCommunication(communicationThread);
-                this.State = initializePatient;
-                return;
-            }
-
             this.State = newState;
         }
     }

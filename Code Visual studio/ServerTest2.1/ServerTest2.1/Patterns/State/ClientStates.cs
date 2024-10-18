@@ -5,23 +5,17 @@ using System.Text.Json;
 namespace Server.Patterns.State.Client
 
 {
-    class WelcomeClient(DataProtocol.DataProtocol protocol) : State(protocol)
+    class WelcomeClient(DataProtocol.DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
     {
         public override string CheckInput(string input)
         {
-            this.protocol.changeState(new InitializePatient(protocol));
+            this.protocol.changeState(new InitializePatient(protocol, thread));
             return "Welcome Client";
         }   
     }
 
-    class InitializePatient(DataProtocol.DataProtocol protocol) : State(protocol)
+    class InitializePatient(DataProtocol.DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
     {
-        CommunicationThread? thread;
-
-        public void setCommunication(CommunicationThread thread) { 
-            this.thread = thread;
-        }
-
         public override string CheckInput(string input)
         {
             if (input.Equals("Quit Communication")) {
@@ -46,12 +40,12 @@ namespace Server.Patterns.State.Client
             connectedPerson.addSession(connectedPerson.currentSession);
             thread.UpdateAll();
 
-            protocol.changeState(new RecievingData(protocol));
+            protocol.changeState(new RecievingData(protocol, thread));
             return "Ready to recieve data";
         }
     }
 
-    class RecievingData(DataProtocol.DataProtocol protocol) : State(protocol)
+    class RecievingData(DataProtocol.DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
     {
         public override string CheckInput(string input)
         {
