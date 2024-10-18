@@ -1,160 +1,59 @@
-﻿using DataProtocol;
-using ServerTest2._1.DataStorage;
-using System;
-using System.Collections.Generic;
+using Server.DataStorage;
+using Server.ThreadHandlers;
 using System.Net;
 using System.Net.Sockets;
-using System.Text.Json;
-using System.Threading;
 
-namespace ConnectionService {
-    class ConnectionService {
-        private static Dictionary<string, TcpClient> connectedClients = new Dictionary<string, TcpClient>();
-        private static Dictionary<string, Person> patients = new Dictionary<string, Person>();
-        private static Dictionary<string, Session> activeSessions = new Dictionary<string, Session>();
-
-        static void Main(string[] args) {
+namespace Server.ConnectionService
+{
+    class ConnectionService
+    {
+        static void Main(string[] args)
+        {
+            //server
             List<Thread> threads = new List<Thread>();
             TcpListener clientListener = new TcpListener(IPAddress.Any, 4789);
             TcpListener doctorListener = new TcpListener(IPAddress.Any, 4790);
             clientListener.Start();
             doctorListener.Start();
 
-            while(true) {
+            TcpListener Clientlistener = new TcpListener(IPAddress.Any, 4789);
+            TcpListener DoctorListener = new TcpListener(IPAddress.Any, 4790);
+            Clientlistener.Start();
+            DoctorListener.Start();
+
+            FileStorage fileStorage = new FileStorage();
+
+            while (true)
+            {
                 Console.WriteLine("Starting up server and waiting for connections.....");
 
-                TcpClient client = clientListener.AcceptTcpClient();
-                Thread clientThread = new Thread(() => HandleClientThread(client));
-                threads.Add(clientThread);
-                clientThread.Start();
-
-                TcpClient doctor = doctorListener.AcceptTcpClient();
-                Thread doctorThread = new Thread(() => HandleDoctorThread(doctor));
-                threads.Add(doctorThread);
-                doctorThread.Start();
-            }
-        }
-
-        private static void HandleClientThread(TcpClient client) {
-            while(true) {
-                if(client.Connected) {
-                    string received;
-                    if((received = DataProtocol.Messages.ReciveMessage(client)) != null) {
-                        Console.WriteLine("Received from client: {0}", received);
-                        ClientRecieveData jsonData = JsonSerializer.Deserialize<ClientRecieveData>(received);
-
-                        if(!connectedClients.ContainsKey(jsonData.PatientName)) {
-                            connectedClients.Add(jsonData.PatientName, client);
-                            patients[jsonData.PatientName] = new Person(jsonData.PatientName);
-                            Console.WriteLine($"Client {jsonData.PatientName} connected.");
-                        }
-
-                        UpdateClientData(jsonData);
-                    }
+                if (Clientlistener.Pending())
+                {
+                    TcpClient client = Clientlistener.AcceptTcpClient();
+                    Thread clientThread = new Thread(() => HandleClient(client, fileStorage));
+                    threads.Add(clientThread);
+                    clientThread.Start();
                 }
-                else {
-                    Console.WriteLine("Client disconnected.");
-                    break;
+
+                if (DoctorListener.Pending())
+                {
+                    TcpClient doctor = DoctorListener.AcceptTcpClient();
+                    Thread doctorThread = new Thread(() => HandleDoctor(doctor, fileStorage));
+                    threads.Add(doctorThread);
+                    doctorThread.Start();
                 }
             }
         }
 
-
-
-        private static void HandleDoctorThread(TcpClient doctor) {
-            while(true) {
-                string received = DataProtocol.Messages.ReciveMessage(doctor);
-                if(string.IsNullOrEmpty(received)) {
-                    Console.WriteLine("Doctor disconnected.");
-                    break;
-                }
-
-                Console.WriteLine("Received from doctor: " + received);
-                var command = JsonSerializer.Deserialize<Command>(received);
-                ProcessDoctorCommand(command);
-            }
+        static void HandleClient(TcpClient client, FileStorage fileStorage) {
+            ClientThread clientThread = new ClientThread(fileStorage,client);
+            clientThread.HandleThread();
         }
 
-        private static void ProcessDoctorCommand(Command command) {
-            switch(command.CommandType) {
-                case "START_SESSION":
-                    StartSessionForClient(command.ClientId, command.StartTime);
-                    break;
-                case "STOP_SESSION":
-                    StopSessionForClient(command.ClientId, command.EndTime);
-                    break;
-                case "SEND_MESSAGE":
-                    SendMessageToClient(command.ClientId, command.Message);
-                    break;
-                case "ADJUST_RESISTANCE":
-                    AdjustResistanceForClient(command.ClientId, command.Resistance);
-                    break;
-                case "EMERGENCY_STOP":
-                    EmergencyStopForClient(command.ClientId);
-                    break;
-                default:
-                    Console.WriteLine("Unknown command received from doctor.");
-                    break;
-            }
+        static void HandleDoctor(TcpClient doctor, FileStorage fileStorage) {
+            DoctorThread doctorThread = new DoctorThread(fileStorage, doctor);
+            doctorThread.HandleThread();
         }
 
-        private static void StartSessionForClient(string clientId, DateTime startTime) {
-            if(connectedClients.ContainsKey(clientId)) {
-                Console.WriteLine($"Starting session for client: {clientId} at {startTime}");
-                Session session = new Session {
-                    StartTime = startTime
-                };
-                activeSessions[clientId] = session;
-            }
-            else {
-                Console.WriteLine($"Client {clientId} not found.");
-            }
-        }
-
-        private static void StopSessionForClient(string clientId, DateTime endTime) {
-            if(activeSessions.ContainsKey(clientId)) {
-                Console.WriteLine($"Stopping session for client: {clientId} at {endTime}");
-                var session = activeSessions[clientId];
-                session.EndTime = endTime;
-                activeSessions.Remove(clientId);
-            }
-            else {
-                Console.WriteLine($"No active session found for client {clientId}.");
-            }
-        }
-
-
-        private static void SendMessageToClient(string clientId, string message) {
-            if(connectedClients.TryGetValue(clientId, out TcpClient client)) {
-                Console.WriteLine($"Sending message to client {clientId}: {message}");
-                DataProtocol.Messages.SendMessage(client, message);
-            }
-            else {
-                Console.WriteLine($"Client {clientId} not found.");
-            }
-        }
-
-        private static void AdjustResistanceForClient(string clientId, int resistance) {
-            if(connectedClients.TryGetValue(clientId, out TcpClient client)) {
-                Console.WriteLine($"Adjusting resistance for client {clientId} to {resistance}");
-            }
-            else {
-                Console.WriteLine($"Client {clientId} not found.");
-            }
-        }
-
-        private static void EmergencyStopForClient(string clientId) {
-            if(connectedClients.TryGetValue(clientId, out TcpClient client)) {
-                Console.WriteLine($"Emergency stop triggered for client {clientId}");
-                DataProtocol.Messages.SendMessage(client, "EMERGENCY_STOP");
-            }
-            else {
-                Console.WriteLine($"Client {clientId} not found.");
-            }
-        }
-
-        private static void UpdateClientData(ClientRecieveData jsonData) {
-            Console.WriteLine($"Updated client data: Name={jsonData.PatientName}, Speed={jsonData.BicycleSpeed}, Heart Rate={jsonData.Heartrate}, Date={jsonData.DateTime}");
-        }
     }
 }

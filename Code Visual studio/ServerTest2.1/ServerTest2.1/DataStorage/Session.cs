@@ -1,34 +1,56 @@
-﻿using System;
+namespace Server.DataStorage
+{
+    class Session
+    {
+        DateTime sessionStart { get; }
+        DateTime sessionEnd { get; }
+        String ergometerName { get; }
+        string heartRateMonitorName { get; }
+        List<string> clientMessages { get; }
+        List<string> doctorMessages { get; }
 
-namespace ServerTest2._1.DataStorage {
-    class Session {
-        public DateTime StartTime { get; set; }  
-        public DateTime EndTime { get; set; }    
-        List<string> messagesSend = new List<string>();
-        List<string> messagesRecieved = new List<string>();
-
-        public void addMessagesSend(string message) {
-            messagesSend.Add(message);
+        public Session(DateTime sessionStart, string ergometerName, string heartRateMonitorName)
+        {
+            clientMessages = new List<string>();
+            doctorMessages = new List<string>();
+            this.sessionStart = sessionStart;
+            this.ergometerName = ergometerName;
+            this.heartRateMonitorName = heartRateMonitorName;
         }
 
-        public void addMessagesRecived(string message) {
-            messagesRecieved.Add(message);
-        }
-
-        public string getMessagesSend() {
-            string s = "";
-            foreach(string message in messagesSend) {
-                s += message + "\n";
+        public void addMessage(String message, ClientType messageType)
+        {
+            switch (messageType)
+            {
+                case ClientType.CLIENT:
+                    clientMessages.Add(message);
+                    break;
+                case ClientType.DOCTOR:
+                    doctorMessages.Add(message);
+                    break;
+                default:
+                    throw new Exception("this messageType is not supported");
             }
-            return s;
         }
 
-        public string getMessagesRecived() {
-            string s = "";
-            foreach(string message in messagesRecieved) {
-                s += message + "\n";
+        public String getLatestMessage(ClientType messageType) { 
+            switch(messageType)
+            { 
+                case ClientType.CLIENT:
+                    return doctorMessages[^1];
+                case ClientType.DOCTOR:
+                    return clientMessages[^1];
+                default:
+                    throw new Exception("this messageType is not supported");
+                            
+            
             }
-            return s;
         }
+    }
+
+    internal enum ClientType
+    {
+        CLIENT,
+        DOCTOR
     }
 }

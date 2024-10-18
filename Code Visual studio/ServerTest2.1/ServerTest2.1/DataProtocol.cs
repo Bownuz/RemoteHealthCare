@@ -1,58 +1,52 @@
-﻿using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+using Server.DataProtocol.doctor;
+using Server.DataStorage;
+using Server.Patterns.State;
+using Server.Patterns.State.Client;
+using Server.ThreadHandlers;
 
-namespace DataProtocol {
-    class Messages {
-        public static string ReciveMessage(TcpClient client) {
-            var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
-            {
-                return stream.ReadLine();
+namespace Server.DataProtocol {
+    internal class DataProtocol
+    {
+        State State;
+
+        public DataProtocol(ClientType clientType, CommunicationThread communicationThread)
+        {
+            switch (clientType) {
+                case ClientType.CLIENT:
+                    this.State = new WelcomeClient(this);
+                    break;
+                case ClientType.DOCTOR:
+                    this.State = new WelcomeDoctor(this);
+                    break;
+            
             }
         }
 
-        public static void SendMessage(TcpClient client, string message) {
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII, -1, true);
-            {
-                stream.WriteLine(message);
-                stream.Flush();
-            }
-        }
-    }
-    internal struct ÇlientSendData
-    { 
-        public String Message { get; }
-        public int Resistance { get;}
-
-        public ÇlientSendData(string message, int resistance)
+        internal void processMessage(String incommingMessage)
         {
-            this.Message = message;
-            this.Resistance = resistance;
+            State.CheckInput(incommingMessage);
+        }
+
+        public void changeState(State newState) { 
+         this.State = newState;
         }
     }
 
-    internal struct DoctorRecieveData { 
-        public String Message { get; }
-        public int Resistance { get; }
+    internal struct ClientRecieveData
+    {
+        public String patientName { get; set; }
+        public double BicycleSpeed {get; set; }
+        public int Heartrate { get; set; }
+        public DateTime dateTime { get; set; }
 
-        public DoctorRecieveData(string message, int resistance)
+        public ClientRecieveData(string patientName, double bicycleSpeed, int heartrate, DateTime dateTime)
         {
-            this.Message = message;
-            this.Resistance = resistance;
+            this.patientName = patientName;
+            BicycleSpeed = bicycleSpeed;
+            Heartrate = heartrate;
+            this.dateTime = dateTime;
         }
     }
-
-    internal struct DoctorSendData { 
-        public String dataType { get; }
-        public String clientData { get; }
-
-        public DoctorSendData(string dataType, String data)
-        {
-            this.dataType = dataType;
-            this.clientData = clientData;
-        }
-    }
-
 
 
 }
