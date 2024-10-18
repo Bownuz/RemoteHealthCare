@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace ConnectionImplemented {
     internal class Ergometer : BleDevice {
-        public double speedtest{ get; set; }
-       
+        public double speedKmPerHour { get; set; }
+        private byte resistance;
+
         public Ergometer() : base("6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e") {
         }
 
-        public override double ConvertData(byte[] rawData) {
+        public override void ConvertData(byte[] rawData) {
             if (rawData[4] == 0x10) {
                 Console.WriteLine("Received from {0}: {1}, {2}", rawData,
                 BitConverter.ToString(rawData).Replace("-", " "),
@@ -21,14 +22,12 @@ namespace ConnectionImplemented {
                 int speedMSB = rawData[9];
                 int speedRaw = (speedMSB << 5) | speedLSB;
                 double speedMetersPerSecond = speedRaw * 0.01;
-                double speedKmPerHour = speedMetersPerSecond * 3.6;
-
-                return speedKmPerHour;
+                speedKmPerHour = speedMetersPerSecond * 3.6;
             }
-            return 0;
         }
 
-        public async Task sendResistanceValueAsync(byte resistanceValue, BLE device) {
+        public async Task sendResistanceValueAsync(byte resistanceValue) {
+            resistance = resistanceValue;
             resistanceValue *= 2;
             byte[] resistanceData = new byte[13];
 
@@ -47,7 +46,7 @@ namespace ConnectionImplemented {
             }
             resistanceData[12] = (byte)(checksum % 256);
 
-            int errorCode = await device.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", resistanceData);
+            int errorCode = await bleDevice.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", resistanceData);
             if (errorCode != 0) {
                 Console.WriteLine("Kon de weerstand niet instellen.");
             } else {
@@ -55,9 +54,16 @@ namespace ConnectionImplemented {
             }
         }
 
-        protected override void updateDataToHandler()
-        {
-            base.handler.updateCurrentSpeed(speedtest);
+        protected override void updateDataToHandler() {
+            base.handler.updateCurrentSpeed((int)speedKmPerHour);
+        }
+
+        public int getCurrentSpeed() {
+            return (int)Math.Round(speedKmPerHour);
+        }
+
+        public byte getResistanceValue() {
+            return resistance;
         }
     }
 }

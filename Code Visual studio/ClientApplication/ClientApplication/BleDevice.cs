@@ -1,5 +1,5 @@
 using Avans.TI.BLE;
-using HardwareClientApplication;
+using ClientApplication;
 using System;
 using System.Text;
 using System.Threading;
@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 namespace ConnectionImplemented {
     internal abstract class BleDevice {
         private String currentData;
-        private BLE bleDevice;
         private String service;
         private String characteristic;
         private double currentValue;
+        protected BLE bleDevice;
         protected DataHandler handler;
 
 
@@ -44,20 +44,24 @@ namespace ConnectionImplemented {
                 errorCode = await bleDevice.SubscribeToCharacteristic(characteristic);
             }
             while (errorCode != 0);
-            Console.WriteLine("subscribed to characteristic!");
-        }   
+            Console.WriteLine("Subscribed to characteristic!");
+        }
 
         public void SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs subsciptionEvent) {
             ConvertData(subsciptionEvent.Data);
             updateDataToHandler();
         }
 
+        public void SubscriptionValueChanged(byte[] rawData) {
+            ConvertData(rawData);
+            updateDataToHandler();
+        }
+
         protected abstract void updateDataToHandler();
 
-        public abstract double ConvertData(byte[] rawData);
+        public abstract void ConvertData(byte[] rawData);
 
-        internal void setDataHandler(DataHandler dataHandler)
-        {
+        internal void setDataHandler(DataHandler dataHandler) {
             this.handler = dataHandler;
         }
     }
