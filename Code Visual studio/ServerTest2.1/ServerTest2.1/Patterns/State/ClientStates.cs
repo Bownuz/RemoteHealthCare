@@ -1,4 +1,4 @@
-﻿using Server.DataStorage;
+using Server.DataStorage;
 using Server.ThreadHandlers;
 using System.Text.Json;
 
@@ -30,7 +30,8 @@ namespace Server.Patterns.State.Client
             {
                 storageFromThread.AddPatient(dataFromMessage.ClientName);
             }
-            connectedPerson = storageFromThread.GetPatient(dataFromMessage.ClientName);
+            thread.Person = storageFromThread.GetPatient(dataFromMessage.ClientName);
+            connectedPerson = thread.Person;
             connectedPerson.currentSession = 
                 new Session(
                     dataFromMessage.dateTime,
@@ -54,6 +55,7 @@ namespace Server.Patterns.State.Client
                 return "Goodbye";
             }
 
+            //TODO: add regex to ensure correct formatting before saving message
             thread.Person.currentSession.addMessage(input, ClientType.CLIENT);
             thread.UpdateAll();
             return "Ready to recieve data";
