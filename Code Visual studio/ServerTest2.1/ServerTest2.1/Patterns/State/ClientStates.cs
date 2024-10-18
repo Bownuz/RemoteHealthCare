@@ -54,8 +54,8 @@ namespace Server.Patterns.State.Client
                 return "Goodbye";
             }
 
-
-
+            thread.Person.currentSession.addMessage(input, ClientType.CLIENT);
+            thread.UpdateAll();
             return "Ready to recieve data";
         }
     }

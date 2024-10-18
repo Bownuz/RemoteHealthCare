@@ -40,4 +40,18 @@ namespace Server.ThreadHandlers
         }
     }
 
+    internal struct ClientHealthData
+    {
+        public double BicycleSpeed { get; }
+        public int Heartrate { get; }
+        public DateTime dateTime { get; }
+
+        public ClientHealthData(double bicycleSpeed, int heartrate, DateTime dateTime)
+        {
+            BicycleSpeed = bicycleSpeed;
+            Heartrate = heartrate;
+            this.dateTime = dateTime;
+        }
+    }
+
 }
