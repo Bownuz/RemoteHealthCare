@@ -44,6 +44,7 @@ namespace Server.Patterns.State.Client
                     dataFromMessage.ConnectedHeartRateMonitor
                     );
             connectedPerson.addSession(connectedPerson.currentSession);
+            thread.UpdateAll();
 
             protocol.changeState(new RecievingData(protocol));
             return "Ready to recieve data";

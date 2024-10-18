@@ -23,7 +23,6 @@ namespace Server.ThreadHandlers
                 {
                     response = protocol.processMessage(recievedMessage);
                     MessageCommunication.SendMessage(tcpClient, response);
-                    UpdateAll();
 
                     if (response.Equals("Goodbye")) { 
                         tcpClient.Close();
