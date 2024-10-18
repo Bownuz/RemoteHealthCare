@@ -6,16 +6,23 @@ namespace Server.DataStorage
     {
         Dictionary<String, Person> patients;
 
+        public FileStorage()
+        {
+            patients = new Dictionary<string, Person>();
+        }
+
+
+
         //TODO: add saving functionality
         public void SaveToFile()
         {
-
+            Console.WriteLine("I should Save now!!");
         }
 
         //TODO: add loading functionality  
         public void LoadFromFile()
         {
-
+            Console.WriteLine("I should load now");
         }
 
         public Person GetPatient(String name)

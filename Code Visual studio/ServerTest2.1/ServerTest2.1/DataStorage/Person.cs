@@ -10,6 +10,7 @@
         public Person(string name)
         {
             Name = name;
+            sessions = new List<Session>();
         }
 
         public void addSession(Session sessionToAdd) { 
