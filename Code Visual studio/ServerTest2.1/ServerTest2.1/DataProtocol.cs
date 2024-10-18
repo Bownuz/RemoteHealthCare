@@ -1,17 +1,20 @@
 using Server.DataProtocol.doctor;
 using Server.DataStorage;
 using Server.Patterns.State;
-using Server.Patterns.State.Client;
 using Server.ThreadHandlers;
+using Server.Patterns.State.Client;
 
 namespace Server.DataProtocol
 {
     internal class DataProtocol
     {
-        State State;
+        private State State;
+        private CommunicationThread communicationThread;
 
         public DataProtocol(ClientType clientType, CommunicationThread communicationThread)
         {
+            this.communicationThread = communicationThread;
+
             switch (clientType)
             {
                 case ClientType.CLIENT:
@@ -24,13 +27,21 @@ namespace Server.DataProtocol
             }
         }
 
-        internal void processMessage(String incommingMessage)
+        internal String processMessage(String incommingMessage)
         {
-            State.CheckInput(incommingMessage);
+            return State.CheckInput(incommingMessage);
         }
 
         public void changeState(State newState)
         {
+            if (newState is InitializePatient)
+            { 
+                InitializePatient initializePatient = (InitializePatient)newState;
+                initializePatient.setCommunication(communicationThread);
+                this.State = initializePatient;
+                return;
+            }
+
             this.State = newState;
         }
     }

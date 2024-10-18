@@ -23,4 +23,21 @@ namespace Server.ThreadHandlers
             }
         }
     }
+
+    public struct ClientInitialisationMessage
+    {
+        public String ClientName { get; set; }
+        public String ConnectedErgometer {  get; set; }
+        public String ConnectedHeartRateMonitor {  get; set; }
+        public DateTime dateTime {  get; set; }
+
+        public ClientInitialisationMessage(string clientName, string connectedErgometer, string connectedHeartRateMonitor, DateTime dateTime)
+        {
+            ClientName = clientName;
+            ConnectedErgometer = connectedErgometer;
+            ConnectedHeartRateMonitor = connectedHeartRateMonitor;
+            this.dateTime = dateTime;
+        }
+    }
+
 }

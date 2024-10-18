@@ -7,8 +7,8 @@ namespace Server.ThreadHandlers
     internal abstract class CommunicationThread(FileStorage fileStorage, TcpClient tcpClient) : Subject, Observer
     {
         
-        protected FileStorage fileStorage = fileStorage;
-        protected Person Person;
+        public FileStorage fileStorage = fileStorage;
+        public Person Person { get; set; }
         protected TcpClient tcpClient = tcpClient;
         protected DataProtocol.DataProtocol protocol;
         protected ClientType clientType;
