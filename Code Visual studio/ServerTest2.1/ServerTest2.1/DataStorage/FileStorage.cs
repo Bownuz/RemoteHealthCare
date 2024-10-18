@@ -18,9 +18,9 @@ namespace Server.DataStorage
 
         }
 
-        public Person GetPatient(String Name)
+        public Person GetPatient(String name)
         {
-            return patients[Name];
+            return patients[name];
         }
 
         public Boolean PatientExists(String name)

@@ -23,7 +23,7 @@ namespace Server.ThreadHandlers
                     if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
                     {
                         protocol.processMessage(recievedMessage);
-                        NotifyAll();
+                        UpdateAll();
                     }
                 }
             }
