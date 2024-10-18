@@ -1,59 +1,137 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Net.Security;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace DoctorApplication {
     public partial class ClientenForm : Form {
-        private ServerConnection serverConnection;
+        private SslStream sslStream;
 
-        public ClientenForm() {
+        public ClientenForm(SslStream stream) {
             InitializeComponent();
-            serverConnection = new ServerConnection();
-            serverConnection.OnDataReceived += UpdateDataGridView;
+            sslStream = stream;
         }
 
-        private async void ClientenForm_Load(object sender, EventArgs e) {
+        private void ClientenForm_Load(object sender, EventArgs e) {
+            // Start listening for live data from the server
+            _ = ListenForLiveData();
+        }
+
+        private async Task ListenForLiveData() {
             try {
-                await serverConnection.ConnectToServer("localhost", 4790);
+                using(var reader = new StreamReader(sslStream)) {
+                    while(true) {
+                        string jsonData = await reader.ReadLineAsync();
+                        if(!string.IsNullOrEmpty(jsonData)) {
+                            var clientData = JsonSerializer.Deserialize<ClientData>(jsonData);
+                            UpdateDataGridView(clientData);
+                        }
+                    }
+                }
             }
             catch(Exception ex) {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Fout bij het ontvangen van gegevens: " + ex.Message);
             }
         }
 
         private void SendMessageButton_Click(object sender, EventArgs e) {
             string message = MessageTextBox.Text;
-            string selectedClient = null;
-
-            // Zoek de geselecteerde client
-            foreach(DataGridViewRow row in ClientenGridView.Rows) {
-                bool isSelected = Convert.ToBoolean(row.Cells["SelectClientColumn"].Value);
-                if(isSelected) {
-                    selectedClient = row.Cells["PatientName"].Value.ToString();
-                    break;
-                }
-            }
-
-            if(selectedClient != null) {
-                try {
-                    // Stuur het bericht naar de server, die het vervolgens naar de cliënt stuurt
-                    serverConnection.SendMessageToServer(message, selectedClient);
-                    MessageBox.Show($"Bericht verzonden naar {selectedClient} via de server.");
-                }
-                catch(Exception ex) {
-                    MessageBox.Show("Fout bij het verzenden van het bericht: " + ex.Message);
-                }
-            }
-            else {
-                MessageBox.Show("Selecteer een cliënt om een bericht naar te sturen.");
+            foreach(string client in GetSelectedClients()) {
+                SendCommandToServer(new {
+                    Action = "SendMessage",
+                    TargetClient = client,
+                    Message = message
+                });
+                MessageBox.Show($"Bericht verzonden naar {client}.");
             }
         }
 
-        private void ClientenGridView_CellContentClick(object sender, DataGridViewCellEventArgs e) {
-            // Controleer of de cel een checkbox is en update de selectie
-            if(e.ColumnIndex == ClientenGridView.Columns["SelectClientColumn"].Index && e.RowIndex >= 0) {
-                DataGridViewCheckBoxCell checkBoxCell = (DataGridViewCheckBoxCell)ClientenGridView.Rows[e.RowIndex].Cells["SelectClientColumn"];
-                checkBoxCell.Value = !(checkBoxCell.Value != null && (bool)checkBoxCell.Value);
+        private void StartTrainingButton_Click(object sender, EventArgs e) {
+            foreach(string client in GetSelectedClients()) {
+                SendCommandToServer(new {
+                    Action = "StartTraining",
+                    TargetClient = client
+                });
+                MessageBox.Show($"Trainingssessie gestart voor {client}.");
             }
+        }
+
+        private void StopTrainingButton_Click(object sender, EventArgs e) {
+            foreach(string client in GetSelectedClients()) {
+                SendCommandToServer(new {
+                    Action = "StopTraining",
+                    TargetClient = client
+                });
+                MessageBox.Show($"Trainingssessie gestopt voor {client}.");
+            }
+        }
+
+        private void NoodstopButton_Click(object sender, EventArgs e) {
+            foreach(string client in GetSelectedClients()) {
+                SendCommandToServer(new {
+                    Action = "EmergencyStop",
+                    TargetClient = client
+                });
+                MessageBox.Show($"Noodstop uitgevoerd voor {client}.");
+            }
+        }
+
+        private void ViewPreviousDataButton_Click(object sender, EventArgs e) {
+            foreach(string client in GetSelectedClients()) {
+                SendCommandToServer(new {
+                    Action = "GetTrainingData",
+                    TargetClient = client
+                });
+                // Assuming we receive the data and show it in a new form
+                TrainingDataForm dataForm = new TrainingDataForm(sslStream);
+                dataForm.Show();
+                this.Hide();
+            }
+        }
+
+        private void AdjustResistanceButton_Click(object sender, EventArgs e) {
+            string resistanceValue = ResistanceTextBox.Text;
+            if(int.TryParse(resistanceValue, out int resistance)) {
+                foreach(string client in GetSelectedClients()) {
+                    SendCommandToServer(new {
+                        Action = "AdjustResistance",
+                        TargetClient = client,
+                        ResistanceLevel = resistance
+                    });
+                    MessageBox.Show($"Weerstand aangepast voor {client} naar {resistance}.");
+                }
+            }
+            else {
+                MessageBox.Show("Voer een geldige waarde in voor de weerstand.");
+            }
+        }
+
+        private void SendCommandToServer(object command) {
+            try {
+                string jsonCommand = JsonSerializer.Serialize(command);
+                using(var writer = new StreamWriter(sslStream) { AutoFlush = true }) {
+                    writer.WriteLine(jsonCommand);
+                }
+            }
+            catch(Exception ex) {
+                MessageBox.Show("Fout bij het verzenden van commando: " + ex.Message);
+            }
+        }
+
+        private string[] GetSelectedClients() {
+            var selectedClients = new List<string>();
+            foreach(DataGridViewRow row in ClientenGridView.Rows) {
+                bool isSelected = Convert.ToBoolean(row.Cells["SelectClientColumn"].Value);
+                if(isSelected) {
+                    selectedClients.Add(row.Cells["PatientName"].Value.ToString());
+                }
+            }
+            return selectedClients.ToArray();
         }
 
         private void UpdateDataGridView(ClientData clientData) {
@@ -74,6 +152,13 @@ namespace DoctorApplication {
                 clientData.HeartRate,
                 clientData.Speed
             );
+        }
+
+        private void ClientenGridView_CellContentClick(object sender, DataGridViewCellEventArgs e) {
+            if(e.ColumnIndex == ClientenGridView.Columns["SelectClientColumn"].Index && e.RowIndex >= 0) {
+                DataGridViewCheckBoxCell checkBoxCell = (DataGridViewCheckBoxCell)ClientenGridView.Rows[e.RowIndex].Cells["SelectClientColumn"];
+                checkBoxCell.Value = !(bool)(checkBoxCell.Value ?? false);
+            }
         }
     }
 }

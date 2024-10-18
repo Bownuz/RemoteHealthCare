@@ -15,20 +15,18 @@ namespace DoctorApplication {
         }
 
         private void LoginButton_Click(object sender, EventArgs e) {
-            
             string username = UsernameTextBox.Text;
             string password = PasswordTextBox.Text;
 
             if(username == "doctor" && password == "doctor123") {
                 try {
-                    
                     doctorClient = new TcpClient("localhost", 4790);
                     sslStream = new SslStream(doctorClient.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
                     sslStream.AuthenticateAsClient("localhost");
 
                     MessageBox.Show("Beveiligde verbinding gemaakt met de server!");
 
-                    ClientenForm clientenForm = new ClientenForm();
+                    ClientenForm clientenForm = new ClientenForm(sslStream);
                     this.Hide();
                     clientenForm.Show();
                 }
@@ -46,21 +44,19 @@ namespace DoctorApplication {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
-            
             UpdateDateTimeLabel(null, null);
-
-            timeUpdater.Interval = 1000;  
-            timeUpdater.Tick += new EventHandler(UpdateTimeLabel);  
+            timeUpdater.Interval = 1000;
+            timeUpdater.Tick += new EventHandler(UpdateTimeLabel);
             timeUpdater.Start();
         }
 
         private void UpdateTimeLabel(object sender, EventArgs e) {
             DateTime now = DateTime.Now;
-            TimeLabel.Text = $"Tijd: {now.ToString("HH:mm:ss")}";
-        }    
+            TimeLabel.Text = $"Tijd: {now:HH:mm:ss}";
+        }
         private void UpdateDateTimeLabel(object sender, EventArgs e) {
             DateTime now = DateTime.Now;
-            DateLabel.Text = $"Vandaag is het: {now.ToString("dddd, dd MMMM yyyy")}";
+            DateLabel.Text = $"Vandaag is het: {now:dddd, dd MMMM yyyy}";
         }
 
         private void CloseButton_Click(object sender, EventArgs e) {
