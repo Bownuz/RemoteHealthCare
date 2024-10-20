@@ -22,6 +22,7 @@ namespace Server.Patterns.State.Client
                 return "Goodbye";
             }
 
+            //TODO: add regex to ensure correct formatting
             ClientInitialisationMessage dataFromMessage = JsonSerializer.Deserialize<ClientInitialisationMessage>(input);
             Person connectedPerson;
             FileStorage storageFromThread = thread.fileStorage;

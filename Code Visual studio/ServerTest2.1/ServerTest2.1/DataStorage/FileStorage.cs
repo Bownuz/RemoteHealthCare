@@ -9,6 +9,7 @@ namespace Server.DataStorage
         public FileStorage()
         {
             patients = new Dictionary<string, Person>();
+            LoadFromFile();
         }
 
 
@@ -17,6 +18,10 @@ namespace Server.DataStorage
         public void SaveToFile()
         {
             Console.WriteLine("I should Save now!!");
+            foreach (var patient in patients)
+            {
+                Console.WriteLine(patient.Key);
+            }
         }
 
         //TODO: add loading functionality  
