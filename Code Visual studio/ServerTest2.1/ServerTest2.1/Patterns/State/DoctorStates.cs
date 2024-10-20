@@ -5,11 +5,8 @@ using Server.ThreadHandlers;
 
 namespace Server.DataProtocol.doctor
 {
-    class WelcomeDoctor : State
+    class WelcomeDoctor(DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
     {
-        public WelcomeDoctor(DataProtocol protocol, CommunicationThread thread) : base(protocol,thread)
-        {
-        }
 
         public override string CheckInput(string input)
         {
@@ -17,11 +14,8 @@ namespace Server.DataProtocol.doctor
         }
     }
 
-    class LoginDoctor : State
+    class LoginDoctor (DataProtocol protocol, CommunicationThread thread): State(protocol, thread)
     {
-        public LoginDoctor(DataProtocol protocol, CommunicationThread thread) : base(protocol, thread)
-        {
-        }
 
         public override string CheckInput(string input)
         {
@@ -29,6 +23,45 @@ namespace Server.DataProtocol.doctor
         }
     }
 
+    class RecievingCommand(DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
+    {
 
+        public override string CheckInput(string input)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class FetchingData(DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
+    {
+        public override string CheckInput(string input)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class Subscribing(DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
+    {
+        public override string CheckInput(string input)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class Unsubscribing(DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
+    {
+        public override string CheckInput(string input)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class SendingData(DataProtocol protocol, CommunicationThread thread) : State(protocol, thread)
+    {
+        public override string CheckInput(string input)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 }
