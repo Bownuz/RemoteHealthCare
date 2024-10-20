@@ -10,7 +10,8 @@ namespace Server.DataProtocol.doctor
 
         public override string CheckInput(string input)
         {
-            throw new NotImplementedException();
+            protocol.changeState(new LoginDoctor(protocol, thread));
+            return "Enter Login Data";
         }
     }
 
