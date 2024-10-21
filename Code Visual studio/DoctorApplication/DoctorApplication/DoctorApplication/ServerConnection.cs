@@ -100,7 +100,8 @@ public class ServerConnection {
         });
 
         // simulated data
-        return new List<TrainingData> {
+        return new List<TrainingData>
+        {
             new TrainingData { TimeStamp = DateTime.Now.AddMinutes(-5), Value = 25 },
             new TrainingData { TimeStamp = DateTime.Now.AddMinutes(-3), Value = 30 },
             new TrainingData { TimeStamp = DateTime.Now, Value = 28 }

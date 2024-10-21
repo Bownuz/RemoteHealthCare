@@ -1,13 +1,9 @@
-﻿namespace DoctorApplication
-{
-    partial class Form1
-    {
+﻿namespace DoctorApplication {
+    partial class Form1 {
         private System.ComponentModel.IContainer components = null;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
+        protected override void Dispose(bool disposing) {
+            if(disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -15,39 +11,65 @@
 
         #region Windows Form Designer generated code
 
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.PasswordTextBox = new System.Windows.Forms.TextBox();
+            this.DoctorIDTextBox = new System.Windows.Forms.TextBox(); // Nieuwe invoer voor DoctorID
             this.UsernameTextBox = new System.Windows.Forms.TextBox();
+            this.PasswordTextBox = new System.Windows.Forms.TextBox();
             this.DateLabel = new System.Windows.Forms.Label();
             this.TimeLabel = new System.Windows.Forms.Label();
             this.CloseButton = new System.Windows.Forms.Button();
             this.LoginButton = new System.Windows.Forms.Button();
+            this.DoctorIDLabel = new System.Windows.Forms.Label(); // Label voor DoctorID
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.timeUpdater = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
 
             // Form eigenschappen
-            this.BackColor = System.Drawing.Color.WhiteSmoke; // Zachte achtergrondkleur
-            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.ClientSize = new System.Drawing.Size(400, 300);
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.ClientSize = new System.Drawing.Size(400, 350); 
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.MaximizeBox = false;
             this.Text = "Login Scherm";
 
+            // DoctorID TextBox
+            this.DoctorIDTextBox.Location = new System.Drawing.Point(200, 50);
+            this.DoctorIDTextBox.Size = new System.Drawing.Size(150, 25);
+            this.DoctorIDTextBox.Name = "DoctorIDTextBox";
+
             // Username TextBox
-            this.UsernameTextBox.Location = new System.Drawing.Point(200, 80);
+            this.UsernameTextBox.Location = new System.Drawing.Point(200, 90);
             this.UsernameTextBox.Size = new System.Drawing.Size(150, 25);
             this.UsernameTextBox.Name = "UsernameTextBox";
 
             // Password TextBox
-            this.PasswordTextBox.Location = new System.Drawing.Point(200, 120);
+            this.PasswordTextBox.Location = new System.Drawing.Point(200, 130);
             this.PasswordTextBox.Size = new System.Drawing.Size(150, 25);
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.PasswordChar = '*'; // Verberg wachtwoord
+
+            // DoctorID Label
+            this.DoctorIDLabel.AutoSize = true;
+            this.DoctorIDLabel.Location = new System.Drawing.Point(50, 50);
+            this.DoctorIDLabel.Size = new System.Drawing.Size(130, 17);
+            this.DoctorIDLabel.Name = "DoctorIDLabel";
+            this.DoctorIDLabel.Text = "Uw DoctorID:";
+
+            // label1 (Username label)
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(50, 90);
+            this.label1.Size = new System.Drawing.Size(130, 17);
+            this.label1.Name = "label1";
+            this.label1.Text = "Uw Gebruikersnaam:";
+
+            // label2 (Password label)
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(50, 130);
+            this.label2.Size = new System.Drawing.Size(120, 17);
+            this.label2.Name = "label2";
+            this.label2.Text = "Uw Wachtwoord:";
 
             // DateLabel
             this.DateLabel.AutoSize = true;
@@ -79,25 +101,9 @@
             this.LoginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
 
-            // label1 (Username label)
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(50, 80);
-            this.label1.Size = new System.Drawing.Size(130, 17);
-            this.label1.Name = "label1";
-            this.label1.Text = "Uw Gebruikersnaam:";
-
-            // label2 (Password label)
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(50, 120);
-            this.label2.Size = new System.Drawing.Size(120, 17);
-            this.label2.Name = "label2";
-            this.label2.Text = "Uw Wachtwoord:";
-
-            // TimeUpdater Timer
-            this.timeUpdater.Interval = 1000;
-            this.timeUpdater.Tick += new System.EventHandler(this.UpdateDateTimeLabel);
-
-            // Voeg de controls toe aan het formulier
+            // Voeg de nieuwe controls toe
+            this.Controls.Add(this.DoctorIDTextBox);
+            this.Controls.Add(this.DoctorIDLabel);
             this.Controls.Add(this.PasswordTextBox);
             this.Controls.Add(this.UsernameTextBox);
             this.Controls.Add(this.DateLabel);
@@ -112,6 +118,8 @@
 
         #endregion
 
+        private System.Windows.Forms.TextBox DoctorIDTextBox; 
+        private System.Windows.Forms.Label DoctorIDLabel;  
         private System.Windows.Forms.TextBox PasswordTextBox;
         private System.Windows.Forms.TextBox UsernameTextBox;
         private System.Windows.Forms.Label DateLabel;
