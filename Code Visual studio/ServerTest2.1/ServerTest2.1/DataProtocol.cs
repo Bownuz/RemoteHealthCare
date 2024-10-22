@@ -1,58 +1,40 @@
-using Server.DataProtocol.doctor;
-using Server.DataStorage;
+using System;
 using Server.Patterns.State;
+using Server.Patterns.State.DoctorStates;
+using Server.Patterns.State.PatientStates;
 using Server.ThreadHandlers;
-using Server.Patterns.State.Client;
 
-namespace Server.DataProtocol
-{
-    internal class DataProtocol
-    {
+namespace Server {
+	public class DataProtocol
+	{
         private State State;
-        private CommunicationThread communicationThread;
 
-        public DataProtocol(ClientType clientType, CommunicationThread communicationThread)
+        public DataProtocol(CommunicationType communicationType, CommunicationHandler communicationHandler)
         {
-            this.communicationThread = communicationThread;
-
-            switch (clientType)
+            switch (communicationType)
             {
-                case ClientType.CLIENT:
-                    this.State = new WelcomeClient(this, communicationThread);
+                case CommunicationType.PATIENT:
+                    this.State = new P_Welcome(this, (PatientHandler)communicationHandler);
                     break;
-                case ClientType.DOCTOR:
-                    this.State = new WelcomeDoctor(this, communicationThread);
+                case CommunicationType.DOCTOR:
+                    this.State = new D_Welcome(this, (DoctorHandler)communicationHandler);
                     break;
 
             }
         }
-
-        internal String processMessage(String incommingMessage)
+        public String processInput(String input)
         {
-            return State.CheckInput(incommingMessage);
+            return State.CheckInput(input);
         }
 
-        public void changeState(State newState)
-        {
+        public void ChangeState(State newState)
+		{
             this.State = newState;
+
         }
-    }
 
-    internal struct ClientRecieveData
-    {
-        public String patientName { get; set; }
-        public double BicycleSpeed { get; set; }
-        public int Heartrate { get; set; }
-        public DateTime dateTime { get; set; }
+	
 
-        public ClientRecieveData(string patientName, double bicycleSpeed, int heartrate, DateTime dateTime)
-        {
-            this.patientName = patientName;
-            BicycleSpeed = bicycleSpeed;
-            Heartrate = heartrate;
-            this.dateTime = dateTime;
-        }
-    }
-
-
+	}
 }
+

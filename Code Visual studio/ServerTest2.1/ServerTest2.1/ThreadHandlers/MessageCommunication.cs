@@ -1,11 +1,12 @@
-﻿using System.Net.Sockets;
+using System;
+using System.IO;
+using System.Net.Sockets;
 using System.Text;
-
 
 namespace Server.ThreadHandlers
 {
-    internal class MessageCommunication
-    {
+	public class MessageCommunication
+	{
         public static string ReciveMessage(TcpClient client)
         {
             var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
@@ -22,16 +23,17 @@ namespace Server.ThreadHandlers
                 stream.Flush();
             }
         }
+
     }
 
-    public struct ClientInitialisationMessage
+    public struct PatientInitialisationMessage
     {
         public String ClientName { get; set; }
-        public String ConnectedErgometer {  get; set; }
-        public String ConnectedHeartRateMonitor {  get; set; }
-        public DateTime dateTime {  get; set; }
+        public String ConnectedErgometer { get; set; }
+        public String ConnectedHeartRateMonitor { get; set; }
+        public DateTime dateTime { get; set; }
 
-        public ClientInitialisationMessage(string clientName, string connectedErgometer, string connectedHeartRateMonitor, DateTime dateTime)
+        public PatientInitialisationMessage(string clientName, string connectedErgometer, string connectedHeartRateMonitor, DateTime dateTime)
         {
             ClientName = clientName;
             ConnectedErgometer = connectedErgometer;
@@ -40,14 +42,16 @@ namespace Server.ThreadHandlers
         }
     }
 
-    internal struct ClientHealthData
+    public struct PatientRecieveData
     {
-        public double BicycleSpeed { get; }
-        public int Heartrate { get; }
-        public DateTime dateTime { get; }
+        public String patientName { get; set; }
+        public double BicycleSpeed { get; set; }
+        public int Heartrate { get; set; }
+        public DateTime dateTime { get; set; }
 
-        public ClientHealthData(double bicycleSpeed, int heartrate, DateTime dateTime)
+        public PatientRecieveData(string patientName, double bicycleSpeed, int heartrate, DateTime dateTime)
         {
+            this.patientName = patientName;
             BicycleSpeed = bicycleSpeed;
             Heartrate = heartrate;
             this.dateTime = dateTime;
@@ -55,3 +59,4 @@ namespace Server.ThreadHandlers
     }
 
 }
+

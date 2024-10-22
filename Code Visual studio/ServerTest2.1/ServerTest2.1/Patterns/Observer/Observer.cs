@@ -1,9 +1,13 @@
-﻿using Server.DataStorage;
+using Server.DataStorage;
+using Server.ThreadHandlers;
 
 namespace Server.Patterns.Observer
 {
     public interface Observer
-    {
-        void Update(ClientType messageType);
-    }
+	{
+		void Update(CommunicationType communicationOrigin, Session session);
+
+	}
+
 }
+

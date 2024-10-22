@@ -1,13 +1,15 @@
 using Server.Patterns.Observer;
+using Server.ThreadHandlers;
+
 
 namespace Server.DataStorage
 {
-    class Session : Subject
+    public class Session : Subject
     {
         DateTime sessionStart { get; }
         DateTime sessionEnd { get; }
         String ergometerName { get; }
-        string heartRateMonitorName { get; }
+        String heartRateMonitorName { get; }
         List<string> clientMessages { get; }
         List<string> doctorMessages { get; }
 
@@ -20,47 +22,42 @@ namespace Server.DataStorage
             this.heartRateMonitorName = heartRateMonitorName;
         }
 
-        public void addMessage(String message, ClientType messageType)
+        public void addMessage(String message, CommunicationType messageType)
         {
             switch (messageType)
             {
-                case ClientType.CLIENT:
+                case CommunicationType.PATIENT:
                     clientMessages.Add(message);
                     break;
-                case ClientType.DOCTOR:
+                case CommunicationType.DOCTOR:
                     doctorMessages.Add(message);
                     break;
                 default:
                     throw new Exception("this messageType is not supported");
             }
 
-            UpdateAll(messageType);
+            UpdateObservers(messageType, this);
         }
 
-        public String getLatestMessage(ClientType messageType) { 
-            switch(messageType)
-            { 
-                case ClientType.CLIENT:
+        public String getLatestMessage(CommunicationType messageType)
+        {
+            switch (messageType)
+            {
+                case CommunicationType.PATIENT:
                     if (doctorMessages.Count > 0)
                         return clientMessages[^1];
                     return "this list is empty";
-                case ClientType.DOCTOR:
+                case CommunicationType.DOCTOR:
                     if (clientMessages.Count > 0)
                         return doctorMessages[^1];
                     return "this list is empty";
                 default:
                     throw new Exception("this messageType is not supported");
-                            
-            
+
+
             }
+
         }
     }
-
-
-    public enum ClientType
-    {
-        CLIENT,
-        DOCTOR
-    }
-
 }
+

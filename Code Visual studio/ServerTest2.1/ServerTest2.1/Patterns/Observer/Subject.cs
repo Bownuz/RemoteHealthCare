@@ -1,33 +1,38 @@
-﻿using Server.DataStorage;
+using Server.DataStorage;
+using Server.ThreadHandlers;
+using System;
+using System.Collections.Generic;
 
 namespace Server.Patterns.Observer
 {
-    public class Subject
-    {
-        public readonly List<Observer> Observers;
+	public class Subject
+	{
+		public readonly List<Observer> observers;
 
         public Subject()
         {
-            Observers = new List<Observer>();
+            this.observers = new List<Observer>();
         }
 
-        public void AddObserver(Observer newObserver)
-        {
-            Observers.Add(newObserver);
+        public void AddObserver(Observer observerToAdd)
+		{
+            observers.Add(observerToAdd);
         }
 
-        public void RemoveObserver(Observer newObserver)
-        {
-            Observers.Remove(newObserver);
-        }
+		public void RemoveObserver(Observer observerToRemove)
+		{
+			observers.Remove(observerToRemove);
+		}
 
-        public void UpdateAll(ClientType clientType)
-        {
-            foreach (Observer observer in Observers)
+		public void UpdateObservers(CommunicationType communicationOrigin, Session session)
+		{
+            foreach (Observer observer in observers)
             {
-                observer.Update(clientType);
+                observer.Update(communicationOrigin, session);
             }
         }
-    }
+
+	}
 
 }
+
