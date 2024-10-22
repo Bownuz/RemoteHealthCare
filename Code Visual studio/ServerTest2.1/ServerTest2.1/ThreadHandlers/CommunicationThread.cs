@@ -1,4 +1,4 @@
-﻿using Server.DataStorage;
+using Server.DataStorage;
 using Server.Patterns.Observer;
 using System.Net.Sockets;
 
@@ -14,12 +14,6 @@ namespace Server.ThreadHandlers
         protected ClientType clientType;
 
         public abstract void HandleThread();
-
-        public void Update(ClientType messageType)
-        {
-            if (messageType.Equals(clientType) && Person.currentSession.getLatestMessage(clientType) != null)
-            MessageCommunication.SendMessage(tcpClient, Person.currentSession.getLatestMessage(messageType));
-        }
-
+        public abstract void Update(ClientType messageType);
     }
 }

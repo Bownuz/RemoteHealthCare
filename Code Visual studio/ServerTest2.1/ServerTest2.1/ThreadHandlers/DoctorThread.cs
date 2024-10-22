@@ -1,5 +1,6 @@
-﻿using System.Net.Sockets;
+using System.Net.Sockets;
 using Server.DataStorage;
+using Server.Patterns.Observer;
 
 
 namespace Server.ThreadHandlers
@@ -14,7 +15,10 @@ namespace Server.ThreadHandlers
         public override void HandleThread()
         {
             protocol = new DataProtocol.DataProtocol(clientType, this);
-            AddObserver(fileStorage);
+            if (!Person.currentSession.Observers.Contains(fileStorage))
+            {
+                Person.currentSession.AddObserver(fileStorage);
+            }
 
             while (true)
             {
@@ -24,7 +28,6 @@ namespace Server.ThreadHandlers
                     if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
                     {
                         protocol.processMessage(recievedMessage);
-                        UpdateAll();
                     }
                 }
             }

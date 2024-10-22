@@ -42,6 +42,11 @@ namespace Server.Patterns.State.Client
                     );
             connectedPerson.addSession(connectedPerson.currentSession);
             connectedPerson.currentSession.AddObserver(thread);
+            if (!connectedPerson.currentSession.Observers.Contains(storageFromThread))
+            {
+                connectedPerson.currentSession.AddObserver(storageFromThread);
+            }
+
 
             protocol.changeState(new RecievingData(protocol, thread));
             return "Ready to recieve data";
