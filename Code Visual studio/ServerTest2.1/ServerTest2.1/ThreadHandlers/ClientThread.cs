@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using Server.DataStorage;
+using Server.Patterns.Observer;
 
 namespace Server.ThreadHandlers
 {
@@ -13,19 +14,31 @@ namespace Server.ThreadHandlers
         public override void HandleThread()
         {
             protocol = new DataProtocol.DataProtocol(clientType, this);
-            AddObserver(fileStorage);
 
-            while (true)
+            MessageCommunication.SendMessage(tcpClient, protocol.processMessage(""));
+            while (tcpClient.Connected)
             {
-                if (tcpClient.Connected)
+                string recievedMessage;
+                String response;
+                if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
                 {
-                    string recievedMessage;
-                    if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
-                    {
-                        protocol.processMessage(recievedMessage);
-                        UpdateAll();
+                    response = protocol.processMessage(recievedMessage);
+                    MessageCommunication.SendMessage(tcpClient, response);
+
+                    if (response.Equals("Goodbye")) { 
+                        tcpClient.Close();
                     }
                 }
+                
+            }  
+
+        }
+
+        public override void Update(ClientType messageType)
+        {
+            if (clientType == ClientType.DOCTOR)
+            {
+                Console.WriteLine("{0}", Person.currentSession.getLatestMessage(messageType));
             }
         }
     }

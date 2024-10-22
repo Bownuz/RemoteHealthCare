@@ -1,6 +1,8 @@
+using Server.Patterns.Observer;
+
 namespace Server.DataStorage
 {
-    class Session
+    class Session : Subject
     {
         DateTime sessionStart { get; }
         DateTime sessionEnd { get; }
@@ -31,15 +33,21 @@ namespace Server.DataStorage
                 default:
                     throw new Exception("this messageType is not supported");
             }
+
+            UpdateAll(messageType);
         }
 
         public String getLatestMessage(ClientType messageType) { 
             switch(messageType)
             { 
                 case ClientType.CLIENT:
-                    return doctorMessages[^1];
+                    if (doctorMessages.Count > 0)
+                        return clientMessages[^1];
+                    return "this list is empty";
                 case ClientType.DOCTOR:
-                    return clientMessages[^1];
+                    if (clientMessages.Count > 0)
+                        return doctorMessages[^1];
+                    return "this list is empty";
                 default:
                     throw new Exception("this messageType is not supported");
                             
@@ -48,9 +56,11 @@ namespace Server.DataStorage
         }
     }
 
-    internal enum ClientType
+
+    public enum ClientType
     {
         CLIENT,
         DOCTOR
     }
+
 }

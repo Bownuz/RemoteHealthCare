@@ -11,11 +11,6 @@ namespace Server.ConnectionService
         {
             //server
             List<Thread> threads = new List<Thread>();
-            TcpListener clientListener = new TcpListener(IPAddress.Any, 4789);
-            TcpListener doctorListener = new TcpListener(IPAddress.Any, 4790);
-            clientListener.Start();
-            doctorListener.Start();
-
             TcpListener Clientlistener = new TcpListener(IPAddress.Any, 4789);
             TcpListener DoctorListener = new TcpListener(IPAddress.Any, 4790);
             Clientlistener.Start();
@@ -23,10 +18,10 @@ namespace Server.ConnectionService
 
             FileStorage fileStorage = new FileStorage();
 
+            Console.WriteLine("Starting up server and waiting for connections.....");
+
             while (true)
             {
-                Console.WriteLine("Starting up server and waiting for connections.....");
-
                 if (Clientlistener.Pending())
                 {
                     TcpClient client = Clientlistener.AcceptTcpClient();
@@ -34,7 +29,6 @@ namespace Server.ConnectionService
                     threads.Add(clientThread);
                     clientThread.Start();
                 }
-
                 if (DoctorListener.Pending())
                 {
                     TcpClient doctor = DoctorListener.AcceptTcpClient();

@@ -1,32 +1,35 @@
 using Server.DataProtocol.doctor;
 using Server.DataStorage;
 using Server.Patterns.State;
-using Server.Patterns.State.Client;
 using Server.ThreadHandlers;
+using Server.Patterns.State.Client;
 
 namespace Server.DataProtocol
 {
     internal class DataProtocol
     {
-        State State;
+        private State State;
+        private CommunicationThread communicationThread;
 
         public DataProtocol(ClientType clientType, CommunicationThread communicationThread)
         {
+            this.communicationThread = communicationThread;
+
             switch (clientType)
             {
                 case ClientType.CLIENT:
-                    this.State = new WelcomeClient(this);
+                    this.State = new WelcomeClient(this, communicationThread);
                     break;
                 case ClientType.DOCTOR:
-                    this.State = new WelcomeDoctor(this);
+                    this.State = new WelcomeDoctor(this, communicationThread);
                     break;
 
             }
         }
 
-        internal void processMessage(String incommingMessage)
+        internal String processMessage(String incommingMessage)
         {
-            State.CheckInput(incommingMessage);
+            return State.CheckInput(incommingMessage);
         }
 
         public void changeState(State newState)

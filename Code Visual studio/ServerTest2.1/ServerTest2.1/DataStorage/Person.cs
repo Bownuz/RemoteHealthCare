@@ -3,13 +3,18 @@
     class Person
     {
         public readonly string Name;
-        List<Session> sessions;
+        public readonly List<Session> sessions;
         public Session currentSession { get; set; }
 
 
         public Person(string name)
         {
             Name = name;
+            sessions = new List<Session>();
+        }
+
+        public void addSession(Session sessionToAdd) { 
+            sessions.Add(sessionToAdd);
         }
     }
 }

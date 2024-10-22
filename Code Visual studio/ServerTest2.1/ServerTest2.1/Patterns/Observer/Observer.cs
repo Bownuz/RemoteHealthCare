@@ -1,7 +1,9 @@
-﻿namespace Server.Patterns.Observer
+﻿using Server.DataStorage;
+
+namespace Server.Patterns.Observer
 {
     public interface Observer
     {
-        void Update();
+        void Update(ClientType messageType);
     }
 }
