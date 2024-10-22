@@ -1,4 +1,4 @@
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using Server.DataStorage;
 using Server.Patterns.Observer;
 
@@ -30,6 +30,15 @@ namespace Server.ThreadHandlers
                     }
                 }
                 
+            }  
+
+        }
+
+        public override void Update(ClientType messageType)
+        {
+            if (clientType == ClientType.DOCTOR)
+            {
+                Console.WriteLine("{0}", Person.currentSession.getLatestMessage(messageType));
             }
         }
     }
