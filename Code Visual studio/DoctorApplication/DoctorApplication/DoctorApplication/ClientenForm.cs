@@ -67,16 +67,48 @@ namespace DoctorApplication {
             }
         }
 
-        private void ViewPreviousDataButton_Click(object sender, EventArgs e) {
+        private async void ViewPreviousDataButton_Click(object sender, EventArgs e) {
             foreach(string client in GetSelectedClients()) {
-                doctorState.ViewTrainingDataForClient(client);
+                List<TrainingData> clientTrainingData = await FetchTrainingDataForClient(client);
 
-                // Open het TrainingDataForm en geef de SSLStream mee voor verdere communicatie
-                TrainingDataForm dataForm = new TrainingDataForm(sslStream);
+                TrainingDataForm dataForm = new TrainingDataForm(clientTrainingData, sslStream);
                 dataForm.Show();
                 this.Hide();
             }
         }
+        private async Task<List<TrainingData>> FetchTrainingDataForClient(string client) {
+            try { 
+                var command = new {
+                    Action = "FetchTrainingData",
+                    TargetClient = client
+                };
+
+                string jsonCommand = System.Text.Json.JsonSerializer.Serialize(command);
+                using(var writer = new StreamWriter(sslStream) { AutoFlush = true }) {
+                    await writer.WriteLineAsync(jsonCommand);
+                }
+
+                
+                using(var reader = new StreamReader(sslStream)) {
+                    string response = await reader.ReadLineAsync();
+
+                    if(!string.IsNullOrEmpty(response)) {
+                        
+                        return System.Text.Json.JsonSerializer.Deserialize<List<TrainingData>>(response);
+                    }
+                    else {
+                        MessageBox.Show($"Geen trainingsdata gevonden voor {client}.");
+                        return new List<TrainingData>(); 
+                    }
+                }
+            }
+            catch(Exception ex) {
+                MessageBox.Show($"Fout bij het ophalen van trainingsdata: {ex.Message}");
+                return new List<TrainingData>(); 
+            }
+        }
+
+
 
         private void AdjustResistanceButton_Click(object sender, EventArgs e) {
             string resistanceValue = ResistanceTextBox.Text;
@@ -120,6 +152,10 @@ namespace DoctorApplication {
                 clientData.HeartRate,
                 clientData.Speed
             );
+        }
+
+        public void UpdateStatus(string statusMessage) {
+            MessageBox.Show(statusMessage);
         }
 
         private void ClientenGridView_CellContentClick(object sender, DataGridViewCellEventArgs e) {

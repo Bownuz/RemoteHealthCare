@@ -10,12 +10,9 @@ namespace DoctorApplication {
     public partial class Form1 : Form {
         private SslStream sslStream;
         private TcpClient doctorClient;
-        private DoctorState doctorState;
-        private DoctorStateEnum currentState;
 
         public Form1() {
             InitializeComponent();
-            currentState = DoctorStateEnum.Connecting;  // Start in de Connecting state
         }
 
         private async void LoginButton_Click(object sender, EventArgs e) {
@@ -33,20 +30,18 @@ namespace DoctorApplication {
                 return;
             }
 
-            currentState = DoctorStateEnum.Login; // Update naar login state
             await LoginDoctor(doctorId, username, password);
         }
 
         private async Task LoginDoctor(int doctorId, string username, string password) {
             try {
-                // Open een TCP-verbinding met de server
                 doctorClient = new TcpClient("localhost", 4790);
                 sslStream = new SslStream(doctorClient.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
                 await sslStream.AuthenticateAsClientAsync("localhost");
 
-                // Verzenden van login data
+                
                 var loginData = new {
-                    DoctorID = doctorId,  // Ingevoerd DoctorID
+                    DoctorID = doctorId,
                     DoctorName = username,
                     DoctorPassword = password
                 };
@@ -57,12 +52,10 @@ namespace DoctorApplication {
                     string response = await reader.ReadLineAsync();
                     if(response.Contains("Login Successful")) {
                         MessageBox.Show("Inlog succesvol.");
-                        currentState = DoctorStateEnum.CommandType;
-                        InitializeDoctorState(); // Initializeer DoctorState na succesvolle login
+                        OpenClientenForm(); 
                     }
                     else {
                         MessageBox.Show("Ongeldige inloggegevens.");
-                        currentState = DoctorStateEnum.Login;  // Blijf in de login state bij fout
                     }
                 }
             }
@@ -71,38 +64,6 @@ namespace DoctorApplication {
             }
         }
 
-        private void InitializeDoctorState() {
-            // Initialiseer de DoctorState-klasse met de huidige form en serverconnection
-            doctorState = new DoctorState(this, new ServerConnection(sslStream));
-            doctorState.EnterCommandTypeState();
-        }
-
-        public string GetUserInput() {
-            // Haal de invoer van de dokter op (bijv. RetrieveData, SendData, etc.)
-            return UserInputTextBox.Text;
-        }
-
-        public string GetPatientName() {
-            // Haal de patiëntnaam op
-            return PatientNameTextBox.Text;
-        }
-
-        public DateTime GetSessionDate() {
-            // Haal de sessiedatum op
-            return SessionDatePicker.Value;
-        }
-
-        public string GetMessage() {
-            // Haal het bericht op dat naar de patiënt moet worden verzonden
-            return MessageTextBox.Text;
-        }
-
-        public void UpdateStatus(string statusMessage) {
-            // Update het statusveld op het scherm
-            StatusLabel.Text = statusMessage;
-        }
-
-        // Verzendt een commando naar de server
         private void SendCommandToServer(object command) {
             try {
                 string jsonCommand = System.Text.Json.JsonSerializer.Serialize(command);
@@ -115,8 +76,14 @@ namespace DoctorApplication {
             }
         }
 
-        public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
-            // TODO: Implement proper certificate validation
+        private void OpenClientenForm() {
+            
+            ClientenForm clientenForm = new ClientenForm(sslStream);
+            clientenForm.Show();
+            this.Hide(); 
+        }
+
+        public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {        
             return true;
         }
 

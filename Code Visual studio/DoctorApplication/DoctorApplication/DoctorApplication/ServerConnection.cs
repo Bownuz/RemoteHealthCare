@@ -17,6 +17,10 @@ public class ServerConnection {
 
     public event Action<ClientData> OnDataReceived;
 
+    public ServerConnection(SslStream stream) {
+        this.sslStream = stream;
+    }
+
     public async Task ConnectToServer(string serverAddress, int port) {
         try {
             client = new TcpClient(serverAddress, port);
@@ -93,19 +97,25 @@ public class ServerConnection {
         });
     }
 
-    public List<TrainingData> GetTrainingDataForClient(string clientName) {
-        SendCommandToServer(new {
-            Action = "GetTrainingData",
-            TargetClient = clientName
-        });
+    public async Task<List<TrainingData>> GetTrainingDataForClientAsync(string clientName) {
+        try {
+            SendCommandToServer(new {
+                Action = "GetTrainingData",
+                TargetClient = clientName
+            });
 
-        // simulated data
-        return new List<TrainingData>
-        {
-            new TrainingData { TimeStamp = DateTime.Now.AddMinutes(-5), Value = 25 },
-            new TrainingData { TimeStamp = DateTime.Now.AddMinutes(-3), Value = 30 },
-            new TrainingData { TimeStamp = DateTime.Now, Value = 28 }
-        };
+            string response = await reader.ReadLineAsync();
+            if(!string.IsNullOrEmpty(response)) {
+                return JsonSerializer.Deserialize<List<TrainingData>>(response);
+            }
+            else {
+                Console.WriteLine($"Geen trainingsdata ontvangen voor {clientName}");
+                return new List<TrainingData>();
+            }
+        }
+        catch(Exception ex) {
+            throw new Exception($"Fout bij het ophalen van trainingsdata voor {clientName}: " + ex.Message, ex);
+        }
     }
 
     public void SendCommandToServer(object command) {
@@ -119,12 +129,6 @@ public class ServerConnection {
     }
 
     private static bool ValidateServerCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors) {
-        // TODO: Implement proper certificate validation
         return true;
     }
-}
-
-public class TrainingData {
-    public DateTime TimeStamp { get; set; }
-    public double Value { get; set; }
 }
