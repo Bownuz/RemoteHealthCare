@@ -41,9 +41,13 @@ namespace Server.DataStorage
             switch(messageType)
             { 
                 case ClientType.CLIENT:
-                    return doctorMessages[^1];
+                    if (doctorMessages.Count > 0)
+                        return clientMessages[^1];
+                    return "this list is empty";
                 case ClientType.DOCTOR:
-                    return clientMessages[^1];
+                    if (clientMessages.Count > 0)
+                        return doctorMessages[^1];
+                    return "this list is empty";
                 default:
                     throw new Exception("this messageType is not supported");
                             
@@ -51,4 +55,12 @@ namespace Server.DataStorage
             }
         }
     }
+
+
+    public enum ClientType
+    {
+        CLIENT,
+        DOCTOR
+    }
+
 }

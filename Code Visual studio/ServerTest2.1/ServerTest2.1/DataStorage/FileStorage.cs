@@ -2,7 +2,7 @@
 
 namespace Server.DataStorage
 {
-    internal class FileStorage
+    internal class FileStorage : Observer
     {
         Dictionary<String, Person> patients;
 
