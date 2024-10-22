@@ -4,35 +4,30 @@ namespace Server.Patterns.Observer
 {
     public class Subject
     {
-        private List<Observer> observers;
+        public readonly List<Observer> Observers;
 
         public Subject()
         {
-            observers = new List<Observer>();
+            Observers = new List<Observer>();
         }
 
         public void AddObserver(Observer newObserver)
         {
-            observers.Add(newObserver);
+            Observers.Add(newObserver);
         }
 
         public void RemoveObserver(Observer newObserver)
         {
-            observers.Remove(newObserver);
+            Observers.Remove(newObserver);
         }
 
         public void UpdateAll(ClientType clientType)
         {
-            foreach (Observer observer in observers)
+            foreach (Observer observer in Observers)
             {
                 observer.Update(clientType);
             }
         }
     }
 
-    public enum ClientType
-    {
-        CLIENT,
-        DOCTOR
-    }
 }
