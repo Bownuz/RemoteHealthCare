@@ -1,19 +1,19 @@
-﻿using Server.DataProtocol;
-using Server.ThreadHandlers;
+using System;
 
 namespace Server.Patterns.State
 {
-    internal abstract class State
-    {
-        protected DataProtocol.DataProtocol protocol;
-        protected CommunicationThread thread;
+	public abstract class State
+	{
+		protected DataProtocol protocol;
 
-        public State(DataProtocol.DataProtocol protocol, CommunicationThread thread)
+        protected State(DataProtocol protocol)
         {
             this.protocol = protocol;
-            this.thread = thread;
         }
 
         public abstract String CheckInput(String input);
-    }
+
+	}
+
 }
+

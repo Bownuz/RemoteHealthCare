@@ -1,12 +1,15 @@
 using Server.DataStorage;
 using Server.ThreadHandlers;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
-namespace Server.ConnectionService
+namespace Server
 {
-    class ConnectionService
-    {
+	public class ConnectionService
+	{
         static void Main(string[] args)
         {
             //server
@@ -39,15 +42,19 @@ namespace Server.ConnectionService
             }
         }
 
-        static void HandleClient(TcpClient client, FileStorage fileStorage) {
-            ClientThread clientThread = new ClientThread(fileStorage,client);
+        static void HandleClient(TcpClient client, FileStorage fileStorage)
+        {
+            PatientHandler clientThread = new PatientHandler(fileStorage, client);
             clientThread.HandleThread();
         }
 
-        static void HandleDoctor(TcpClient doctor, FileStorage fileStorage) {
-            DoctorThread doctorThread = new DoctorThread(fileStorage, doctor);
+        static void HandleDoctor(TcpClient doctor, FileStorage fileStorage)
+        {
+            DoctorHandler doctorThread = new DoctorHandler(fileStorage, doctor);
             doctorThread.HandleThread();
         }
 
+
     }
 }
+

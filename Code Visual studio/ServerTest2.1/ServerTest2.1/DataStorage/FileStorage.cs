@@ -1,22 +1,24 @@
-﻿using Server.Patterns.Observer;
+using Server.Patterns.Observer;
+using Server.ThreadHandlers;
+
 
 namespace Server.DataStorage
 {
-    internal class FileStorage : Observer
-    {
-        Dictionary<String, Person> patients;
+	public class FileStorage : Observer
+	{
+		private readonly Dictionary<String, Patient> patients;
+
+		private readonly Dictionary<int, Doctor> doctors;
 
         public FileStorage()
         {
-            patients = new Dictionary<string, Person>();
+            patients = new Dictionary<string, Patient>();
+			doctors = new Dictionary<int, Doctor>();
             LoadFromFile();
         }
 
-
-
-        //TODO: add saving functionality
         public void SaveToFile()
-        {
+		{
             Console.WriteLine("I should Save now!!");
             foreach (var patient in patients)
             {
@@ -24,30 +26,41 @@ namespace Server.DataStorage
             }
         }
 
-        //TODO: add loading functionality  
-        public void LoadFromFile()
-        {
+		public void LoadFromFile()
+		{
             Console.WriteLine("I should load now");
         }
 
-        public Person GetPatient(String name)
-        {
-            return patients[name];
+		public Patient GetPatient(String patientName)
+		{
+            return patients[patientName];
         }
 
-        public Boolean PatientExists(String name)
-        {
-            return patients.ContainsKey(name);
+		public void AddPatient(String patientName)
+		{
+            patients[patientName] = new Patient(patientName);
         }
 
-        public void AddPatient(String name)
-        {
-            patients[name] = new Person(name);
+		public Boolean PatientExists(String patientName)
+		{
+            return patients.ContainsKey(patientName);
         }
 
-        public void Update(ClientType clientType)
+		public Doctor getDoctor(int doctorId)
+		{
+            return doctors[doctorId];
+		}
+
+		public void addDoctor(int doctorId, String DoctorName, String DoctorPassword)
+		{
+            doctors[doctorId] = new Doctor(doctorId,DoctorName,DoctorPassword);
+        }
+
+        public void Update(CommunicationType communicationOrigin, Session session)
         {
             SaveToFile();
         }
     }
+
 }
+
