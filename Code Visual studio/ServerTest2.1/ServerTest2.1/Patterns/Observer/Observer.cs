@@ -2,6 +2,6 @@
 {
     public interface Observer
     {
-        void Update();
+        void Update(ClientType messageType);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Server.DataStorage;
+using Server.Patterns.Observer;
 using Server.ThreadHandlers;
 using System.Text.Json;
 
@@ -40,7 +41,7 @@ namespace Server.Patterns.State.Client
                     dataFromMessage.ConnectedHeartRateMonitor
                     );
             connectedPerson.addSession(connectedPerson.currentSession);
-            thread.UpdateAll();
+            connectedPerson.currentSession.AddObserver(thread);
 
             protocol.changeState(new RecievingData(protocol, thread));
             return "Ready to recieve data";
@@ -58,7 +59,6 @@ namespace Server.Patterns.State.Client
 
             //TODO: add regex to ensure correct formatting before saving message
             thread.Person.currentSession.addMessage(input, ClientType.CLIENT);
-            thread.UpdateAll();
             return "Ready to recieve data";
         }
     }

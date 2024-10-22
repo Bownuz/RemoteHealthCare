@@ -1,6 +1,8 @@
+using Server.Patterns.Observer;
+
 namespace Server.DataStorage
 {
-    class Session
+    class Session : Subject
     {
         DateTime sessionStart { get; }
         DateTime sessionEnd { get; }
@@ -31,6 +33,8 @@ namespace Server.DataStorage
                 default:
                     throw new Exception("this messageType is not supported");
             }
+
+            UpdateAll(messageType);
         }
 
         public String getLatestMessage(ClientType messageType) { 
@@ -46,11 +50,5 @@ namespace Server.DataStorage
             
             }
         }
-    }
-
-    internal enum ClientType
-    {
-        CLIENT,
-        DOCTOR
     }
 }

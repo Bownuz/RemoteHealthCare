@@ -1,4 +1,6 @@
-﻿namespace Server.Patterns.Observer
+﻿using Server.DataStorage;
+
+namespace Server.Patterns.Observer
 {
     public class Subject
     {
@@ -19,14 +21,18 @@
             observers.Remove(newObserver);
         }
 
-        public void UpdateAll()
+        public void UpdateAll(ClientType clientType)
         {
             foreach (Observer observer in observers)
             {
-                observer.Update();
+                observer.Update(clientType);
             }
         }
+    }
 
-
+    public enum ClientType
+    {
+        CLIENT,
+        DOCTOR
     }
 }

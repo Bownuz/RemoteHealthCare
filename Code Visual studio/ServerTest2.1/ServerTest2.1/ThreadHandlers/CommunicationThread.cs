@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Server.ThreadHandlers
 {
-    internal abstract class CommunicationThread(FileStorage fileStorage, TcpClient tcpClient) : Subject, Observer
+    internal abstract class CommunicationThread(FileStorage fileStorage, TcpClient tcpClient) : Observer
     {
         
         public FileStorage fileStorage = fileStorage;
@@ -15,9 +15,10 @@ namespace Server.ThreadHandlers
 
         public abstract void HandleThread();
 
-        public void Update()
+        public void Update(ClientType messageType)
         {
-            MessageCommunication.SendMessage(tcpClient, Person.currentSession.getLatestMessage(clientType));
+            if (messageType.Equals(clientType) && Person.currentSession.getLatestMessage(clientType) != null)
+            MessageCommunication.SendMessage(tcpClient, Person.currentSession.getLatestMessage(messageType));
         }
 
     }

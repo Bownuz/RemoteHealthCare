@@ -2,7 +2,7 @@
 
 namespace Server.DataStorage
 {
-    internal class FileStorage : Observer
+    internal class FileStorage
     {
         Dictionary<String, Person> patients;
 
@@ -45,7 +45,7 @@ namespace Server.DataStorage
             patients[name] = new Person(name);
         }
 
-        public void Update()
+        public void Update(ClientType clientType)
         {
             SaveToFile();
         }
