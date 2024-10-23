@@ -93,6 +93,8 @@
     <Compile Include="GuiScreen\CLientInfoScreen.Designer.cs">
       <DependentUpon>CLientInfoScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Vr\VrConnection.cs" />
+    <Compile Include="Vr\VrScene.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -118,6 +120,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Vr\json_files\route_add.json" />
+    <None Include="Vr\json_files\scene_get.json" />
+    <None Include="Vr\json_files\scene_node_add.json" />
+    <None Include="Vr\json_files\scene_reset.json" />
+    <None Include="Vr\json_files\scene_terrain_add.json" />
+    <None Include="Vr\json_files\session_list.json" />
+    <None Include="Vr\json_files\test.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
