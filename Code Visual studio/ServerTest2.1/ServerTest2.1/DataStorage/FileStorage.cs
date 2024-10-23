@@ -9,12 +9,17 @@ namespace Server.DataStorage
     {
         public readonly Dictionary<String, Patient> Patients;
 
-        public readonly Dictionary<int, Doctor> doctors;
+        public Dictionary<String, Doctor> doctors { get; private set; }
 
         public FileStorage()
         {
             Patients = new Dictionary<string, Patient>();
-            doctors = new Dictionary<int, Doctor>();
+            doctors = new Dictionary<String, Doctor>();
+            Doctor doctor1 = new Doctor("1234", "Frido", "AvansDokter");
+            Doctor doctor2 = new Doctor("4321", "Johan", "UnicornLover");
+            Doctor doctor3 = new Doctor("0000", "Joli", "Tennissen2018");
+            doctors.Add(doctor1.DoctorID, doctor1);
+
             LoadFromFile();
         }
 
@@ -31,11 +36,11 @@ namespace Server.DataStorage
                     File.Delete(path + "/" + patient.Key + ".txt");
                 }
                 
-                using (StreamWriter sw = File.CreateText((path + "/" + patient.Key + ".txt")))
-                {
-                    String patientString = JsonSerializer.Serialize<Patient>(patient.Value);
-                    sw.WriteLine(patientString);
-                }
+                //using (StreamWriter sw = File.CreateText((path + "/" + patient.Key + ".txt")))
+                //{
+                //    String patientString = JsonSerializer.Serialize<Patient>(patient.Value);
+                //    sw.WriteLine(patientString);
+                //}
                 
             }
         }
@@ -71,12 +76,16 @@ namespace Server.DataStorage
             return nameArray;
         }
 
-        public Doctor getDoctor(int doctorId)
+        public Doctor getDoctor(String doctorId)
         {
             return doctors[doctorId];
         }
 
-        public void addDoctor(int doctorId, String DoctorName, String DoctorPassword)
+        public Boolean DoctorExists(String DoctorId) { 
+            return doctors.ContainsKey(DoctorId);
+        }
+
+        public void addDoctor(String doctorId, String DoctorName, String DoctorPassword)
         {
             doctors[doctorId] = new Doctor(doctorId, DoctorName, DoctorPassword);
         }

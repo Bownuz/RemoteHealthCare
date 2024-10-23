@@ -7,7 +7,7 @@ namespace Server.ThreadHandlers
 {
 	public abstract class CommunicationHandler(FileStorage fileStorage, TcpClient tcpClient) : Observer
     {
-		protected TcpClient tcpClient = tcpClient;
+		public readonly TcpClient tcpClient = tcpClient;
 
 		public readonly FileStorage fileStorage = fileStorage;
 

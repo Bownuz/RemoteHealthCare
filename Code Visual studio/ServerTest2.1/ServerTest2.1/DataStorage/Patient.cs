@@ -13,6 +13,16 @@ namespace Server.DataStorage
         {
             sessions.Add(sessionToAdd);
         }
+
+        public Session GetSession(DateTime beginDate) {
+            foreach (Session session in sessions)
+            {
+                if (session.sessionStart.Date.Equals(beginDate.Date)) {
+                    return session;
+                }
+            }
+            throw new Exception("This session was not found");
+        }
     }
 
 }

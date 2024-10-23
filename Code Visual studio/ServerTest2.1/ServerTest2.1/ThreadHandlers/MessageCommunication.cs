@@ -80,5 +80,15 @@ namespace Server.ThreadHandlers
         }
     }
 
+    public struct DoctorFetchData {
+        public String PatientName { get; set; }
+        public DateTime SessionDate { get; set; }
+
+        public DoctorFetchData(string patientName, DateTime sessionDate)
+        {
+            PatientName = patientName;
+            SessionDate = sessionDate;
+        }
+    }
 }
 

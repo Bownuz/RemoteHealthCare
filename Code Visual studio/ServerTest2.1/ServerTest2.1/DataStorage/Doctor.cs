@@ -4,17 +4,16 @@ namespace Server.DataStorage
 {
 	public class Doctor
 	{
-		private int DoctorID;
+		public String DoctorID { get; set; }
+		public String DoctorName {  get; set; }
 
-		private String Name;
+		public String DoctorPassword {  get; set; }
 
-		private String Password;
-
-        public Doctor(int doctorID, string name, string password)
+        public Doctor(String DoctorID, string DoctorName, string DoctorPassword)
         {
-            DoctorID = doctorID;
-            Name = name;
-            Password = password;
+            this.DoctorID = DoctorID;
+            this.DoctorName = DoctorName;
+            this.DoctorPassword = DoctorPassword;
         }
     }
 

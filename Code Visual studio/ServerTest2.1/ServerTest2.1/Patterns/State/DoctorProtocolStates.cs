@@ -1,6 +1,8 @@
-﻿using Server.ThreadHandlers;
+﻿using Server.DataStorage;
+using Server.ThreadHandlers;
 using System;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Server.Patterns.State.DoctorStates
 {
@@ -22,8 +24,21 @@ namespace Server.Patterns.State.DoctorStates
                 return "Goodbye";
             }
 
-            protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            return "This Login State Should Still be Added";
+            if (jsonRegex.IsMatch(input))
+            {
+                Doctor doctor = JsonSerializer.Deserialize<Doctor>(input);
+
+                if (doctorHandler.fileStorage.DoctorExists(doctor.DoctorID) &&
+                    doctorHandler.fileStorage.getDoctor(doctor.DoctorID).DoctorPassword.Equals(doctor.DoctorPassword) &&
+                    doctorHandler.fileStorage.getDoctor(doctor.DoctorID).DoctorName.Equals(doctor.DoctorName)
+                    ) {
+                    doctorHandler.connectedDoctor = doctorHandler.fileStorage.getDoctor(doctor.DoctorID);
+                    protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+                    return "This Login State Should Still be Added";
+                }
+        
+            }
+            return "Incorrect Login";
         }
     }
 
@@ -61,8 +76,8 @@ namespace Server.Patterns.State.DoctorStates
                     return "What data should be sent?";
 
                 default:
-                    return "this Command is not Valid \n" +
-                        "Ready to recieve Command";
+                    MessageCommunication.SendMessage(doctorHandler.tcpClient , "this Command is not Valid.");
+                    return $"ready to recieve Command";
             }
         }
     }
@@ -76,7 +91,16 @@ namespace Server.Patterns.State.DoctorStates
             {
                 return "Goodbye";
             }
-            throw new System.NotImplementedException();
+
+            if (jsonRegex.IsMatch(input)){
+            DoctorFetchData dataToFetch = JsonSerializer.Deserialize<DoctorFetchData>(input);
+            Session sessionToSend = doctorHandler.fileStorage.GetPatient(dataToFetch.PatientName).GetSession(dataToFetch.SessionDate);
+
+            protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+            MessageCommunication.SendMessage(doctorHandler.tcpClient, JsonSerializer.Serialize<Session>(sessionToSend));
+                return "Ready to recieve Command";
+            }
+            return "add failed message";
         }
     }
     public class D_Subscribing(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler)
@@ -94,8 +118,8 @@ namespace Server.Patterns.State.DoctorStates
                 return "Ready to recieve Command";
             }
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            return $"Failed to add : {input} : this patient does not exist or this Client was Subscribed to this patient\n" +
-                $"Ready to recieve Command";
+            MessageCommunication.SendMessage(doctorHandler.tcpClient, $"Failed to add : {input} : this patient does not exist or this Client was Subscribed to this patient");
+            return $"Ready to recieve Command";
         }
     }
 
@@ -115,8 +139,8 @@ namespace Server.Patterns.State.DoctorStates
                 return "Ready to recieve Command";
             }
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            return $"Failed to Remove : {input} : this patient does not exist or This Client was not subscribed to this patient \n" +
-                $"Ready to recieve Command";
+            MessageCommunication.SendMessage(doctorHandler.tcpClient, $"Failed to Remove : {input} : this patient does not exist or This Client was not subscribed to this patient");
+            return $"Ready to recieve Command";
 
         }
     }
@@ -130,17 +154,20 @@ namespace Server.Patterns.State.DoctorStates
                 return "Goodbye";
             }
 
-            //TODO: add Regex to find wether or not message Confines to Json Format
-            DoctorDataMessage message = JsonSerializer.Deserialize<DoctorDataMessage>(input);
             
-            if (doctorHandler.fileStorage.PatientExists(message.PatientName))
-            {
-                doctorHandler.fileStorage.GetPatient(message.PatientName).currentSession.addMessage(input, CommunicationType.DOCTOR);
-                protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+            if (jsonRegex.IsMatch(input)){
+                DoctorDataMessage message = JsonSerializer.Deserialize<DoctorDataMessage>(input);
+            
+                if (doctorHandler.fileStorage.PatientExists(message.PatientName))
+                {
+                    doctorHandler.fileStorage.GetPatient(message.PatientName).currentSession.addMessage(input, CommunicationType.DOCTOR);
+                    protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+                    return "Ready to recieve Command";
+                }
+                MessageCommunication.SendMessage(doctorHandler.tcpClient, "this patient does not exist");
                 return "Ready to recieve Command";
             }
-            return "this patient does not exist \n" +
-                "Ready to recieve Command";
+            return "add failed message";
         }
     }
 
