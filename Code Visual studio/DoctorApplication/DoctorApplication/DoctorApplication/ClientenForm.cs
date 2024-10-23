@@ -83,7 +83,7 @@ namespace DoctorApplication {
                     TargetClient = client
                 };
 
-                string jsonCommand = System.Text.Json.JsonSerializer.Serialize(command);
+                string jsonCommand = JsonSerializer.Serialize(command);
                 using(var writer = new StreamWriter(sslStream) { AutoFlush = true }) {
                     await writer.WriteLineAsync(jsonCommand);
                 }
@@ -94,7 +94,7 @@ namespace DoctorApplication {
 
                     if(!string.IsNullOrEmpty(response)) {
                         
-                        return System.Text.Json.JsonSerializer.Deserialize<List<TrainingData>>(response);
+                        return JsonSerializer.Deserialize<List<TrainingData>>(response);
                     }
                     else {
                         MessageBox.Show($"Geen trainingsdata gevonden voor {client}.");
