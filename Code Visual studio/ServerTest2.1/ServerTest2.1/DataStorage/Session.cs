@@ -1,17 +1,18 @@
 using Server.Patterns.Observer;
 using Server.ThreadHandlers;
+using System.Runtime.Intrinsics.Arm;
 
 
 namespace Server.DataStorage
 {
     public class Session : Subject
     {
-        DateTime sessionStart { get; }
-        DateTime sessionEnd { get; }
-        String ergometerName { get; }
-        String heartRateMonitorName { get; }
-        List<string> clientMessages { get; }
-        List<string> doctorMessages { get; }
+        public DateTime sessionStart { get; set;}
+        public DateTime sessionEnd { get; set; }
+        public String ergometerName { get; set; }
+        public String heartRateMonitorName { get; set; }
+        public List<string> clientMessages { get; set; }
+        public List<string> doctorMessages { get; set; }
 
         public Session(DateTime sessionStart, string ergometerName, string heartRateMonitorName)
         {
@@ -44,11 +45,11 @@ namespace Server.DataStorage
             switch (messageType)
             {
                 case CommunicationType.PATIENT:
-                    if (doctorMessages.Count > 0)
+                    if (clientMessages.Count > 0)
                         return clientMessages[^1];
                     return "this list is empty";
                 case CommunicationType.DOCTOR:
-                    if (clientMessages.Count > 0)
+                    if (doctorMessages.Count > 0)
                         return doctorMessages[^1];
                     return "this list is empty";
                 default:

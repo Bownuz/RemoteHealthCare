@@ -32,7 +32,7 @@ namespace Server.Patterns.State.PatientStates
             }
 
 
-            //TODO: add regex to ensure correct formatting
+            if (jsonRegex.IsMatch(input)){
             PatientInitialisationMessage dataFromMessage = JsonSerializer.Deserialize<PatientInitialisationMessage>(input);
             Patient connectedPerson;
             FileStorage storageFromThread = patientHandler.fileStorage;
@@ -59,7 +59,9 @@ namespace Server.Patterns.State.PatientStates
 
 
             protocol.ChangeState(new P_RecievingData(protocol, patientHandler));
-            return "Ready to recieve data";
+                return "Ready to recieve data";
+            }
+            return "add failed message";
         }
     
     }
@@ -77,9 +79,12 @@ namespace Server.Patterns.State.PatientStates
                 return "Goodbye";
             }
 
-            //TODO: add regex to ensure correct formatting before saving message
-            patientHandler.connectedPatient.currentSession.addMessage(input, CommunicationType.PATIENT);
-            return "Ready to recieve data";
+            if (jsonRegex.IsMatch(input))
+            {
+                patientHandler.connectedPatient.currentSession.addMessage(input, CommunicationType.PATIENT);
+                return "Ready to recieve data";
+            }
+            return "add failed message";
         }
     }
 }

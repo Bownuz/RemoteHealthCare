@@ -16,6 +16,7 @@ namespace Server.ThreadHandlers
         {
             if (communicationOrigin == CommunicationType.PATIENT)
             {
+                Console.WriteLine(session.getLatestMessage(communicationOrigin));
                 MessageCommunication.SendMessage(tcpClient, session.getLatestMessage(communicationOrigin));
             }
         }

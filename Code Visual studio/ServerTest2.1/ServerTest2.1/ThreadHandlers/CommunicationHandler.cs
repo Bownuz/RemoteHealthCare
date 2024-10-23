@@ -7,7 +7,7 @@ namespace Server.ThreadHandlers
 {
 	public abstract class CommunicationHandler(FileStorage fileStorage, TcpClient tcpClient) : Observer
     {
-		protected TcpClient tcpClient = tcpClient;
+		public readonly TcpClient tcpClient = tcpClient;
 
 		public readonly FileStorage fileStorage = fileStorage;
 
@@ -22,8 +22,13 @@ namespace Server.ThreadHandlers
             {
                 string recievedMessage;
                 String response;
-                if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
+                try
                 {
+                    if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) == null)
+                    {
+                        continue;
+                    }
+
                     response = protocol.processInput(recievedMessage);
                     MessageCommunication.SendMessage(tcpClient, response);
 
@@ -31,6 +36,9 @@ namespace Server.ThreadHandlers
                     {
                         tcpClient.Close();
                     }
+                } catch (IOException ex) {
+                    Console.WriteLine(ex.Message);
+                    tcpClient.Close();
                 }
             }
         }
