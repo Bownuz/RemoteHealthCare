@@ -70,6 +70,7 @@ namespace DoctorApplication {
                 using(var writer = new System.IO.StreamWriter(sslStream) { AutoFlush = true }) {
                     writer.WriteLine(jsonCommand);
                 }
+                MessageBox.Show("Commando succesvol verzonden. ");
             }
             catch(Exception ex) {
                 MessageBox.Show("Fout bij het verzenden van commando: " + ex.Message);
