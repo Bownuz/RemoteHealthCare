@@ -63,17 +63,17 @@ namespace HardwareClientApplication {
             }
         }
 
-        public static string GetLastResponseUsingString(string pattern) {
+        public static string GetMostRecentResponseUsingString(string searchPattern) {
             for (int i = responses.Count-1; i > 0; i--) {
-                if (JsonDocument.Parse(responses[i]).RootElement.GetProperty("data").GetProperty("id").GetString().Equals(pattern))
+                if (JsonDocument.Parse(responses[i]).RootElement.GetProperty("data").GetProperty("id").GetString().Equals(searchPattern))
                     return responses[i];
             }
             return null;
         }
 
-        public static string GetLastTunnelResponseUsingString(string pattern) {
+        public static string GetMostRecentTunnelResponseUsingString(string searchPattern) {
             for (int i = responsesFromTunnel.Count-1; i > -1; i--) {
-                if (JsonDocument.Parse(responsesFromTunnel[i]).RootElement.GetProperty("data").GetProperty("data").GetProperty("id").GetString().Equals(pattern))
+                if (JsonDocument.Parse(responsesFromTunnel[i]).RootElement.GetProperty("data").GetProperty("data").GetProperty("id").GetString().Equals(searchPattern))
                     return responsesFromTunnel[i];
             }
             return null;

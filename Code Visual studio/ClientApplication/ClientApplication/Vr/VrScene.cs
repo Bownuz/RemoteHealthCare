@@ -15,7 +15,7 @@ namespace HardwareClientApplication.Vr {
             VrConnection.NewConnection(ipAdressVrServer, true);
             VrConnection.SendJsonObjectViaTunnelFromFile("scene_reset.json");
             for (; ; ) {
-                string newScene = VrConnection.GetLastTunnelResponseUsingString("scene/reset");
+                string newScene = VrConnection.GetMostRecentTunnelResponseUsingString("scene/reset");
                 if (newScene == null) {
                     Thread.Sleep(10);
                     continue;
@@ -28,7 +28,7 @@ namespace HardwareClientApplication.Vr {
         public static void GetScene() {
             VrConnection.SendJsonObjectViaTunnelFromFile("scene_get.json");
             for (; ; ) {
-                string newScene = VrConnection.GetLastTunnelResponseUsingString("scene/get");
+                string newScene = VrConnection.GetMostRecentTunnelResponseUsingString("scene/get");
                 if (newScene == null) {
                     Thread.Sleep(10);
                     continue;
@@ -47,7 +47,7 @@ namespace HardwareClientApplication.Vr {
         public static void NewRoute() {
             VrConnection.SendJsonObjectViaTunnelFromFile("route_add.json");
             for (; ; ) {
-                string newRoute = VrConnection.GetLastTunnelResponseUsingString("route/add");
+                string newRoute = VrConnection.GetMostRecentTunnelResponseUsingString("route/add");
                 if (newRoute == null) {
                     Thread.Sleep(10);
                     continue;
