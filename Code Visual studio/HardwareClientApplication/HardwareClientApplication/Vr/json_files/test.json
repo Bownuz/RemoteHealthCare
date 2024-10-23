@@ -1,0 +1,153 @@
+{
+    "id": "tunnel/send",
+    "data": {
+        "id": "138dad85-a07b-46b1-9f93-668b177d0b02",
+        "data": {
+            "data": {
+                "children": [
+                    {
+                        "components": [
+                            {
+                                "position": [ 0, 0, 0 ],
+                                "rotation": [ 0.2585371732711792, 0.28214383125305176, -0.6241639256477356, 0.6811553835868835 ],
+                                "scale": [ 7, 7, 7 ],
+                                "type": "transform"
+                            },
+                            {
+                                "baking": "realtime",
+                                "color": [ 1, 1, 0.8626999855041504, 1 ],
+                                "cutoff": 0,
+                                "directionalAmbient": 0.800000011920929,
+                                "intensity": 20,
+                                "lighttype": "directional",
+                                "range": 3,
+                                "shadow": "shadowmap",
+                                "spotlightAngle": 45,
+                                "type": "light"
+                            }
+                        ],
+                        "name": "Sunlight",
+                        "uuid": "635634b3-bfe5-45eb-8e88-9877dde0ba33"
+                    },
+                    {
+                        "components": [
+                            {
+                                "position": [ 0, 0, 0 ],
+                                "rotation": [ 0, 0, 0, 1 ],
+                                "scale": [ 1, 1, 1 ],
+                                "type": "transform"
+                            },
+                            {
+                                "type": "camera",
+                                "useFbo": false
+                            },
+                            {
+                                "light": "635634b3-bfe5-45eb-8e88-9877dde0ba33",
+                                "timeOfDay": 14,
+                                "type": "dynamicskybox"
+                            }
+                        ],
+                        "name": "Camera",
+                        "uuid": "2b67c305-9a13-4c5d-b897-9206dafb3364"
+                    },
+                    {
+                        "components": [
+                            {
+                                "position": [ 0, 0, 0 ],
+                                "rotation": [ 0, 0, 0, 1 ],
+                                "scale": [ 1, 1, 1 ],
+                                "type": "transform"
+                            },
+                            {
+                                "castShadow": true,
+                                "cullBackFaces": true,
+                                "file": "data/vrlib/rendermodels/vr_controller_vive_1_5/vr_controller_vive_1_5.obj",
+                                "materialoverrides": [ null ],
+                                "type": "modelrenderer"
+                            },
+                            {
+                                "attach": "WandPositionLeft",
+                                "type": "transformattach"
+                            }
+                        ],
+                        "name": "LeftHand",
+                        "uuid": "9d604b34-7018-40a1-a003-f8073e271fd3"
+                    },
+                    {
+                        "components": [
+                            {
+                                "position": [ 0, 0, 0 ],
+                                "rotation": [ 0, 0, 0, 1 ],
+                                "scale": [ 1, 1, 1 ],
+                                "type": "transform"
+                            },
+                            {
+                                "castShadow": true,
+                                "cullBackFaces": true,
+                                "file": "data/vrlib/rendermodels/vr_controller_vive_1_5/vr_controller_vive_1_5.obj",
+                                "materialoverrides": [ null ],
+                                "type": "modelrenderer"
+                            },
+                            {
+                                "attach": "WandPosition",
+                                "type": "transformattach"
+                            }
+                        ],
+                        "name": "RightHand",
+                        "uuid": "4cd9dd7d-0f2b-4d85-90aa-8aa02b37a176"
+                    },
+                    {
+                        "components": [
+                            {
+                                "position": [ 0, 0, 0 ],
+                                "rotation": [ 0, 0, 0, 1 ],
+                                "scale": [ 1, 1, 1 ],
+                                "type": "transform"
+                            },
+                            {
+                                "attach": "MainUserHead",
+                                "type": "transformattach"
+                            }
+                        ],
+                        "name": "Head",
+                        "uuid": "fc940c5e-a2e4-4f55-88f1-6b9d13344c23"
+                    },
+                    {
+                        "components": [
+                            {
+                                "position": [ 0, -0.009999999776482582, 0 ],
+                                "rotation": [ 0, 0, 0, 1 ],
+                                "scale": [ 1, 1, 1 ],
+                                "type": "transform"
+                            },
+                            {
+                                "castShadow": true,
+                                "mesh": "3f137466-ea2c-48f8-b5cd-62cd09e0cc15",
+                                "type": "meshrenderer"
+                            }
+                        ],
+                        "name": "GroundPlane",
+                        "uuid": "51280ee6-c481-4b1e-880e-12f453a32b31"
+                    },
+                    {
+                        "components": [
+                            {
+                                "position": [ 0, 0, 0 ],
+                                "rotation": [ 0, 0, 0, 1 ],
+                                "scale": [ 1, 1, 1 ],
+                                "type": "transform"
+                            },
+                            { "type": "terrainrenderer" }
+                        ],
+                        "name": "TestNode",
+                        "uuid": "41731121-dcc2-4e26-a3d6-95e712bbd2f6"
+                    }
+                ],
+                "name": "Root",
+                "uuid": "f0a6fcc6-bf8c-4a6e-8d1c-6143c6d2c5f7"
+            },
+            "id": "scene/get",
+            "status": "ok"
+        }
+    }
+}
