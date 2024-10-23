@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="Vr\VrConnection.cs" />
     <Compile Include="Vr\VrScene.cs" />
+    <Compile Include="Vr\VrTest.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

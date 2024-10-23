@@ -58,19 +58,13 @@ namespace ClientApplication.Vr {
         }
 
         public static void FollowNewestRoute() {
-            JsonElement sceneComponents = JsonDocument.Parse(scene).RootElement.GetProperty("data").GetProperty("data").GetProperty("data").GetProperty("children");
-            string nodeId = null;
-            for (int i = sceneComponents.GetArrayLength()-1; i > -1; i--) {
-                if (sceneComponents[i].GetProperty("name").ToString().Equals("Camera"))
-                    nodeId = sceneComponents[i].GetProperty("uuid").ToString();
-            }
-            nodeIdRoute = nodeId;
+            nodeIdRoute = GetNodeUUIDFromSceneChildren("Camera");
             string routeId = JsonDocument.Parse(newestRoute).RootElement.GetProperty("data").GetProperty("data").GetProperty("data").GetProperty("uuid").ToString();
             VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
                                     ""id"" : ""route/follow"",
                                     ""data"" : {{
                                         ""route"" : ""{routeId}"",
-                                        ""node"" : ""{nodeId}"",
+                                        ""node"" : ""{nodeIdRoute}"",
                                         ""speed"" : 0.0,
                                         ""offset"" : 0.0,
                                         ""rotate"" : ""XZ"",
@@ -93,6 +87,48 @@ namespace ClientApplication.Vr {
                                         ""speed"" : {speed}
                                     }}
                                 }}"));
+        }
+
+        public static void AddRoadToNewestRoute() {
+            VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
+                                    ""id"" : ""scene/road/add"",
+                                    ""data"" : {{
+                                        ""route"" : ""{JsonDocument.Parse(newestRoute).RootElement.GetProperty("data").GetProperty("data").GetProperty("data").GetProperty("uuid").ToString()}"",
+                                        ""diffuse"" : ""data/NetworkEngine/textures/tarmac_diffuse.png"",
+		                                ""normal"" : ""data/NetworkEngine/textures/tarmac_normal.png"",
+		                                ""specular"" : ""data/NetworkEngine/textures/tarmac_specular.png"",
+                                        ""heightoffset"" : 0.01
+                                    }}
+                                }}"
+
+                ));
+        }
+
+        private static string GetNodeUUIDFromSceneChildren(string name) {
+            JsonElement sceneComponents = JsonDocument.Parse(scene).RootElement.GetProperty("data").GetProperty("data").GetProperty("data").GetProperty("children");
+            string nodeId = null;
+            for (int i = sceneComponents.GetArrayLength() - 1; i > -1; i--) {
+                if (sceneComponents[i].GetProperty("name").ToString().Equals(name))
+                    nodeId = sceneComponents[i].GetProperty("uuid").ToString();
+            }
+            return nodeId;
+        }
+
+        public static void DeleteGroundPlaneNode() {
+            JsonElement sceneComponents = JsonDocument.Parse(scene).RootElement.GetProperty("data").GetProperty("data").GetProperty("data").GetProperty("children");
+            string nodeId = null;
+            for (int i = sceneComponents.GetArrayLength() - 1; i > -1; i--) {
+                if (sceneComponents[i].GetProperty("name").ToString().Equals("GroundPlane"))
+                    nodeId = sceneComponents[i].GetProperty("uuid").ToString();
+            }
+            VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
+                                    ""id"" : ""scene/node/delete"",
+                                    ""data"" : {{
+                                        ""id"" : ""{GetNodeUUIDFromSceneChildren("GroundPlane")}""
+                                    }}
+                                }}"
+
+                ));
         }
     }
 }
