@@ -15,7 +15,7 @@ namespace ClientApplication {
         HeartRateMonitor heartRateMonitor;
         Boolean simulatorIsActive;
         BleDevice[] bleDevices;
-        JsonData jsondata;
+        JsonPatientData jsondata;
 
         public DataHandler(BleDevice[] bleDevices, string heartRateMonitorID, string ergometerID, Ergometer ergometer, HeartRateMonitor heartRateMonitor, Boolean simulatorIsActive) {
             currentHeartRate = 0;
@@ -24,7 +24,7 @@ namespace ClientApplication {
             this.ergometer = ergometer;
             this.heartRateMonitor = heartRateMonitor;
             this.simulatorIsActive = simulatorIsActive;
-            this.jsondata = new JsonData();
+            this.jsondata = new JsonPatientData();
 
             foreach (BleDevice device in bleDevices) {
                 initializeDeviceAsync(device, heartRateMonitorID, ergometerID);
@@ -67,14 +67,14 @@ namespace ClientApplication {
             currentSpeed = speed;
         }
 
-        internal String printDataAsJson() {
-            JsonData sessionData = new JsonData(currentSpeed, currentHeartRate, DateTime.Now);
-            return JsonSerializer.Serialize<JsonData>(sessionData);
+        internal string printDataAsJson() {
+            JsonPatientData sessionData = new JsonPatientData(currentSpeed, currentHeartRate, DateTime.Now);
+            return JsonSerializer.Serialize<JsonPatientData>(sessionData);
         }
 
-        internal string ConvertPatientDataToJson() {
-            JsonData patientInfo = new JsonData(currentSpeed, currentHeartRate, DateTime.Now);
-            return JsonSerializer.Serialize<JsonData>(patientInfo);
+        internal string ConvertPatientDataToJson(string patientID, string ergometerID, string heartRateMonitorID) {
+            JsonPatientID jsonPatientID = new JsonPatientID(patientID, ergometerID, heartRateMonitorID, DateTime.Now);
+            return JsonSerializer.Serialize<JsonPatientID>(jsonPatientID);
         }
     }
 }

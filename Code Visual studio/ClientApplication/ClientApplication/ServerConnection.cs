@@ -18,6 +18,8 @@ namespace ClientApplication {
         private static string patientIDString;
         private static string ergometerIDString;
         private static string heartRateMonitorIDString;
+        private static DataHandler dataHandler;
+        private static string doctorMessage;
 
         public static void HandleConnection(TcpClient tcpClient, DataHandler handler, Ergometer ergometer, string patientID, string ergometerID, string heartRateMonitorID) {
             NetworkStream stream = tcpClient.GetStream();
@@ -26,6 +28,8 @@ namespace ClientApplication {
             patientIDString = patientID;
             ergometerIDString = ergometerID;
             heartRateMonitorIDString = heartRateMonitorID;
+            dataHandler = handler;
+
 
             while (isRunning) {
                 Thread.Sleep(1000);
@@ -80,15 +84,18 @@ namespace ClientApplication {
                 Console.WriteLine("Server: " + serverMessage);
 
                 return false;
+            } else {
+                doctorMessage = serverMessage;
+                return true;
             }
-            return true;
+        }
+
+        public static string getDocterMessage() {
+                return doctorMessage;
         }
 
         public static string InitialisePatient() {
-            DateTime currentDateTime = DateTime.Now;
-            string initialiseMessage = $"Initialise Patient: {patientIDString},{ergometerIDString},{heartRateMonitorIDString},{currentDateTime:yyyy-MM-dd HH:mm:ss}";
-            Console.WriteLine("Initialising patient: " + initialiseMessage);
-            return initialiseMessage;
+            return dataHandler.ConvertPatientDataToJson(patientIDString, ergometerIDString, heartRateMonitorIDString);
         }
     }
 }

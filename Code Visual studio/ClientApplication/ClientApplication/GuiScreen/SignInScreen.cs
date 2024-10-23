@@ -54,7 +54,7 @@ namespace ClientApplication {
         public void StartConnectionWithServer() {
             //TcpClient client = new TcpClient("192.168.178.101", 4789);
             TcpClient client = new TcpClient("localhost", 4789);
-            Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, handler, ergometer));
+            Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, handler, ergometer, textBox1.Text, textBox2.Text, textBox3.Text));
             connectionThread.Start();
         }
 

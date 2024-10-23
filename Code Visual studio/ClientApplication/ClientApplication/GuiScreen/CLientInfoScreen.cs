@@ -72,5 +72,12 @@ namespace ClientApplication {
         private void UpdateLocalDate() {
             Date.Text = DateTime.Now.ToShortDateString();
         }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
+            string doctorMessage = ServerConnection.getDocterMessage();
+            if (doctorMessage != null) {
+                listBox1.Items.Add(doctorMessage);
+            }
+        }
     }
 }
