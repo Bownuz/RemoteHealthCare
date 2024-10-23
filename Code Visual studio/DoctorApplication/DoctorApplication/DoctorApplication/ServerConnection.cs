@@ -26,7 +26,7 @@ public class ServerConnection {
             client = new TcpClient(serverAddress, port);
             sslStream = new SslStream(client.GetStream(), false, ValidateServerCertificate, null);
             await sslStream.AuthenticateAsClientAsync("ServerName");
-
+         
             reader = new StreamReader(sslStream);
             writer = new StreamWriter(sslStream) { AutoFlush = true };
 
