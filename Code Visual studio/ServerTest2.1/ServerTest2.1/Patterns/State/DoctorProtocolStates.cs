@@ -2,10 +2,10 @@
 using Server.ThreadHandlers;
 using System;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace Server.Patterns.State.DoctorStates
 {
+    //TODO: fix all return strings
     public class D_Welcome(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler)
     {
         public override string CheckInput(string input)
@@ -92,15 +92,24 @@ namespace Server.Patterns.State.DoctorStates
                 return "Goodbye";
             }
 
-            if (jsonRegex.IsMatch(input)){
-            DoctorFetchData dataToFetch = JsonSerializer.Deserialize<DoctorFetchData>(input);
-            Session sessionToSend = doctorHandler.fileStorage.GetPatient(dataToFetch.PatientName).GetSession(dataToFetch.SessionDate);
+            if (!jsonRegex.IsMatch(input))
+            {
+                protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+                return "add failed message";
+            }
 
-            protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            MessageCommunication.SendMessage(doctorHandler.tcpClient, JsonSerializer.Serialize<Session>(sessionToSend));
+            try{
+                DoctorFetchData dataToFetch = JsonSerializer.Deserialize<DoctorFetchData>(input);
+                Session sessionToSend = doctorHandler.fileStorage.GetPatient(dataToFetch.PatientName).GetSession(dataToFetch.SessionDate);
+
+                protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+                MessageCommunication.SendMessage(doctorHandler.tcpClient, JsonSerializer.Serialize<Session>(sessionToSend));
                 return "Ready to recieve Command";
             }
-            return "add failed message";
+            catch (Exception ex){
+                protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+                return ex.Message;
+            }
         }
     }
     public class D_Subscribing(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler)
