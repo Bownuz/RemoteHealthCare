@@ -10,6 +10,7 @@ namespace HardwareClientApplication.Vr {
     internal class VrScene {
         private static string scene;
         private static string newestRoute;
+        private static string nodeIdRoute;
         public static void NewScene(string ipAdressVrServer) {
             VrConnection.NewConnection(ipAdressVrServer, true);
             VrConnection.SendJsonObjectViaTunnelFromFile("scene_reset.json");
@@ -63,13 +64,14 @@ namespace HardwareClientApplication.Vr {
                 if (sceneComponents[i].GetProperty("name").ToString().Equals("Camera"))
                     nodeId = sceneComponents[i].GetProperty("uuid").ToString();
             }
+            nodeIdRoute = nodeId;
             string routeId = JsonDocument.Parse(newestRoute).RootElement.GetProperty("data").GetProperty("data").GetProperty("data").GetProperty("uuid").ToString();
             VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
                                     ""id"" : ""route/follow"",
                                     ""data"" : {{
                                         ""route"" : ""{routeId}"",
                                         ""node"" : ""{nodeId}"",
-                                        ""speed"" : 1.0,
+                                        ""speed"" : 0.0,
                                         ""offset"" : 0.0,
                                         ""rotate"" : ""XZ"",
                                         ""smoothing"" : 1.0,
@@ -80,8 +82,15 @@ namespace HardwareClientApplication.Vr {
                                 }}"));
         }
 
-        //public static void followSpeed(double speed) {
+        public static void ChangeRouteSpeed(double speed) {
 
-        //}
+            VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
+                                    ""id"" : ""route/follow/speed"",
+                                    ""data"" : {{
+                                        ""node"" : ""{nodeIdRoute}"",
+                                        ""speed"" : {speed}
+                                    }}
+                                }}"));
+        }
     }
 }
