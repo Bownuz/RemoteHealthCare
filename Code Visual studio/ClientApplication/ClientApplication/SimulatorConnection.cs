@@ -21,7 +21,6 @@ namespace ClientApplication {
             while (true) {
                 Thread.Sleep(1000);
                 //WriteData(tcpClient, handler.printAsJson());
-                Console.WriteLine("t");
                 //if (stream.DataAvailable) {
                 string simulatorData = ReadTextMessage(tcpClient);
                 //Console.WriteLine($"Received data from simulator: {simulatorData}");
