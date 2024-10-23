@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HardwareClientApplication {
+namespace ClientApplication {
     internal class VrConnection {
         private static Socket client;
         private static Thread listener;

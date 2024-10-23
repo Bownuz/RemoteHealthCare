@@ -1,5 +1,5 @@
 using Avans.TI.BLE;
-using HardwareClientApplication.Vr;
+using ClientApplication.Vr;
 using System;
 using System.Text;
 using System.Threading.Tasks;

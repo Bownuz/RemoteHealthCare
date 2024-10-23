@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HardwareClientApplication.Vr {
+namespace ClientApplication.Vr {
     internal class VrScene {
         private static string scene;
         private static string newestRoute;
