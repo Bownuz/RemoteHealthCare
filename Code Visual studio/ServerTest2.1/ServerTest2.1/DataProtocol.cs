@@ -1,25 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using Server.Patterns.State;
+using Server.Patterns.State.DoctorStates;
+using Server.Patterns.State.PatientStates;
+using Server.ThreadHandlers;
 
-namespace DataProtocol {
-    class Messages {
-        public static string ReciveMessage(TcpClient client) {
-            var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
+namespace Server {
+	public class DataProtocol
+	{
+        private State State;
+
+        public DataProtocol(CommunicationType communicationType, CommunicationHandler communicationHandler)
+        {
+            switch (communicationType)
             {
-                return stream.ReadLine();
+                case CommunicationType.PATIENT:
+                    this.State = new P_Welcome(this, (PatientHandler)communicationHandler);
+                    break;
+                case CommunicationType.DOCTOR:
+                    this.State = new D_Welcome(this, (DoctorHandler)communicationHandler);
+                    break;
+
             }
         }
-
-        public static void SendMessage(TcpClient client, string message) {
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII, -1, true);
-            {
-                stream.WriteLine(message);
-                stream.Flush();
-            }
+        public String processInput(String input)
+        {
+            return State.CheckInput(input);
         }
-    }
+
+        public void ChangeState(State newState)
+		{
+            this.State = newState;
+
+        }
+
+	
+
+	}
 }
+

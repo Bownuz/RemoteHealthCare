@@ -17,7 +17,7 @@ namespace ConnectionImplemented {
 
             DataHandler handler = new DataHandler(bleDevices);
 
-            TcpClient client = new TcpClient("192.168.178.101", 4789);
+            TcpClient client = new TcpClient("192.168.178.58", 4789);
             Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, handler));
             connectionThread.Start();
         }
