@@ -7,12 +7,12 @@ namespace Server.DataStorage
 {
     public class Session : Subject
     {
-        DateTime sessionStart { get; }
-        DateTime sessionEnd { get; }
-        String ergometerName { get; }
-        String heartRateMonitorName { get; }
-        List<string> clientMessages { get; }
-        List<string> doctorMessages { get; }
+        public DateTime sessionStart { get; set;}
+        public DateTime sessionEnd { get; set; }
+        public String ergometerName { get; set; }
+        public String heartRateMonitorName { get; set; }
+        public List<string> clientMessages { get; set; }
+        public List<string> doctorMessages { get; set; }
 
         public Session(DateTime sessionStart, string ergometerName, string heartRateMonitorName)
         {

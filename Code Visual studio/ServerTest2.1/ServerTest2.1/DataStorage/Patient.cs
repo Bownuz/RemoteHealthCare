@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Server.DataStorage
 {
-	public class Patient(string name)
+    public class Patient(string name)
     {
-        public readonly string Name = name;
-        public readonly List<Session> sessions = new List<Session>();
+        public string Name { get; set; } = name;
+        public List<Session> sessions { get; set; } = new List<Session>();
         public Session currentSession { get; set; }
 
         public void addSession(Session sessionToAdd)

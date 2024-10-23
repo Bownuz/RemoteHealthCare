@@ -1,5 +1,6 @@
 using Server.Patterns.Observer;
 using Server.ThreadHandlers;
+using System.Text.Json;
 
 
 namespace Server.DataStorage
@@ -19,10 +20,23 @@ namespace Server.DataStorage
 
         public void SaveToFile()
         {
+            String path = Environment.CurrentDirectory + "/PatientData";
+
+      
             Console.WriteLine("I should Save now!!");
             foreach (var patient in Patients)
             {
-                Console.WriteLine(patient.Key);
+
+                if (File.Exists(path + "/" + patient.Key + ".txt")) {
+                    File.Delete(path + "/" + patient.Key + ".txt");
+                }
+                
+                using (StreamWriter sw = File.CreateText((path + "/" + patient.Key + ".txt")))
+                {
+                    String patientString = JsonSerializer.Serialize<Patient>(patient.Value);
+                    sw.WriteLine(patientString);
+                }
+                
             }
         }
 
@@ -57,20 +71,28 @@ namespace Server.DataStorage
             return nameArray;
         }
 
-		public Doctor getDoctor(int doctorId)
-		{
+        public Doctor getDoctor(int doctorId)
+        {
             return doctors[doctorId];
-		}
+        }
 
-		public void addDoctor(int doctorId, String DoctorName, String DoctorPassword)
-		{
-            doctors[doctorId] = new Doctor(doctorId,DoctorName,DoctorPassword);
+        public void addDoctor(int doctorId, String DoctorName, String DoctorPassword)
+        {
+            doctors[doctorId] = new Doctor(doctorId, DoctorName, DoctorPassword);
         }
 
         public void Update(CommunicationType communicationOrigin, Session session)
         {
             SaveToFile();
         }
+
+
+
+    }
+
+    struct patientData() { 
+        public String patientName { get; set; }
+        public Session Session { get; set; }
     }
 
 }
