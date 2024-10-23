@@ -11,7 +11,7 @@ namespace DoctorApplication
         public string PatientName { get; set; }
         public int Resistance { get; set; }
         public int HeartRate { get; set; }
-        public double Speed { get; set; }
+        public int Speed { get; set; }
         public string LastUpdate { get; set; }
     }
 
