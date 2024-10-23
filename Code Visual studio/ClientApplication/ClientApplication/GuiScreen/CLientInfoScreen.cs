@@ -24,6 +24,8 @@ namespace ClientApplication {
             this.heartRateMonitor = heartRateMonitor;
             this.handler = dataHandler;
 
+            ServerConnection.NewDoctorMessage += UpdateMessage;
+
             InitializeTimer();
         }
 
@@ -73,11 +75,15 @@ namespace ClientApplication {
             Date.Text = DateTime.Now.ToShortDateString();
         }
 
+        public void UpdateMessage(string message) {
+            listBox1.Items.Add(message);
+        }
+
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
-            string doctorMessage = ServerConnection.getDocterMessage();
-            if (doctorMessage != null) {
-                listBox1.Items.Add(doctorMessage);
-            }
+            //string doctorMessage = ServerConnection.getDocterMessage();
+            //if (doctorMessage != null) {
+            //    listBox1.Items.Add(doctorMessage);
+            //}
         }
     }
 }

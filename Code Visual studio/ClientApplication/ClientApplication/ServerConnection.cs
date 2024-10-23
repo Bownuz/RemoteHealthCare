@@ -13,13 +13,13 @@ using System.Reflection;
 
 namespace ClientApplication {
     internal class ServerConnection {
+        public static event Action<string> NewDoctorMessage;
         private static Boolean isRunning;
         private static Boolean isInitialized;
         private static string patientIDString;
         private static string ergometerIDString;
         private static string heartRateMonitorIDString;
         private static DataHandler dataHandler;
-        private static string doctorMessage;
 
         public static void HandleConnection(TcpClient tcpClient, DataHandler handler, Ergometer ergometer, string patientID, string ergometerID, string heartRateMonitorID) {
             NetworkStream stream = tcpClient.GetStream();
@@ -85,14 +85,14 @@ namespace ClientApplication {
 
                 return false;
             } else {
-                doctorMessage = serverMessage;
+                NewDoctorMessage?.Invoke(serverMessage);
                 return true;
             }
         }
 
-        public static string getDocterMessage() {
-                return doctorMessage;
-        }
+        //public static string getDocterMessage() {
+        //        return doctorMessage;
+        //}
 
         public static string InitialisePatient() {
             return dataHandler.ConvertPatientDataToJson(patientIDString, ergometerIDString, heartRateMonitorIDString);
