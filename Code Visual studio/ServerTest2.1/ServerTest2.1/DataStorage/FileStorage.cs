@@ -4,46 +4,57 @@ using Server.ThreadHandlers;
 
 namespace Server.DataStorage
 {
-	public class FileStorage : Observer
-	{
-		private readonly Dictionary<String, Patient> patients;
+    public class FileStorage : Observer
+    {
+        public readonly Dictionary<String, Patient> Patients;
 
-		private readonly Dictionary<int, Doctor> doctors;
+        public readonly Dictionary<int, Doctor> doctors;
 
         public FileStorage()
         {
-            patients = new Dictionary<string, Patient>();
-			doctors = new Dictionary<int, Doctor>();
+            Patients = new Dictionary<string, Patient>();
+            doctors = new Dictionary<int, Doctor>();
             LoadFromFile();
         }
 
         public void SaveToFile()
-		{
+        {
             Console.WriteLine("I should Save now!!");
-            foreach (var patient in patients)
+            foreach (var patient in Patients)
             {
                 Console.WriteLine(patient.Key);
             }
         }
 
-		public void LoadFromFile()
-		{
+        public void LoadFromFile()
+        {
             Console.WriteLine("I should load now");
         }
 
-		public Patient GetPatient(String patientName)
-		{
-            return patients[patientName];
+        public Patient GetPatient(String patientName)
+        {
+            return Patients[patientName];
         }
 
-		public void AddPatient(String patientName)
-		{
-            patients[patientName] = new Patient(patientName);
+        public void AddPatient(String patientName)
+        {
+            Patients[patientName] = new Patient(patientName);
         }
 
-		public Boolean PatientExists(String patientName)
-		{
-            return patients.ContainsKey(patientName);
+        public Boolean PatientExists(String patientName)
+        {
+            return Patients.ContainsKey(patientName);
+        }
+
+        public String[] PatientNamesToArray() {
+            String[] nameArray = new String[Patients.Count];
+            int counter = 0;
+            foreach (var patient in Patients)
+            {
+                nameArray[counter] = patient.Key;
+                counter++;
+            }
+            return nameArray;
         }
 
 		public Doctor getDoctor(int doctorId)
