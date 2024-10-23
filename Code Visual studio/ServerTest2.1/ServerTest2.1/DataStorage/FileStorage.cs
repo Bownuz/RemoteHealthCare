@@ -15,39 +15,90 @@ namespace Server.DataStorage
         {
             Patients = new Dictionary<string, Patient>();
             doctors = new Dictionary<String, Doctor>();
-            Doctor doctor1 = new Doctor("1234", "Frido", "AvansDokter");
-            Doctor doctor2 = new Doctor("4321", "Johan", "UnicornLover");
-            Doctor doctor3 = new Doctor("0000", "Joli", "Tennissen2018");
-            doctors.Add(doctor1.DoctorID, doctor1);
 
             LoadFromFile();
         }
 
         public void SaveToFile()
         {
-            String path = Environment.CurrentDirectory + "/PatientData";
+            String PatientsPath = Environment.CurrentDirectory + "/PatientData";
+            String DoctorsPath = Environment.CurrentDirectory + "/DoctorData";
 
-      
             Console.WriteLine("I should Save now!!");
             foreach (var patient in Patients)
             {
-
-                if (File.Exists(path + "/" + patient.Key + ".txt")) {
-                    File.Delete(path + "/" + patient.Key + ".txt");
+                if (!Directory.Exists(PatientsPath)) {
+                    Directory.CreateDirectory(PatientsPath);
                 }
-                
-                //using (StreamWriter sw = File.CreateText((path + "/" + patient.Key + ".txt")))
-                //{
-                //    String patientString = JsonSerializer.Serialize<Patient>(patient.Value);
-                //    sw.WriteLine(patientString);
-                //}
-                
+
+                if (File.Exists(PatientsPath + "/" + patient.Key + ".txt")) {
+                    File.Delete(PatientsPath + "/" + patient.Key + ".txt");
+                }
+
+                using (StreamWriter sw = File.CreateText((PatientsPath + "/" + patient.Key + ".txt")))
+                {
+                    String patientString = JsonSerializer.Serialize<Patient>(patient.Value);
+                    sw.WriteLine(patientString);
+                }
             }
+
+            foreach (var doctor in doctors)
+            {
+                if (!Directory.Exists(DoctorsPath))
+                {
+                    Directory.CreateDirectory(DoctorsPath);
+                }
+
+                if (File.Exists(DoctorsPath + "/" + doctor.Key + ".txt"))
+                {
+                    File.Delete(DoctorsPath + "/" + doctor.Key + ".txt");
+                }
+
+                using (StreamWriter sw = File.CreateText((DoctorsPath + "/" + doctor.Key + ".txt")))
+                {
+                    String patientString = JsonSerializer.Serialize<Doctor>(doctor.Value);
+                    sw.WriteLine(patientString);
+                }
+            }
+
         }
 
         public void LoadFromFile()
         {
-            Console.WriteLine("I should load now");
+            String PatientsPath = Environment.CurrentDirectory + "/PatientData";
+            String DoctorsPath = Environment.CurrentDirectory + "/DoctorData";
+            
+
+            foreach (var file in
+            Directory.EnumerateFiles(PatientsPath, "*.txt"))
+            {
+                String fileContent = "";
+                using (StreamReader sr = new StreamReader(file))
+                {
+                    while (!sr.EndOfStream) {
+                        fileContent += sr.ReadLine();
+                    }
+                }
+                String Name = Path.GetFileNameWithoutExtension(file);
+                Patient patient = JsonSerializer.Deserialize<Patient>(fileContent);
+                Patients.Add(Name, patient);
+            }
+
+            foreach (var file in
+            Directory.EnumerateFiles(DoctorsPath, "*.txt"))
+            {
+                String fileContent = "";
+                using (StreamReader sr = new StreamReader(file))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        fileContent += sr.ReadLine();
+                    }
+                }
+                String Name = Path.GetFileNameWithoutExtension(file);
+                Doctor doctor = JsonSerializer.Deserialize<Doctor>(fileContent);
+                doctors.Add(Name, doctor);
+            }
         }
 
         public Patient GetPatient(String patientName)
