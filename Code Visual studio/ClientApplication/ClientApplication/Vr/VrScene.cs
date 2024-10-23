@@ -83,6 +83,8 @@ namespace HardwareClientApplication.Vr {
         }
 
         public static void ChangeRouteSpeed(double speed) {
+            if (nodeIdRoute == null)
+                return;
 
             VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
                                     ""id"" : ""route/follow/speed"",
