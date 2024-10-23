@@ -94,7 +94,6 @@
     <None Include="Vr\json_files\scene_get.json" />
     <None Include="Vr\json_files\scene_node_add.json" />
     <None Include="Vr\json_files\scene_reset.json" />
-    <None Include="Vr\json_files\scene_terrain_add2.json" />
     <None Include="Vr\json_files\scene_terrain_add.json" />
     <None Include="Vr\json_files\session_list.json" />
     <None Include="Vr\json_files\test.json" />

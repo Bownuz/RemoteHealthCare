@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -14,6 +15,8 @@ namespace HardwareClientApplication {
         private static Socket client;
         private static Thread listener;
         private static string tunnelID;
+        private static List<string> responses;
+        private static List<string> responsesFromTunnel;
         private static bool DebugMessages = true;
 
         public static void NewConnection(string ipAdress) {
@@ -34,6 +37,8 @@ namespace HardwareClientApplication {
                 VrConnection.AutoCreateTunnel();
 
             NewListener();
+            responses = new List<string>();
+            responsesFromTunnel = new List<string>();
         }
 
         public static void CloseConnection() {
@@ -45,7 +50,12 @@ namespace HardwareClientApplication {
         private static void ResponseListener() {
             try {
                 for (; ; ) {
-                    RecieveJsonObjectFromServer();
+                    string resp = RecieveJsonObjectFromServer();
+                    responses.Add(resp);
+                    JsonDocument rsp = JsonDocument.Parse(resp);
+                    if (rsp.RootElement.GetProperty("id").GetString().Equals("tunnel/send")) {
+                        responsesFromTunnel.Add(resp);
+                    }
                 }
             }
             catch (ThreadAbortException) {
@@ -53,11 +63,27 @@ namespace HardwareClientApplication {
             }
         }
 
+        public static string GetLastResponseUsingString(string pattern) {
+            for (int i = responses.Count-1; i > 0; i--) {
+                if (JsonDocument.Parse(responses[i]).RootElement.GetProperty("data").GetProperty("id").GetString().Equals(pattern))
+                    return responses[i];
+            }
+            return null;
+        }
+
+        public static string GetLastTunnelResponseUsingString(string pattern) {
+            for (int i = responsesFromTunnel.Count-1; i > -1; i--) {
+                if (JsonDocument.Parse(responsesFromTunnel[i]).RootElement.GetProperty("data").GetProperty("data").GetProperty("id").GetString().Equals(pattern))
+                    return responsesFromTunnel[i];
+            }
+            return null;
+        }
+
         private static void AutoCreateTunnel() {
             SendJsonObjectFromFile("session_list.json");
             JsonDocument sessionList = JsonDocument.Parse(RecieveJsonObjectFromServer());
             string sessionID = sessionList.RootElement.GetProperty("data")[0].GetProperty("id").GetString();
-            SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{\"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
+            SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{ \"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
             JsonDocument tunnelIdDoc = JsonDocument.Parse(RecieveJsonObjectFromServer());
             tunnelID = tunnelIdDoc.RootElement.GetProperty("data").GetProperty("id").GetString();
         }
@@ -72,6 +98,9 @@ namespace HardwareClientApplication {
         }
 
         public static void CreateTunnel() {
+            if (client == null)
+                return;
+
             AbortListener();
             TunnelCreater();
             NewListener();
