@@ -1,5 +1,6 @@
 using Server.Patterns.Observer;
 using Server.ThreadHandlers;
+using System.Runtime.Intrinsics.Arm;
 
 
 namespace Server.DataStorage
@@ -44,11 +45,11 @@ namespace Server.DataStorage
             switch (messageType)
             {
                 case CommunicationType.PATIENT:
-                    if (doctorMessages.Count > 0)
+                    if (clientMessages.Count > 0)
                         return clientMessages[^1];
                     return "this list is empty";
                 case CommunicationType.DOCTOR:
-                    if (clientMessages.Count > 0)
+                    if (doctorMessages.Count > 0)
                         return doctorMessages[^1];
                     return "this list is empty";
                 default:

@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Text;
 
@@ -55,6 +53,30 @@ namespace Server.ThreadHandlers
             BicycleSpeed = bicycleSpeed;
             Heartrate = heartrate;
             this.dateTime = dateTime;
+        }
+    }
+
+    public struct AddRemoveObserverMessage { 
+        public String Message { get; set; }
+        public String[] PatientNames { get; set; }
+
+        public AddRemoveObserverMessage(string message, string[] patientNames)
+        {
+            Message = message;
+            PatientNames = patientNames;
+        }
+    }
+
+    public struct DoctorDataMessage { 
+        public String PatientName { get; set; }
+        public String Message { get; set; }
+        public int newResistance{ get; set; }
+
+        public DoctorDataMessage(string patientName, string message, int newResistance)
+        {
+            PatientName = patientName;
+            Message = message;
+            this.newResistance = newResistance;
         }
     }
 

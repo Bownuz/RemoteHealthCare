@@ -14,10 +14,10 @@ namespace Server
         {
             //server
             List<Thread> threads = new List<Thread>();
-            TcpListener Clientlistener = new TcpListener(IPAddress.Any, 4789);
-            TcpListener DoctorListener = new TcpListener(IPAddress.Any, 4790);
-            Clientlistener.Start();
-            DoctorListener.Start();
+            TcpListener PatientListner = new TcpListener(IPAddress.Any, 4789);
+            TcpListener DoctorListner = new TcpListener(IPAddress.Any, 4790);
+            PatientListner.Start();
+            DoctorListner.Start();
 
             FileStorage fileStorage = new FileStorage();
 
@@ -25,16 +25,16 @@ namespace Server
 
             while (true)
             {
-                if (Clientlistener.Pending())
+                if (PatientListner.Pending())
                 {
-                    TcpClient client = Clientlistener.AcceptTcpClient();
+                    TcpClient client = PatientListner.AcceptTcpClient();
                     Thread clientThread = new Thread(() => HandleClient(client, fileStorage));
                     threads.Add(clientThread);
                     clientThread.Start();
                 }
-                if (DoctorListener.Pending())
+                if (DoctorListner.Pending())
                 {
-                    TcpClient doctor = DoctorListener.AcceptTcpClient();
+                    TcpClient doctor = DoctorListner.AcceptTcpClient();
                     Thread doctorThread = new Thread(() => HandleDoctor(doctor, fileStorage));
                     threads.Add(doctorThread);
                     doctorThread.Start();
