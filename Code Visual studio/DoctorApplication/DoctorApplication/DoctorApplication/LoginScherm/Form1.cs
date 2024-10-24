@@ -36,9 +36,12 @@ namespace DoctorApplication {
         private async Task LoginDoctor(int doctorId, string username, string password) {
             try {
                 doctorClient = new TcpClient("localhost", 4790);
-                sslStream = new SslStream(doctorClient.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
-                await sslStream.AuthenticateAsClientAsync("localhost");
 
+                sslStream = new SslStream(doctorClient.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
+
+                X509Certificate2 clientCertificate = new X509Certificate2(@"C:\Users\mlahl\source\repos\Project\Code Visual studio\certificate\your_certificate.pfx", "groepa4");
+
+                await sslStream.AuthenticateAsClientAsync("localhost", new X509CertificateCollection { clientCertificate }, System.Security.Authentication.SslProtocols.Tls12, false);
                 
                 var loginData = new {
                     DoctorID = doctorId,
@@ -52,7 +55,7 @@ namespace DoctorApplication {
                     string response = await reader.ReadLineAsync();
                     if(response.Contains("Login Successful")) {
                         MessageBox.Show("Inlog succesvol.");
-                        OpenClientenForm(); 
+                        OpenClientenForm();
                     }
                     else {
                         MessageBox.Show("Ongeldige inloggegevens.");
@@ -63,6 +66,7 @@ namespace DoctorApplication {
                 MessageBox.Show("Kan geen verbinding maken: " + ex.Message);
             }
         }
+
 
         private void SendCommandToServer(object command) {
             try {
@@ -84,9 +88,10 @@ namespace DoctorApplication {
             this.Hide(); 
         }
 
-        public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {        
-            return true;
+        public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
+            return sslPolicyErrors == SslPolicyErrors.None;
         }
+
 
         private void Form1_Load(object sender, EventArgs e) {
             UpdateDateTimeLabel(null, null);
