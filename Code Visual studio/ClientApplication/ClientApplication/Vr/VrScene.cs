@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -84,7 +85,7 @@ namespace ClientApplication.Vr {
                                     ""id"" : ""route/follow/speed"",
                                     ""data"" : {{
                                         ""node"" : ""{nodeIdRoute}"",
-                                        ""speed"" : {speed}
+                                        ""speed"" : {speed.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}
                                     }}
                                 }}"));
         }
