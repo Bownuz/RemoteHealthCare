@@ -11,20 +11,26 @@ namespace ClientApplication {
         public string deviceName { get; set; }
         public int currentSpeed { get; set; }
         public int currentHeartRate { get; set; }
+        private string patientName;
+        private string ergometerID;
+        private string heartRateMonitorID;
         Ergometer ergometer;
         HeartRateMonitor heartRateMonitor;
         Boolean simulatorIsActive;
         BleDevice[] bleDevices;
-        JsonPatientData jsondata;
+        PatientSendData jsondata;
 
-        public DataHandler(BleDevice[] bleDevices, string heartRateMonitorID, string ergometerID, Ergometer ergometer, HeartRateMonitor heartRateMonitor, Boolean simulatorIsActive) {
+        public DataHandler(BleDevice[] bleDevices, string heartRateMonitorID, string ergometerID, string patientName, Ergometer ergometer, HeartRateMonitor heartRateMonitor, Boolean simulatorIsActive) {
             currentHeartRate = 0;
             currentSpeed = 0;
             this.bleDevices = bleDevices;
             this.ergometer = ergometer;
+            this.patientName = patientName;
             this.heartRateMonitor = heartRateMonitor;
             this.simulatorIsActive = simulatorIsActive;
-            this.jsondata = new JsonPatientData();
+            this.heartRateMonitorID = heartRateMonitorID;
+            this.ergometerID = ergometerID;
+            this.jsondata = new PatientSendData();
 
             foreach (BleDevice device in bleDevices) {
                 initializeDeviceAsync(device, heartRateMonitorID, ergometerID);
@@ -33,7 +39,7 @@ namespace ClientApplication {
 
             if (simulatorIsActive) {
                 //TcpClient client = new TcpClient("192.168.178.101", 4790);
-                TcpClient client = new TcpClient("localhost", 4790);
+                TcpClient client = new TcpClient("localhost", 4788);
                 Thread connectionThread = new Thread(() => SimulatorConnection.HandleConnection(client, this));
                 connectionThread.Start();
             }
@@ -47,14 +53,14 @@ namespace ClientApplication {
                 deviceName = ergometerID;
             }
 
-            if (!simulatorIsActive) {
-                await device.ConnectToBLE_Device(deviceName);
-            }
+            //if (!simulatorIsActive) {
+            //    await device.ConnectToBLE_Device(deviceName);
+            //}
         }
 
         public void SimulateBLEData(byte[] bikeData, byte[] heartRateData) {
-            Console.WriteLine(bikeData);
-            Console.WriteLine(heartRateData);
+            //Console.WriteLine(bikeData);
+            //Console.WriteLine(heartRateData);
             ergometer.SubscriptionValueChanged(bikeData);
             heartRateMonitor.SubscriptionValueChanged(heartRateData);
         }
@@ -67,14 +73,21 @@ namespace ClientApplication {
             currentSpeed = speed;
         }
 
-        internal string printDataAsJson() {
-            JsonPatientData sessionData = new JsonPatientData(currentSpeed, currentHeartRate, DateTime.Now);
-            return JsonSerializer.Serialize<JsonPatientData>(sessionData);
+        public string printDataAsJson() {
+            PatientSendData sessionData = new PatientSendData(patientName, currentSpeed, currentHeartRate, DateTime.Now);
+            return JsonSerializer.Serialize<PatientSendData>(sessionData);
         }
 
-        internal string ConvertPatientDataToJson(string patientID, string ergometerID, string heartRateMonitorID) {
-            JsonPatientID jsonPatientID = new JsonPatientID(patientID, ergometerID, heartRateMonitorID, DateTime.Now);
-            return JsonSerializer.Serialize<JsonPatientID>(jsonPatientID);
+        internal string PatientInitialisationMessage() {
+            PatientInitialisationMessage jsonPatientID = new PatientInitialisationMessage(patientName, ergometerID, heartRateMonitorID, DateTime.Now);
+            this.patientName = patientName;
+            return JsonSerializer.Serialize<PatientInitialisationMessage>(jsonPatientID);
         }
+
+        //public void setpatientInfo(string patientName, string ergometerID, string heartRateMonitorID) {
+        //    this.patientName = patientName;
+        //    this.ergometerID = ergometerID;
+        //    this.heartRateMonitorID = heartRateMonitorID;
+        //}
     }
 }

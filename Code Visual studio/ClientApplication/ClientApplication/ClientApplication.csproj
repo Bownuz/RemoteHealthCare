@@ -76,7 +76,7 @@
     <Compile Include="DataHandler.cs" />
     <Compile Include="Ergometer.cs" />
     <Compile Include="HeartRateMonitor.cs" />
-    <Compile Include="JsonFile.cs" />
+    <Compile Include="MessageCommunication.cs" />
     <Compile Include="ListDisplay.cs" />
     <Compile Include="ClientMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -94,6 +94,10 @@
     <Compile Include="GuiScreen\CLientInfoScreen.Designer.cs">
       <DependentUpon>CLientInfoScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="State\DataProtocol.cs" />
+    <Compile Include="State\Handler.cs" />
+    <Compile Include="State\ProtocolState.cs" />
+    <Compile Include="State\State.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
