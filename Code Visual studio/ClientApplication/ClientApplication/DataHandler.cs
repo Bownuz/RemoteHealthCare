@@ -59,8 +59,6 @@ namespace ClientApplication {
         }
 
         public void SimulateBLEData(byte[] bikeData, byte[] heartRateData) {
-            //Console.WriteLine(bikeData);
-            //Console.WriteLine(heartRateData);
             ergometer.SubscriptionValueChanged(bikeData);
             heartRateMonitor.SubscriptionValueChanged(heartRateData);
         }

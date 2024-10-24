@@ -33,13 +33,12 @@ namespace ClientApplication.State {
             if (input.Equals("Welcome Client")) {
                 while (handler.dataHandler == null) {
                     Console.WriteLine("Wacht op initialisatie van dataHandler...");
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                 }
                 patientInfo = handler.dataHandler.PatientInitialisationMessage();
 
                 protocol.ChangeState(new SendData(protocol, handler));
             }
-            Console.WriteLine(patientInfo);
             return patientInfo;
         }
     }
@@ -50,10 +49,8 @@ namespace ClientApplication.State {
 
         public override string CheckInput(string input) {
             string patientData = null;
-            Console.WriteLine("hallo");
             if (input.Equals("Ready to recieve data")) {
                 patientData = handler.dataHandler.printDataAsJson();
-                Console.WriteLine("WOWOWO");
             }
             return patientData;
         }

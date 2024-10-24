@@ -23,7 +23,6 @@ namespace ClientApplication {
                 //WriteData(tcpClient, handler.printAsJson());
                 //if (stream.DataAvailable) {
                 string simulatorData = ReadTextMessage(tcpClient);
-                //Console.WriteLine($"Received data from simulator: {simulatorData}");
                 if (!string.IsNullOrEmpty(simulatorData)) {
                     ProcessMessage(simulatorData, handler);
                 }

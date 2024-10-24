@@ -37,26 +37,20 @@ namespace ClientApplication.State {
 
         public void HandleThread() {
             DataProtocol protocol = new DataProtocol(this);
-            //MessageCommunication.SendMessage(tcpClient, protocol.processInput(""));
             //new Thread(() => MessageCommunication.RecieveMessage(tcpClient)).Start();
 
             while (tcpClient.Connected) {
                 string recievedMessage;
                 string response;
-                Console.WriteLine("bbbbbbbbbb");
                 if ((recievedMessage = MessageCommunication.RecieveMessage(tcpClient)) != null) {
-                    Console.WriteLine("Wow: " + recievedMessage);
                     NewDoctorMessage?.Invoke(recievedMessage);
                     response = protocol.processInput(recievedMessage);
-                    Console.WriteLine("LOL: " + response);
                     if (response != "") {
                         MessageCommunication.SendMessage(tcpClient, response);
                         if (response.Equals("Goodbye")) {
                             tcpClient.Close();
                         }
                     }
-                } else {
-                    Console.WriteLine("Fout");
                 }
             }
         }
