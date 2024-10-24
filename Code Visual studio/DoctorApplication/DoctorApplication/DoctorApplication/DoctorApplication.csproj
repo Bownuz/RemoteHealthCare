@@ -76,13 +76,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientData.cs" />
+    <Compile Include="DoctorActions\AdjustResistanceAction.cs" />
+    <Compile Include="DoctorActions\EmergencyStopAction.cs" />
+    <Compile Include="DoctorActions\SendDataAction.cs" />
+    <Compile Include="DoctorActions\StartTrainingAction.cs" />
+    <Compile Include="DoctorActions\StopTrainingAction.cs" />
+    <Compile Include="DoctorActions\ViewTrainingDataAction.cs" />
     <Compile Include="PatiëntenScherm\ClientenForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PatiëntenScherm\ClientenForm.Designer.cs">
       <DependentUpon>ClientenForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DoctorState.cs" />
+    <Compile Include="DoctorActions\DoctorState.cs" />
     <Compile Include="LoginScherm\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
