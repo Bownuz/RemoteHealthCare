@@ -1,51 +1,50 @@
 using Server.DataStorage;
 using Server.Patterns.Observer;
 using System;
-using System.Net.Sockets;
+using System.IO;
+using System.Net.Security;
 
-namespace Server.ThreadHandlers
-{
-	public abstract class CommunicationHandler(FileStorage fileStorage, TcpClient tcpClient) : Observer
-    {
-		public readonly TcpClient tcpClient = tcpClient;
+namespace Server.ThreadHandlers {
+    public abstract class CommunicationHandler : Observer {
+      
+        protected readonly SslStream sslStream;
 
-		public readonly FileStorage fileStorage = fileStorage;
+        protected readonly FileStorage fileStorage;
 
-		protected CommunicationType communicationType;
+        protected CommunicationType communicationType;
 
-        public void HandleThread()
-		{
+        public CommunicationHandler(FileStorage fileStorage, SslStream sslStream) {
+            this.fileStorage = fileStorage;
+            this.sslStream = sslStream;
+        }
+
+        public void HandleThread() {
             DataProtocol protocol = new DataProtocol(communicationType, this);
 
-            MessageCommunication.SendMessage(tcpClient, protocol.processInput(""));
-            while (tcpClient.Connected)
-            {
-                string recievedMessage;
-                String response;
-                try
-                {
-                    if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) == null)
-                    {
+            MessageCommunication.SendMessage(sslStream, protocol.processInput(""));
+
+            while(sslStream.CanRead) {
+                string receivedMessage;
+                string response;
+
+                try {
+                    if((receivedMessage = MessageCommunication.ReceiveMessage(sslStream)) == null) {
                         continue;
                     }
 
-                    response = protocol.processInput(recievedMessage);
-                    MessageCommunication.SendMessage(tcpClient, response);
+                    response = protocol.processInput(receivedMessage);
+                    MessageCommunication.SendMessage(sslStream, response);
 
-                    if (response.Equals("Goodbye"))
-                    {
-                        tcpClient.Close();
+                    if(response.Equals("Goodbye")) {
+                        sslStream.Close();
                     }
-                } catch (IOException ex) {
+                }
+                catch(IOException ex) {
                     Console.WriteLine(ex.Message);
-                    tcpClient.Close();
+                    sslStream.Close();
                 }
             }
         }
-
         public abstract void Update(CommunicationType communicationOrigin, Session session);
-        
     }
-
 }
-

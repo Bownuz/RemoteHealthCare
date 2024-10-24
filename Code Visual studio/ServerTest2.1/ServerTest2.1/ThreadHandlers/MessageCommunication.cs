@@ -1,30 +1,25 @@
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 
-namespace Server.ThreadHandlers
-{
-	public class MessageCommunication
-	{
-        public static string ReciveMessage(TcpClient client)
+namespace Server.ThreadHandlers 
+    {
+    public class MessageCommunication 
         {
-            var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
-            {
-                return stream.ReadLine();
-            }
-        }
-
-        public static void SendMessage(TcpClient client, string message)
+        public static string ReceiveMessage(SslStream sslStream) 
         {
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII, -1, true);
-            {
-                stream.WriteLine(message);
-                stream.Flush();
-            }
+            var stream = new StreamReader(sslStream, Encoding.ASCII);
+            return stream.ReadLine();
         }
-
+        public static void SendMessage(SslStream sslStream, string message) {
+            var stream = new StreamWriter(sslStream, Encoding.ASCII, -1, true);
+            stream.WriteLine(message);
+            stream.Flush();
+        }
     }
+}
 
-    public struct PatientInitialisationMessage
+public struct PatientInitialisationMessage
     {
         public String ClientName { get; set; }
         public String ConnectedErgometer { get; set; }
