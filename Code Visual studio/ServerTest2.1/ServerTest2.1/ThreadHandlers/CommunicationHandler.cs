@@ -18,9 +18,6 @@ namespace Server.ThreadHandlers {
 
         public void HandleThread() {
             DataProtocol protocol = new DataProtocol(communicationType, this);
-
-            MessageCommunication.SendMessage(sslStream, protocol.processInput(""));
-
             while (sslStream.CanRead) {
                 string receivedMessage;
                 string response;
