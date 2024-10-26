@@ -1,12 +1,9 @@
 using Server.DataStorage;
 using Server.ThreadHandlers;
-using System;
-using System.Collections.Generic;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
-using System.Threading;
 
 namespace Server {
     public class ConnectionService {
@@ -21,14 +18,14 @@ namespace Server {
 
             Console.WriteLine("Starting up server and waiting for connections.....");
 
-            while(true) {
-                if(PatientListner.Pending()) {
+            while (true) {
+                if (PatientListner.Pending()) {
                     TcpClient client = PatientListner.AcceptTcpClient();
                     Thread clientThread = new Thread(() => HandleClient(client, fileStorage));
                     threads.Add(clientThread);
                     clientThread.Start();
                 }
-                if(DoctorListner.Pending()) {
+                if (DoctorListner.Pending()) {
                     TcpClient doctor = DoctorListner.AcceptTcpClient();
                     Thread doctorThread = new Thread(() => HandleDoctor(doctor, fileStorage));
                     threads.Add(doctorThread);
@@ -52,8 +49,7 @@ namespace Server {
 
                 DoctorHandler doctorThread = new DoctorHandler(fileStorage, sslStream);
                 doctorThread.HandleThread();
-            }
-            catch(Exception ex) {
+            } catch (Exception ex) {
                 Console.WriteLine("Error establishing SSL connection: " + ex.Message);
             }
         }
