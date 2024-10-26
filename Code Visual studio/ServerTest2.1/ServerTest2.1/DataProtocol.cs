@@ -18,8 +18,8 @@ namespace Server {
 
             }
         }
-        public String processInput(String input) {
-            return State.CheckInput(input);
+        public void processInput(String input) {
+            State.CheckInput(input);
         }
 
         public void ChangeState(State newState) {

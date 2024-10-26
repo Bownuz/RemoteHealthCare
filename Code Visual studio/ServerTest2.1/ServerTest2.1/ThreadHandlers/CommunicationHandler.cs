@@ -27,7 +27,7 @@ namespace Server.ThreadHandlers {
                         continue;
                     }
 
-                    response = protocol.processInput(receivedMessage);
+                    protocol.processInput(receivedMessage);
                     MessageCommunication.SendMessage(sslStream, response);
 
                     if (response.Equals("Goodbye")) {

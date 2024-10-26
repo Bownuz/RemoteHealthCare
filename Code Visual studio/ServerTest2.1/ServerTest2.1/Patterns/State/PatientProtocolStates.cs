@@ -5,16 +5,17 @@ using System.Text.Json;
 
 namespace Server.Patterns.State.PatientStates {
     public class P_Welcome(DataProtocol protocol, PatientHandler patientHandler) : PatientState(protocol, patientHandler) {
-        public override string CheckInput(string input) {
+        public override void CheckInput(string input) {
             protocol.ChangeState(new P_Initialise(protocol, patientHandler));
-            return "Welcome Client";
+            MessageCommunication.SendMessage(patientHandler.sslStream, "Welcome Client");
         }
     }
 
     public class P_Initialise(DataProtocol protocol, PatientHandler patientHandler) : PatientState(protocol, patientHandler) {
-        public override string CheckInput(string input) {
+        public override void CheckInput(string input) {
             if (input.Equals("Quit Communication")) {
-                return "Goodbye";
+                MessageCommunication.SendMessage(patientHandler.sslStream, "Goodbye");
+                patientHandler.sslStream.Close();
             }
 
 
@@ -43,24 +44,25 @@ namespace Server.Patterns.State.PatientStates {
 
 
                 protocol.ChangeState(new P_RecievingData(protocol, patientHandler));
-                return "Ready to recieve data";
+                MessageCommunication.SendMessage(patientHandler.sslStream, "Ready to recieve data");
             }
-            return "add failed message";
+            MessageCommunication.SendMessage(patientHandler.sslStream, "add failed message";
         }
 
     }
 
     public class P_RecievingData(DataProtocol protocol, PatientHandler patientHandler) : PatientState(protocol, patientHandler) {
-        public override string CheckInput(string input) {
+        public override void CheckInput(string input) {
             if (input.Equals("Quit Communication")) {
-                return "Goodbye";
+                MessageCommunication.SendMessage(patientHandler.sslStream, "Goodbye");
+                patientHandler.sslStream.Close();
             }
 
             if (jsonRegex.IsMatch(input)) {
                 patientHandler.connectedPatient.currentSession.addMessage(input, CommunicationType.PATIENT);
-                return "Ready to recieve data";
+                MessageCommunication.SendMessage(patientHandler.sslStream, "Ready to recieve data";
             }
-            return "add failed message";
+            MessageCommunication.SendMessage(patientHandler.sslStream, "add failed message";
         }
     }
 }

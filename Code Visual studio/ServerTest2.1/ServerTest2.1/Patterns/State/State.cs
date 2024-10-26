@@ -10,7 +10,7 @@ namespace Server.Patterns.State {
             jsonRegex = new Regex("^\\{.+\\}$");
         }
 
-        public abstract String CheckInput(String input);
+        public abstract void CheckInput(String input);
 
     }
 
