@@ -131,7 +131,7 @@ namespace Server.Patterns.State.DoctorStates {
                 MessageCommunication.SendMessage(doctorHandler.sslStream, "Ready to recieve Command");
             }
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            MessageCommunication.SendMessage(doctorHandler.sslStream, $"Failed to Remove : {input} : this patient does not exist or This Client was not subscribed to this patient");e
+            MessageCommunication.SendMessage(doctorHandler.sslStream, $"Failed to Remove : {input} : this patient does not exist or This Client was not subscribed to this patient");
             MessageCommunication.SendMessage(doctorHandler.sslStream, $"Ready to recieve Command");
 
         }

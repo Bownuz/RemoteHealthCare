@@ -35,8 +35,12 @@ namespace Server {
         }
 
         static void HandleClient(TcpClient client, FileStorage fileStorage) {
-            PatientHandler clientThread = new PatientHandler(fileStorage, client);
+            // this should convert tcpclient to an ssl stream
+
+
+            PatientHandler clientThread = new PatientHandler(fileStorage, sslStream);
             clientThread.HandleThread();
+
         }
 
         static void HandleDoctor(TcpClient doctor, FileStorage fileStorage) {

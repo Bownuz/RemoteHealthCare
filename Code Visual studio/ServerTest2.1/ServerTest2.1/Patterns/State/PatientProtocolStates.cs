@@ -46,7 +46,7 @@ namespace Server.Patterns.State.PatientStates {
                 protocol.ChangeState(new P_RecievingData(protocol, patientHandler));
                 MessageCommunication.SendMessage(patientHandler.sslStream, "Ready to recieve data");
             }
-            MessageCommunication.SendMessage(patientHandler.sslStream, "add failed message";
+            MessageCommunication.SendMessage(patientHandler.sslStream, "add failed message");
         }
 
     }
@@ -60,9 +60,9 @@ namespace Server.Patterns.State.PatientStates {
 
             if (jsonRegex.IsMatch(input)) {
                 patientHandler.connectedPatient.currentSession.addMessage(input, CommunicationType.PATIENT);
-                MessageCommunication.SendMessage(patientHandler.sslStream, "Ready to recieve data";
+                MessageCommunication.SendMessage(patientHandler.sslStream, "Ready to recieve data");
             }
-            MessageCommunication.SendMessage(patientHandler.sslStream, "add failed message";
+            MessageCommunication.SendMessage(patientHandler.sslStream, "add failed message");
         }
     }
 }

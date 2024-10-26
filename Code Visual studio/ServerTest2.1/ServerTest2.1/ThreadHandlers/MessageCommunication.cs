@@ -13,7 +13,6 @@ namespace Server.ThreadHandlers {
             stream.Flush();
         }
     }
-}
 
 public struct PatientInitialisationMessage {
     public String ClientName { get; set; }

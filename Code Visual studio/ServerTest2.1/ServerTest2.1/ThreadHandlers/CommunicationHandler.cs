@@ -28,11 +28,7 @@ namespace Server.ThreadHandlers {
                     }
 
                     protocol.processInput(receivedMessage);
-                    MessageCommunication.SendMessage(sslStream, response);
 
-                    if (response.Equals("Goodbye")) {
-                        sslStream.Close();
-                    }
                 } catch (IOException ex) {
                     Console.WriteLine(ex.Message);
                     sslStream.Close();
