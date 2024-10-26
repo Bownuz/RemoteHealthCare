@@ -1,12 +1,10 @@
 using Server.DataStorage;
 using Server.Patterns.Observer;
-using System;
-using System.IO;
 using System.Net.Security;
 
 namespace Server.ThreadHandlers {
     public abstract class CommunicationHandler : Observer {
-      
+
         public readonly SslStream sslStream;
 
         public readonly FileStorage fileStorage;
@@ -23,23 +21,22 @@ namespace Server.ThreadHandlers {
 
             MessageCommunication.SendMessage(sslStream, protocol.processInput(""));
 
-            while(sslStream.CanRead) {
+            while (sslStream.CanRead) {
                 string receivedMessage;
                 string response;
 
                 try {
-                    if((receivedMessage = MessageCommunication.ReceiveMessage(sslStream)) == null) {
+                    if ((receivedMessage = MessageCommunication.ReceiveMessage(sslStream)) == null) {
                         continue;
                     }
 
                     response = protocol.processInput(receivedMessage);
                     MessageCommunication.SendMessage(sslStream, response);
 
-                    if(response.Equals("Goodbye")) {
+                    if (response.Equals("Goodbye")) {
                         sslStream.Close();
                     }
-                }
-                catch(IOException ex) {
+                } catch (IOException ex) {
                     Console.WriteLine(ex.Message);
                     sslStream.Close();
                 }
