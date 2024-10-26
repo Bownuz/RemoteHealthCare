@@ -10,7 +10,7 @@ namespace Server.ThreadHandlers {
         }
 
         public override void Update(CommunicationType communicationOrigin, Session session) {
-            if(communicationOrigin == CommunicationType.PATIENT) {
+            if (communicationOrigin == CommunicationType.PATIENT) {
                 Console.WriteLine(session.getLatestMessage(communicationOrigin));
                 MessageCommunication.SendMessage(sslStream, session.getLatestMessage(communicationOrigin));
             }
