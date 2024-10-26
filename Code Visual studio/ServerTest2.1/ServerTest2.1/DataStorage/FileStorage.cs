@@ -21,10 +21,6 @@ namespace Server.DataStorage {
 
             Console.WriteLine("I should Save now!!");
             foreach (var patient in Patients) {
-                if (!Directory.Exists(PatientsPath)) {
-                    Directory.CreateDirectory(PatientsPath);
-                }
-
                 if (File.Exists(PatientsPath + "/" + patient.Key + ".txt")) {
                     File.Delete(PatientsPath + "/" + patient.Key + ".txt");
                 }
@@ -36,9 +32,6 @@ namespace Server.DataStorage {
             }
 
             foreach (var doctor in doctors) {
-                if (!Directory.Exists(DoctorsPath)) {
-                    Directory.CreateDirectory(DoctorsPath);
-                }
 
                 if (File.Exists(DoctorsPath + "/" + doctor.Key + ".txt")) {
                     File.Delete(DoctorsPath + "/" + doctor.Key + ".txt");
@@ -56,6 +49,13 @@ namespace Server.DataStorage {
             String PatientsPath = Environment.CurrentDirectory + "/PatientData";
             String DoctorsPath = Environment.CurrentDirectory + "/DoctorData";
 
+            if (!Directory.Exists(PatientsPath)) {
+                Directory.CreateDirectory(PatientsPath);
+            }
+
+            if (!Directory.Exists(DoctorsPath)) {
+                Directory.CreateDirectory(DoctorsPath);
+            }
 
             foreach (var file in
             Directory.EnumerateFiles(PatientsPath, "*.txt")) {
