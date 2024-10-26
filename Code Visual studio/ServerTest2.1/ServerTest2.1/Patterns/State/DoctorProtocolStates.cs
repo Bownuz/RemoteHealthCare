@@ -1,4 +1,4 @@
-﻿using Server.DataStorage;
+using Server.DataStorage;
 using Server.ThreadHandlers;
 using System;
 using System.Text.Json;
@@ -76,7 +76,7 @@ namespace Server.Patterns.State.DoctorStates
                     return "What data should be sent?";
 
                 default:
-                    MessageCommunication.SendMessage(doctorHandler.tcpClient , "this Command is not Valid.");
+                    MessageCommunication.SendMessage(doctorHandler.sslStream, "this Command is not Valid.");
                     return $"ready to recieve Command";
             }
         }
@@ -103,7 +103,7 @@ namespace Server.Patterns.State.DoctorStates
                 Session sessionToSend = doctorHandler.fileStorage.GetPatient(dataToFetch.PatientName).GetSession(dataToFetch.SessionDate);
 
                 protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-                MessageCommunication.SendMessage(doctorHandler.tcpClient, JsonSerializer.Serialize<Session>(sessionToSend));
+                MessageCommunication.SendMessage(doctorHandler.sslStream, JsonSerializer.Serialize<Session>(sessionToSend));
                 return "Ready to recieve Command";
             }
             catch (Exception ex){
@@ -148,7 +148,7 @@ namespace Server.Patterns.State.DoctorStates
                 return "Ready to recieve Command";
             }
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            MessageCommunication.SendMessage(doctorHandler.tcpClient, $"Failed to Remove : {input} : this patient does not exist or This Client was not subscribed to this patient");
+            MessageCommunication.SendMessage(doctorHandler.sslStream, $"Failed to Remove : {input} : this patient does not exist or This Client was not subscribed to this patient");e
             return $"Ready to recieve Command";
 
         }
@@ -173,7 +173,7 @@ namespace Server.Patterns.State.DoctorStates
                     protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
                     return "Ready to recieve Command";
                 }
-                MessageCommunication.SendMessage(doctorHandler.tcpClient, "this patient does not exist");
+                MessageCommunication.SendMessage(doctorHandler.sslStream, "this patient does not exist");
                 return "Ready to recieve Command";
             }
             return "add failed message";

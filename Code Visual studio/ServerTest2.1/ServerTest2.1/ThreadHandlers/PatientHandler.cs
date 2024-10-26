@@ -8,7 +8,7 @@ namespace Server.ThreadHandlers
 	{
 		public Patient connectedPatient {  get; set; }
 
-		public PatientHandler(FileStorage fileStorage, TcpClient tcpClient) : base(fileStorage, tcpClient) 
+        public PatientHandler(FileStorage fileStorage, SslStream sslStream) : base(fileStorage, sslStream) {
         {
 		    communicationType = CommunicationType.PATIENT;
 		}
@@ -18,7 +18,7 @@ namespace Server.ThreadHandlers
             if (communicationOrigin == CommunicationType.DOCTOR)
             {
                 Console.WriteLine(session.getLatestMessage(communicationOrigin));
-                MessageCommunication.SendMessage(tcpClient, session.getLatestMessage(communicationOrigin));
+                MessageCommunication.SendMessage(sslStream, session.getLatestMessage(communicationOrigin));
             }
         }
     }

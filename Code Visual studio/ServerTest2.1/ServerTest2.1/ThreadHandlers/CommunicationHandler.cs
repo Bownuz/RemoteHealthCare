@@ -7,9 +7,9 @@ using System.Net.Security;
 namespace Server.ThreadHandlers {
     public abstract class CommunicationHandler : Observer {
       
-        protected readonly SslStream sslStream;
+        public readonly SslStream sslStream;
 
-        protected readonly FileStorage fileStorage;
+        public readonly FileStorage fileStorage;
 
         protected CommunicationType communicationType;
 

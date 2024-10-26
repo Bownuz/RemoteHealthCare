@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Server.ThreadHandlers 
     {
-    public class MessageCommunication 
+        public static string ReceiveMessage(SslStream sslStream) {
         {
         public static string ReceiveMessage(SslStream sslStream) 
         {

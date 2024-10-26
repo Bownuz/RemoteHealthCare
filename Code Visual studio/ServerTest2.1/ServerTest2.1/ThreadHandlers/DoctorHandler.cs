@@ -5,9 +5,7 @@ namespace Server.ThreadHandlers {
     public class DoctorHandler : CommunicationHandler {
         public Doctor connectedDoctor { get; set; }
 
-        public DoctorHandler(FileStorage fileStorage, SslStream sslStream)
-            : base(fileStorage, sslStream) 
-        {
+        public DoctorHandler(FileStorage fileStorage, SslStream sslStream) : base(fileStorage, sslStream) {
             communicationType = CommunicationType.DOCTOR;
         }
 
