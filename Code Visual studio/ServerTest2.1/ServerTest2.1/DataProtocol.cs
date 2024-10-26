@@ -1,18 +1,14 @@
-using System;
 using Server.Patterns.State;
 using Server.Patterns.State.DoctorStates;
 using Server.Patterns.State.PatientStates;
 using Server.ThreadHandlers;
 
 namespace Server {
-	public class DataProtocol
-	{
+    public class DataProtocol {
         private State State;
 
-        public DataProtocol(CommunicationType communicationType, CommunicationHandler communicationHandler)
-        {
-            switch (communicationType)
-            {
+        public DataProtocol(CommunicationType communicationType, CommunicationHandler communicationHandler) {
+            switch (communicationType) {
                 case CommunicationType.PATIENT:
                     this.State = new P_Welcome(this, (PatientHandler)communicationHandler);
                     break;
@@ -22,19 +18,17 @@ namespace Server {
 
             }
         }
-        public String processInput(String input)
-        {
+        public String processInput(String input) {
             return State.CheckInput(input);
         }
 
-        public void ChangeState(State newState)
-		{
+        public void ChangeState(State newState) {
             this.State = newState;
 
         }
 
-	
 
-	}
+
+    }
 }
 
