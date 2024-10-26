@@ -8,80 +8,103 @@ namespace Server.DataStorage {
         public readonly Dictionary<String, Patient> Patients;
         public Dictionary<String, Doctor> doctors { get; private set; }
 
+        public static readonly String DoctorDirectoryPath = Environment.CurrentDirectory + "/DoctorData";
+        public static readonly String PatientDirectoryPath = Environment.CurrentDirectory + "/PatientData";
+
         public FileStorage() {
             Patients = new Dictionary<string, Patient>();
             doctors = new Dictionary<String, Doctor>();
-
             LoadFromFile();
         }
 
         public void SaveToFile() {
-            String PatientsPath = Environment.CurrentDirectory + "/PatientData";
-            String DoctorsPath = Environment.CurrentDirectory + "/DoctorData";
+
 
             Console.WriteLine("I should Save now!!");
-            foreach (var patient in Patients) {
-                if (File.Exists(PatientsPath + "/" + patient.Key + ".txt")) {
-                    File.Delete(PatientsPath + "/" + patient.Key + ".txt");
-                }
+            foreach (KeyValuePair<String, Patient> patientEntry in Patients) {
+                Patient patient = patientEntry.Value;
+                String patientName = patientEntry.Key;
+                String filePath = String.Format($"{PatientDirectoryPath}/{patientName}.txt");
 
-                using (StreamWriter sw = File.CreateText((PatientsPath + "/" + patient.Key + ".txt"))) {
-                    String patientString = JsonSerializer.Serialize<Patient>(patient.Value);
-                    sw.WriteLine(patientString);
-                }
+                FileCheckAndDelete(filePath);
+                WritePatientToFile(patientName, patient);
             }
 
-            foreach (var doctor in doctors) {
+            foreach (KeyValuePair<String, Doctor> doctorEntry in doctors) {
+                Doctor doctor = doctorEntry.Value;
+                String doctorName = doctorEntry.Key;
+                String filePath = String.Format($"{DoctorDirectoryPath}/{doctorName}.txt");
 
-                if (File.Exists(DoctorsPath + "/" + doctor.Key + ".txt")) {
-                    File.Delete(DoctorsPath + "/" + doctor.Key + ".txt");
-                }
-
-                using (StreamWriter sw = File.CreateText((DoctorsPath + "/" + doctor.Key + ".txt"))) {
-                    String patientString = JsonSerializer.Serialize<Doctor>(doctor.Value);
-                    sw.WriteLine(patientString);
-                }
+                FileCheckAndDelete(filePath);
+                WriteDoctorToFile(doctorName, doctor);
             }
 
         }
 
         public void LoadFromFile() {
-            String PatientsPath = Environment.CurrentDirectory + "/PatientData";
-            String DoctorsPath = Environment.CurrentDirectory + "/DoctorData";
+            DirectoryCheckAndCreate(PatientDirectoryPath);
+            DirectoryCheckAndCreate(DoctorDirectoryPath);
 
-            if (!Directory.Exists(PatientsPath)) {
-                Directory.CreateDirectory(PatientsPath);
-            }
+            LoadAllObjectsFromDirectory(PatientDirectoryPath, CommunicationType.PATIENT);
+            LoadAllObjectsFromDirectory(DoctorDirectoryPath, CommunicationType.DOCTOR);
+        }
 
-            if (!Directory.Exists(DoctorsPath)) {
-                Directory.CreateDirectory(DoctorsPath);
-            }
+        private void LoadAllObjectsFromDirectory(string DirectoryPath, CommunicationType communicationType) {
+            foreach (String filePath in Directory.EnumerateFiles(DirectoryPath, "*.txt")) {
+                String fileContent = ReadFileContent(filePath);
+                String Name = Path.GetFileNameWithoutExtension(filePath);
 
-            foreach (var file in
-            Directory.EnumerateFiles(PatientsPath, "*.txt")) {
-                String fileContent = "";
-                using (StreamReader sr = new StreamReader(file)) {
-                    while (!sr.EndOfStream) {
-                        fileContent += sr.ReadLine();
-                    }
+                switch (communicationType) {
+                    case CommunicationType.PATIENT:
+                        Patient patient = JsonSerializer.Deserialize<Patient>(fileContent);
+                        Patients.Add(Name, patient);
+                        break;
+                    case CommunicationType.DOCTOR:
+                        Doctor doctor = JsonSerializer.Deserialize<Doctor>(fileContent);
+                        doctors.Add(Name, doctor);
+                        break;
                 }
-                String Name = Path.GetFileNameWithoutExtension(file);
-                Patient patient = JsonSerializer.Deserialize<Patient>(fileContent);
-                Patients.Add(Name, patient);
             }
+        }
 
-            foreach (var file in
-            Directory.EnumerateFiles(DoctorsPath, "*.txt")) {
-                String fileContent = "";
-                using (StreamReader sr = new StreamReader(file)) {
-                    while (!sr.EndOfStream) {
-                        fileContent += sr.ReadLine();
-                    }
-                }
-                String Name = Path.GetFileNameWithoutExtension(file);
-                Doctor doctor = JsonSerializer.Deserialize<Doctor>(fileContent);
-                doctors.Add(Name, doctor);
+        public static void DirectoryCheckAndCreate(String DirectoryPath) {
+            if (!Directory.Exists(DirectoryPath)) {
+                Directory.CreateDirectory(DirectoryPath);
             }
+        }
+
+        public static void FileCheckAndDelete(String FilePath) {
+            if (File.Exists(FilePath)) {
+                File.Delete(FilePath);
+            }
+        }
+
+        private static void WritePatientToFile(String patientName, Patient patient) {
+            String FilePath = String.Format($"{PatientDirectoryPath}/{patientName}.txt");
+
+            using (StreamWriter sw = File.CreateText(FilePath)) {
+                String patientString = JsonSerializer.Serialize<Patient>(patient);
+                sw.WriteLine(patientString);
+            }
+        }
+
+        private static void WriteDoctorToFile(String doctorName, Doctor doctor) {
+            String FilePath = String.Format($"{DoctorDirectoryPath}/{doctorName}.txt");
+
+            using (StreamWriter sw = File.CreateText(FilePath)) {
+                String patientString = JsonSerializer.Serialize<Doctor>(doctor);
+                sw.WriteLine(patientString);
+            }
+        }
+
+        public static string ReadFileContent(String filePath) {
+            String fileContent = "";
+            using (StreamReader sr = new StreamReader(filePath)) {
+                while (!sr.EndOfStream) {
+                    fileContent += sr.ReadLine();
+                }
+            }
+            return fileContent;
         }
 
         public Patient GetPatient(String patientName) {
