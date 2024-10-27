@@ -12,23 +12,22 @@ public class ServerConnection {
     private TcpClient client;
     private StreamReader reader;
     private StreamWriter writer;
-    private SslStream sslStream;
+    private NetworkStream networkStream;
     private CancellationTokenSource cancellationTokenSource;
 
     public event Action<ClientData> OnDataReceived;
 
-    public ServerConnection(SslStream stream) {
-        this.sslStream = stream;
+    public ServerConnection(NetworkStream stream) {
+        this.networkStream = stream;
     }
 
     public async Task ConnectToServer(string serverAddress, int port) {
         try {
             client = new TcpClient(serverAddress, port);
-            sslStream = new SslStream(client.GetStream(), false, ValidateServerCertificate, null);
-            await sslStream.AuthenticateAsClientAsync("ServerName");
-         
-            reader = new StreamReader(sslStream);
-            writer = new StreamWriter(sslStream) { AutoFlush = true };
+            networkStream = client.GetStream();
+            
+            reader = new StreamReader(networkStream);
+            writer = new StreamWriter(networkStream) { AutoFlush = true };
 
             cancellationTokenSource = new CancellationTokenSource();
             await ListenForLiveData(cancellationTokenSource.Token);
@@ -60,7 +59,7 @@ public class ServerConnection {
         try {
             cancellationTokenSource?.Cancel();
             client?.Close();
-            sslStream?.Close();
+            networkStream?.Close();
         }
         catch(Exception ex) {
             Console.WriteLine("Fout bij het verbreken van de verbinding: " + ex.Message);
@@ -126,9 +125,5 @@ public class ServerConnection {
         catch(Exception ex) {
             throw new Exception("Fout bij het verzenden van commando: " + ex.Message, ex);
         }
-    }
-
-    private static bool ValidateServerCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors) {
-        return true;
     }
 }

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Net.Security;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DoctorApplication;
 
 namespace DoctorApplication {
     public partial class Form1 : Form {
-        private SslStream sslStream;
+        private NetworkStream networkStream;
         private TcpClient doctorClient;
 
         public Form1() {
@@ -36,13 +34,8 @@ namespace DoctorApplication {
         private async Task LoginDoctor(int doctorId, string username, string password) {
             try {
                 doctorClient = new TcpClient("localhost", 4790);
+                networkStream = doctorClient.GetStream();
 
-                sslStream = new SslStream(doctorClient.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
-
-                X509Certificate2 clientCertificate = new X509Certificate2(@"C:\Users\mlahl\source\repos\Project\Code Visual studio\certificate\your_certificate.pfx", "groepa4");
-
-                await sslStream.AuthenticateAsClientAsync("localhost", new X509CertificateCollection { clientCertificate }, System.Security.Authentication.SslProtocols.Tls12, false);
-                
                 var loginData = new {
                     DoctorID = doctorId,
                     DoctorName = username,
@@ -51,7 +44,7 @@ namespace DoctorApplication {
 
                 SendCommandToServer(loginData);
 
-                using(var reader = new System.IO.StreamReader(sslStream)) {
+                using(var reader = new System.IO.StreamReader(networkStream)) {
                     string response = await reader.ReadLineAsync();
                     if(response.Contains("Login Successful")) {
                         MessageBox.Show("Inlog succesvol.");
@@ -67,14 +60,13 @@ namespace DoctorApplication {
             }
         }
 
-
         private void SendCommandToServer(object command) {
             try {
                 string jsonCommand = System.Text.Json.JsonSerializer.Serialize(command);
-                using(var writer = new System.IO.StreamWriter(sslStream) { AutoFlush = true }) {
+                using(var writer = new System.IO.StreamWriter(networkStream) { AutoFlush = true }) {
                     writer.WriteLine(jsonCommand);
                 }
-                MessageBox.Show("Commando succesvol verzonden. ");
+                MessageBox.Show("Commando succesvol verzonden.");
             }
             catch(Exception ex) {
                 MessageBox.Show("Fout bij het verzenden van commando: " + ex.Message);
@@ -82,34 +74,10 @@ namespace DoctorApplication {
         }
 
         private void OpenClientenForm() {
-            
-            ClientenForm clientenForm = new ClientenForm(sslStream);
+            ClientenForm clientenForm = new ClientenForm(networkStream);
             clientenForm.Show();
-            this.Hide(); 
+            this.Hide();
         }
-
-        public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
-            return sslPolicyErrors == SslPolicyErrors.None;
-        }
-
-
-        private void Form1_Load(object sender, EventArgs e) {
-            UpdateDateTimeLabel(null, null);
-            timeUpdater.Interval = 1000;
-            timeUpdater.Tick += new EventHandler(UpdateTimeLabel);
-            timeUpdater.Start();
-        }
-
-        private void UpdateTimeLabel(object sender, EventArgs e) {
-            DateTime now = DateTime.Now;
-            TimeLabel.Text = $"Tijd: {now:HH:mm:ss}";
-        }
-
-        private void UpdateDateTimeLabel(object sender, EventArgs e) {
-            DateTime now = DateTime.Now;
-            DateLabel.Text = $"Vandaag is het: {now:dddd, dd MMMM yyyy}";
-        }
-
         private void CloseButton_Click(object sender, EventArgs e) {
             Application.Exit();
         }
