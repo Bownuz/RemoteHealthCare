@@ -35,23 +35,17 @@ namespace Server {
         }
 
         static void HandleClient(TcpClient client, FileStorage fileStorage) {
-            // this should convert tcpclient to an ssl stream
-
-
-            PatientHandler clientThread = new PatientHandler(fileStorage, sslStream);
+            NetworkStream networkStream = client.GetStream();   
+            PatientHandler clientThread = new PatientHandler(fileStorage, networkStream);
             clientThread.HandleThread();
 
         }
 
-        static void HandleDoctor(TcpClient doctor, FileStorage fileStorage) {
+        static void HandleDoctor(TcpClient doctor, FileStorage fileStorage) 
+            {
             try {
-                SslStream sslStream = new SslStream(doctor.GetStream(), false);
-
-                X509Certificate2 serverCertificate = new X509Certificate2("C:\\Users\\mlahl\\source\\repos\\Project\\Code Visual studio\\certificate", "groepa4");
-
-                sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false, checkCertificateRevocation: false);
-
-                DoctorHandler doctorThread = new DoctorHandler(fileStorage, sslStream);
+                NetworkStream networkStream = doctor.GetStream();
+                DoctorHandler doctorThread = new DoctorHandler(fileStorage, networkStream);
                 doctorThread.HandleThread();
             } catch (Exception ex) {
                 Console.WriteLine("Error establishing SSL connection: " + ex.Message);

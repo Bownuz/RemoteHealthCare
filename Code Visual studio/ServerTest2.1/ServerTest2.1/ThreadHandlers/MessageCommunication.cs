@@ -1,18 +1,21 @@
 using System.Net.Security;
+using System.Net.Sockets;
 using System.Text;
 
 namespace Server.ThreadHandlers {
     public class MessageCommunication {
-        public static string ReceiveMessage(SslStream sslStream) {
-            var stream = new StreamReader(sslStream, Encoding.ASCII);
+        public static string ReceiveMessage(NetworkStream networkStream) {
+            var stream = new StreamReader(networkStream, Encoding.ASCII);
             return stream.ReadLine();
         }
-        public static void SendMessage(SslStream sslStream, string message) {
-            var stream = new StreamWriter(sslStream, Encoding.ASCII, -1, true);
+
+        public static void SendMessage(NetworkStream networkStream, string message) {
+            var stream = new StreamWriter(networkStream, Encoding.ASCII, -1, true);
             stream.WriteLine(message);
             stream.Flush();
         }
     }
+}
 
 public struct PatientInitialisationMessage {
     public String ClientName { get; set; }

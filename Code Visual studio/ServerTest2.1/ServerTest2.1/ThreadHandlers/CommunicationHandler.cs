@@ -1,29 +1,30 @@
 using Server.DataStorage;
 using Server.Patterns.Observer;
 using System.Net.Security;
+using System.Net.Sockets;
 
 namespace Server.ThreadHandlers {
     public abstract class CommunicationHandler : Observer {
 
-        public readonly SslStream sslStream;
+        public NetworkStream networkStream;
 
         public readonly FileStorage fileStorage;
 
         protected CommunicationType communicationType;
 
-        public CommunicationHandler(FileStorage fileStorage, SslStream sslStream) {
+        public CommunicationHandler(FileStorage fileStorage, NetworkStream networkStream) {
             this.fileStorage = fileStorage;
-            this.sslStream = sslStream;
+            this.networkStream = networkStream;
         }
 
         public void HandleThread() {
             DataProtocol protocol = new DataProtocol(communicationType, this);
-            while (sslStream.CanRead) {
+            while (networkStream.CanRead) {
                 string receivedMessage;
                 string response;
 
                 try {
-                    if ((receivedMessage = MessageCommunication.ReceiveMessage(sslStream)) == null) {
+                    if ((receivedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
                         continue;
                     }
 
@@ -31,7 +32,7 @@ namespace Server.ThreadHandlers {
 
                 } catch (IOException ex) {
                     Console.WriteLine(ex.Message);
-                    sslStream.Close();
+                    networkStream.Close();
                 }
             }
         }

@@ -7,15 +7,15 @@ namespace Server.Patterns.State.PatientStates {
     public class P_Welcome(DataProtocol protocol, PatientHandler patientHandler) : PatientState(protocol, patientHandler) {
         public override void CheckInput(string input) {
             protocol.ChangeState(new P_Initialise(protocol, patientHandler));
-            MessageCommunication.SendMessage(patientHandler.sslStream, "Welcome Client");
+            MessageCommunication.SendMessage(patientHandler.networkStream, "Welcome Client");
         }
     }
 
     public class P_Initialise(DataProtocol protocol, PatientHandler patientHandler) : PatientState(protocol, patientHandler) {
         public override void CheckInput(string input) {
             if (input.Equals("Quit Communication")) {
-                MessageCommunication.SendMessage(patientHandler.sslStream, "Goodbye");
-                patientHandler.sslStream.Close();
+                MessageCommunication.SendMessage(patientHandler.networkStream, "Goodbye");
+                patientHandler.networkStream.Close();
             }
 
 
@@ -44,9 +44,9 @@ namespace Server.Patterns.State.PatientStates {
 
 
                 protocol.ChangeState(new P_RecievingData(protocol, patientHandler));
-                MessageCommunication.SendMessage(patientHandler.sslStream, "Ready to recieve data");
+                MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
             }
-            MessageCommunication.SendMessage(patientHandler.sslStream, "add failed message");
+            MessageCommunication.SendMessage(patientHandler.networkStream, "add failed message");
         }
 
     }
@@ -54,15 +54,15 @@ namespace Server.Patterns.State.PatientStates {
     public class P_RecievingData(DataProtocol protocol, PatientHandler patientHandler) : PatientState(protocol, patientHandler) {
         public override void CheckInput(string input) {
             if (input.Equals("Quit Communication")) {
-                MessageCommunication.SendMessage(patientHandler.sslStream, "Goodbye");
-                patientHandler.sslStream.Close();
+                MessageCommunication.SendMessage(patientHandler.networkStream, "Goodbye");
+                patientHandler.networkStream.Close();
             }
 
             if (jsonRegex.IsMatch(input)) {
                 patientHandler.connectedPatient.currentSession.addMessage(input, CommunicationType.PATIENT);
-                MessageCommunication.SendMessage(patientHandler.sslStream, "Ready to recieve data");
+                MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
             }
-            MessageCommunication.SendMessage(patientHandler.sslStream, "add failed message");
+            MessageCommunication.SendMessage(patientHandler.networkStream, "add failed message");
         }
     }
 }

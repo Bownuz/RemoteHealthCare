@@ -3,162 +3,179 @@ using Server.ThreadHandlers;
 using System.Text.Json;
 
 namespace Server.Patterns.State.DoctorStates {
-    //TODO: fix all return strings
-    public class D_Welcome(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler) {
+    public class D_Welcome : DoctorState {
+        public D_Welcome(DataProtocol protocol, DoctorHandler doctorHandler) : base(protocol, doctorHandler) { }
+
         public override void CheckInput(string input) {
             protocol.ChangeState(new D_Login(protocol, doctorHandler));
-            MessageCommunication.SendMessage(doctorHandler.sslStream, "Enter Login Data");
+            MessageCommunication.SendMessage(doctorHandler.networkStream, "Enter Login Data");
         }
     }
 
-    public class D_Login(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler) {
+    public class D_Login : DoctorState {
+        public D_Login(DataProtocol protocol, DoctorHandler doctorHandler) : base(protocol, doctorHandler) { }
+
         public override void CheckInput(string input) {
-            if (input.Equals("Quit Communication")) {
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Goodbye");
-                doctorHandler.sslStream.Close();
+            if(input.Equals("Quit Communication")) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Goodbye");
+                doctorHandler.networkStream.Close();
             }
 
-            if (jsonRegex.IsMatch(input)) {
+            if(jsonRegex.IsMatch(input)) {
                 Doctor doctor = JsonSerializer.Deserialize<Doctor>(input);
 
-                if (doctorHandler.fileStorage.DoctorExists(doctor.DoctorID) &&
+                if(doctorHandler.fileStorage.DoctorExists(doctor.DoctorID) &&
                     doctorHandler.fileStorage.getDoctor(doctor.DoctorID).DoctorPassword.Equals(doctor.DoctorPassword) &&
                     doctorHandler.fileStorage.getDoctor(doctor.DoctorID).DoctorName.Equals(doctor.DoctorName)
-                    ) {
+                ) {
                     doctorHandler.connectedDoctor = doctorHandler.fileStorage.getDoctor(doctor.DoctorID);
                     protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-                    MessageCommunication.SendMessage(doctorHandler.sslStream, "This Login State Should Still be Added");
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "This Login State Should Still be Added");
                 }
-
+                else {
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "Incorrect Login");
+                }
             }
-            MessageCommunication.SendMessage(doctorHandler.sslStream, "Incorrect Login");
         }
     }
 
-    public class D_RecievingCommand(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler) {
+    public class D_RecievingCommand : DoctorState {
+        public D_RecievingCommand(DataProtocol protocol, DoctorHandler doctorHandler) : base(protocol, doctorHandler) { }
+
         public override void CheckInput(string input) {
-            if (input.Equals("Quit Communication")) {
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Goodbye");
-                doctorHandler.sslStream.Close();
+            if(input.Equals("Quit Communication")) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Goodbye");
+                doctorHandler.networkStream.Close();
             }
 
-
-            switch (input) {
+            switch(input) {
                 case "Retrieve Data":
                     protocol.ChangeState(new D_FetchingData(protocol, doctorHandler));
-                    MessageCommunication.SendMessage(doctorHandler.sslStream, "Which patient and date should data be retrieved from?");
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "Which patient and date should data be retrieved from?");
                     break;
                 case "Subscribe":
-                    AddRemoveObserverMessage addMessageData = new AddRemoveObserverMessage("Which patient should be subscribed to?", doctorHandler.fileStorage.PatientNamesToArray());
-                    String addMessage = JsonSerializer.Serialize(addMessageData);
+                    var addMessageData = new AddRemoveObserverMessage("Which patient should be subscribed to?", doctorHandler.fileStorage.PatientNamesToArray());
+                    string addMessage = JsonSerializer.Serialize(addMessageData);
 
                     protocol.ChangeState(new D_Subscribing(protocol, doctorHandler));
-                    MessageCommunication.SendMessage(doctorHandler.sslStream, addMessage);
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, addMessage);
                     break;
                 case "Unsubscribe":
-                    AddRemoveObserverMessage removeMessageData = new AddRemoveObserverMessage("Which patient should be unsubscribed form?", doctorHandler.fileStorage.PatientNamesToArray());
-                    String removeMessage = JsonSerializer.Serialize(removeMessageData);
+                    var removeMessageData = new AddRemoveObserverMessage("Which patient should be unsubscribed from?", doctorHandler.fileStorage.PatientNamesToArray());
+                    string removeMessage = JsonSerializer.Serialize(removeMessageData);
 
                     protocol.ChangeState(new D_Unsubsribing(protocol, doctorHandler));
-                    MessageCommunication.SendMessage(doctorHandler.sslStream, removeMessage);
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, removeMessage);
                     break;
                 case "Send Data":
                     protocol.ChangeState(new D_SendData(protocol, doctorHandler));
-                    MessageCommunication.SendMessage(doctorHandler.sslStream, "What data should be sent?");
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "What data should be sent?");
                     break;
                 default:
-                    MessageCommunication.SendMessage(doctorHandler.sslStream, "this Command is not Valid.");
-                    MessageCommunication.SendMessage(doctorHandler.sslStream, "ready to recieve Command");
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "This command is not valid.");
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
                     break;
             }
         }
     }
 
+    public class D_FetchingData : DoctorState {
+        public D_FetchingData(DataProtocol protocol, DoctorHandler doctorHandler) : base(protocol, doctorHandler) { }
 
-    public class D_FetchingData(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler) {
         public override void CheckInput(string input) {
-            if (input.Equals("Quit Communication")) {
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Goodbye");
-                doctorHandler.sslStream.Close();
+            if(input.Equals("Quit Communication")) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Goodbye");
+                doctorHandler.networkStream.Close();
             }
 
-            if (!jsonRegex.IsMatch(input)) {
+            if(!jsonRegex.IsMatch(input)) {
                 protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "add failed message");
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Add failed message");
+                return;
             }
 
             try {
-                DoctorFetchData dataToFetch = JsonSerializer.Deserialize<DoctorFetchData>(input);
-                Session sessionToSend = doctorHandler.fileStorage.GetPatient(dataToFetch.PatientName).GetSession(dataToFetch.SessionDate);
+                var dataToFetch = JsonSerializer.Deserialize<DoctorFetchData>(input);
+                var sessionToSend = doctorHandler.fileStorage.GetPatient(dataToFetch.PatientName).GetSession(dataToFetch.SessionDate);
 
                 protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-                MessageCommunication.SendMessage(doctorHandler.sslStream, JsonSerializer.Serialize<Session>(sessionToSend));
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Ready to recieve Command");
-            } catch (Exception ex) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, JsonSerializer.Serialize(sessionToSend));
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
+            }
+            catch(Exception ex) {
                 protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-                MessageCommunication.SendMessage(doctorHandler.sslStream, ex.Message);
+                MessageCommunication.SendMessage(doctorHandler.networkStream, ex.Message);
             }
         }
     }
-    public class D_Subscribing(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler) {
+
+    public class D_Subscribing : DoctorState {
+        public D_Subscribing(DataProtocol protocol, DoctorHandler doctorHandler) : base(protocol, doctorHandler) { }
+
         public override void CheckInput(string input) {
-            if (input.Equals("Quit Communication")) {
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Goodbye");
-                doctorHandler.sslStream.Close();
+            if(input.Equals("Quit Communication")) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Goodbye");
+                doctorHandler.networkStream.Close();
             }
 
-            if (doctorHandler.fileStorage.PatientExists(input) && !doctorHandler.fileStorage.GetPatient(input).currentSession.observers.Contains(doctorHandler)) {
+            if(doctorHandler.fileStorage.PatientExists(input) && !doctorHandler.fileStorage.GetPatient(input).currentSession.observers.Contains(doctorHandler)) {
                 doctorHandler.fileStorage.GetPatient(input).currentSession.AddObserver(doctorHandler);
                 protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Ready to recieve Command");
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
             }
-            protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            MessageCommunication.SendMessage(doctorHandler.sslStream, $"Failed to add : {input} : this patient does not exist or this Client was Subscribed to this patient");
-            MessageCommunication.SendMessage(doctorHandler.sslStream, $"Ready to recieve Command");
+            else {
+                protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+                MessageCommunication.SendMessage(doctorHandler.networkStream, $"Failed to add: {input} - This patient does not exist or is already subscribed.");
+            }
         }
     }
 
-    public class D_Unsubsribing(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler) {
+    public class D_Unsubsribing : DoctorState {
+        public D_Unsubsribing(DataProtocol protocol, DoctorHandler doctorHandler) : base(protocol, doctorHandler) { }
+
         public override void CheckInput(string input) {
-            if (input.Equals("Quit Communication")) {
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Goodbye");
-                doctorHandler.sslStream.Close();
+            if(input.Equals("Quit Communication")) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Goodbye");
+                doctorHandler.networkStream.Close();
             }
 
-            if (doctorHandler.fileStorage.PatientExists(input) && doctorHandler.fileStorage.GetPatient(input).currentSession.observers.Contains(doctorHandler)) {
+            if(doctorHandler.fileStorage.PatientExists(input) && doctorHandler.fileStorage.GetPatient(input).currentSession.observers.Contains(doctorHandler)) {
                 doctorHandler.fileStorage.GetPatient(input).currentSession.RemoveObserver(doctorHandler);
                 protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Ready to recieve Command");
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
             }
-            protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            MessageCommunication.SendMessage(doctorHandler.sslStream, $"Failed to Remove : {input} : this patient does not exist or This Client was not subscribed to this patient");
-            MessageCommunication.SendMessage(doctorHandler.sslStream, $"Ready to recieve Command");
-
+            else {
+                protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+                MessageCommunication.SendMessage(doctorHandler.networkStream, $"Failed to remove: {input} - This patient does not exist or is not subscribed.");
+            }
         }
     }
 
-    public class D_SendData(DataProtocol protocol, DoctorHandler doctorHandler) : DoctorState(protocol, doctorHandler) {
+    public class D_SendData : DoctorState {
+        public D_SendData(DataProtocol protocol, DoctorHandler doctorHandler) : base(protocol, doctorHandler) { }
+
         public override void CheckInput(string input) {
-            if (input.Equals("Quit Communication")) {
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Goodbye");
-                doctorHandler.sslStream.Close();
+            if(input.Equals("Quit Communication")) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Goodbye");
+                doctorHandler.networkStream.Close();
             }
 
+            if(jsonRegex.IsMatch(input)) {
+                var message = JsonSerializer.Deserialize<DoctorDataMessage>(input);
 
-            if (jsonRegex.IsMatch(input)) {
-                DoctorDataMessage message = JsonSerializer.Deserialize<DoctorDataMessage>(input);
-
-                if (doctorHandler.fileStorage.PatientExists(message.PatientName)) {
+                if(doctorHandler.fileStorage.PatientExists(message.PatientName)) {
                     doctorHandler.fileStorage.GetPatient(message.PatientName).currentSession.addMessage(input, CommunicationType.DOCTOR);
                     protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-                    MessageCommunication.SendMessage(doctorHandler.sslStream, "Ready to recieve Command");
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
                 }
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "this patient does not exist");
-                MessageCommunication.SendMessage(doctorHandler.sslStream, "Ready to recieve Command");
+                else {
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "This patient does not exist.");
+                    MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
+                }
             }
-            MessageCommunication.SendMessage(doctorHandler.sslStream, "add failed message");
+            else {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "Add failed message");
+            }
         }
     }
-
-
 }
