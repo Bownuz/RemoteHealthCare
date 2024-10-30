@@ -14,9 +14,9 @@ namespace ConnectionImplemented {
 
         public override void ConvertData(byte[] rawData) {
             if (rawData[4] == 0x10) {
-                Console.WriteLine("Received from {0}: {1}, {2}", rawData,
-                BitConverter.ToString(rawData).Replace("-", " "),
-                Encoding.UTF8.GetString(rawData));
+                //Console.WriteLine("Received from {0}: {1}, {2}", rawData,
+                //BitConverter.ToString(rawData).Replace("-", " "),
+                //Encoding.UTF8.GetString(rawData));
 
                 int speedLSB = rawData[8];
                 int speedMSB = rawData[9];

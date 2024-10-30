@@ -9,20 +9,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ClientApplication.State;
 
 namespace ClientApplication {
     internal partial class ClientInfoScreen : UserControl {
         private Ergometer ergometer;
         private HeartRateMonitor heartRateMonitor;
-        private DataHandler handler;
+        private DataHandler dataHandler;
         private Form mainForm;
         private Timer updateTimer;
-        public ClientInfoScreen(DataHandler dataHandler, Form mainForm, Ergometer ergometer, HeartRateMonitor heartRateMonitor) {
+        private Handler handler;
+        public ClientInfoScreen(DataHandler dataHandler, Form mainForm, Ergometer ergometer, HeartRateMonitor heartRateMonitor, Handler handler) {
             InitializeComponent();
             this.mainForm = mainForm;
             this.ergometer = ergometer;
             this.heartRateMonitor = heartRateMonitor;
-            this.handler = dataHandler;
+            this.dataHandler = dataHandler;
+            this.handler = handler;
+
+            //handler.NewDoctorMessage += UpdateMessage;
 
             InitializeTimer();
         }
@@ -71,6 +76,17 @@ namespace ClientApplication {
         }
         private void UpdateLocalDate() {
             Date.Text = DateTime.Now.ToShortDateString();
+        }
+
+        public void UpdateMessage(string message) {
+            listBox1.Items.Add(message);
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
+            //string doctorMessage = ServerConnection.getDocterMessage();
+            //if (doctorMessage != null) {
+            //    listBox1.Items.Add(doctorMessage);
+            //}
         }
     }
 }
