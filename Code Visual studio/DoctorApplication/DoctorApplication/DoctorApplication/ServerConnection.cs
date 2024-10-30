@@ -1,8 +1,6 @@
 ﻿using DoctorApplication;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading;
@@ -25,7 +23,7 @@ public class ServerConnection {
         try {
             client = new TcpClient(serverAddress, port);
             networkStream = client.GetStream();
-            
+
             reader = new StreamReader(networkStream);
             writer = new StreamWriter(networkStream) { AutoFlush = true };
 
@@ -66,14 +64,6 @@ public class ServerConnection {
         }
     }
 
-    public void SendMessageToClient(string message, string clientName) {
-        SendCommandToServer(new {
-            Action = "SendMessage",
-            TargetClient = clientName,
-            Message = message
-        });
-    }
-
     public void StartTrainingForClient(string clientName) {
         SendCommandToServer(new {
             Action = "StartTraining",
@@ -92,38 +82,18 @@ public class ServerConnection {
         SendCommandToServer(new {
             Action = "EmergencyStop",
             TargetClient = clientName,
-            ResistanceLevel = 100
+            Message = "NOODSTOP",
+            Resistance = 255 
         });
     }
 
-    public async Task<List<TrainingData>> GetTrainingDataForClientAsync(string clientName) {
-        try {
-            SendCommandToServer(new {
-                Action = "GetTrainingData",
-                TargetClient = clientName
-            });
-
-            string response = await reader.ReadLineAsync();
-            if(!string.IsNullOrEmpty(response)) {
-                return JsonSerializer.Deserialize<List<TrainingData>>(response);
-            }
-            else {
-                Console.WriteLine($"Geen trainingsdata ontvangen voor {clientName}");
-                return new List<TrainingData>();
-            }
-        }
-        catch(Exception ex) {
-            throw new Exception($"Fout bij het ophalen van trainingsdata voor {clientName}: " + ex.Message, ex);
-        }
-    }
-
-    public void SendCommandToServer(object command) {
+    private void SendCommandToServer(object command) {
         try {
             string jsonCommand = JsonSerializer.Serialize(command);
             writer.WriteLine(jsonCommand);
         }
         catch(Exception ex) {
-            throw new Exception("Fout bij het verzenden van commando: " + ex.Message, ex);
+            throw new Exception("Fout bij het verzenden van commando: " + ex.Message);
         }
     }
 }

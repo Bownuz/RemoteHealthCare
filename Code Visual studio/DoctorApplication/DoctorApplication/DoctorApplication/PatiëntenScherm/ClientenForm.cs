@@ -65,9 +65,10 @@ namespace DoctorApplication {
         private void NoodstopButton_Click(object sender, EventArgs e) {
             foreach(string client in GetSelectedClients()) {
                 doctorState.emergencyStop.EmergencyStop(client);
-                MessageBox.Show($"Noodstop uitgevoerd voor {client}.");
+                MessageBox.Show($"Noodstop uitgevoerd voor {client} met weerstand 255.");
             }
         }
+
 
         private async void ViewPreviousDataButton_Click(object sender, EventArgs e) {
             foreach(string client in GetSelectedClients()) {

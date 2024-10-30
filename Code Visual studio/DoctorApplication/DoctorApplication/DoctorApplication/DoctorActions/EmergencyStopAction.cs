@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DoctorApplication;
 
 namespace DoctorApplication.DoctorActions {
     public class EmergencyStopAction {
@@ -15,12 +12,18 @@ namespace DoctorApplication.DoctorActions {
         }
 
         public void EmergencyStop(string clientName) {
+ 
+            string message = $"PatientName ; {clientName}, \"message\" NOODSTOP, new resistance 255";
+
             var command = new {
                 Action = "EmergencyStop",
-                TargetClient = clientName
+                TargetClient = clientName,
+                Message = message,
+                Resistance = 255  
             };
+
             serverConnection.SendCommandToServer(command);
-            form.UpdateStatus($"Noodstop uitgevoerd voor {clientName}.");
+            form.UpdateStatus($"Noodstop uitgevoerd voor {clientName} met weerstand 255.");
         }
     }
 }
