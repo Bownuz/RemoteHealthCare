@@ -17,6 +17,8 @@ public class ServerConnection {
 
     public ServerConnection(NetworkStream stream) {
         this.networkStream = stream;
+        reader = new StreamReader(networkStream);
+        writer = new StreamWriter(networkStream) { AutoFlush = true };
     }
 
     public async Task ConnectToServer(string serverAddress, int port) {
@@ -65,26 +67,29 @@ public class ServerConnection {
     }
 
     public void StartTrainingForClient(string clientName) {
-        SendCommandToServer(new {
+        var command = new {
             Action = "StartTraining",
             TargetClient = clientName
-        });
+        };
+        SendCommandToServer(command);
     }
 
     public void StopTrainingForClient(string clientName) {
-        SendCommandToServer(new {
+        var command = new {
             Action = "StopTraining",
             TargetClient = clientName
-        });
+        };
+        SendCommandToServer(command);
     }
 
     public void SendEmergencyStopToClient(string clientName) {
-        SendCommandToServer(new {
+        var command = new {
             Action = "EmergencyStop",
             TargetClient = clientName,
             Message = "NOODSTOP",
-            Resistance = 255 
-        });
+            newResistance = 255
+        };
+        SendCommandToServer(command);
     }
 
     private void SendCommandToServer(object command) {
@@ -93,7 +98,7 @@ public class ServerConnection {
             writer.WriteLine(jsonCommand);
         }
         catch(Exception ex) {
-            throw new Exception("Fout bij het verzenden van commando: " + ex.Message);
+            Console.WriteLine("Fout bij het verzenden van commando: " + ex.Message);
         }
     }
 }
