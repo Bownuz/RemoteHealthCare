@@ -16,7 +16,7 @@ namespace DoctorApplication.DoctorActions {
 
         public void ViewTrainingData(string clientName) {
             var command = new {
-                Action = "ViewTrainingData",
+                Action = "Retrieve Data",
                 TargetClient = clientName
             };
             serverConnection.SendCommandToServer(command);

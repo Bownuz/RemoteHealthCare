@@ -28,6 +28,8 @@
             this.AdjustResistanceButton = new System.Windows.Forms.Button();
             this.ResistanceTextBox = new System.Windows.Forms.TextBox();
             this.ViewTrainingDataButton = new System.Windows.Forms.Button();
+            this.SubscribeButton = new System.Windows.Forms.Button();
+            this.UnsubscribeButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ClientenGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,7 +45,7 @@
             this.SelectClientColumn});
             this.ClientenGridView.Location = new System.Drawing.Point(50, 50);
             this.ClientenGridView.Name = "ClientenGridView";
-            this.ClientenGridView.Size = new System.Drawing.Size(700, 200);
+            this.ClientenGridView.Size = new System.Drawing.Size(603, 200);
             this.ClientenGridView.TabIndex = 0;
             // 
             // PatientName
@@ -175,6 +177,30 @@
             this.ViewTrainingDataButton.UseVisualStyleBackColor = true;
             this.ViewTrainingDataButton.Click += new System.EventHandler(this.ViewPreviousDataButton_Click);
             // 
+            // SubscribeButton
+            // 
+            this.SubscribeButton.BackColor = System.Drawing.Color.LightGreen;
+            this.SubscribeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SubscribeButton.Location = new System.Drawing.Point(620, 320);
+            this.SubscribeButton.Name = "SubscribeButton";
+            this.SubscribeButton.Size = new System.Drawing.Size(100, 35);
+            this.SubscribeButton.TabIndex = 10;
+            this.SubscribeButton.Text = "Subscribe";
+            this.SubscribeButton.UseVisualStyleBackColor = true;
+            this.SubscribeButton.Click += new System.EventHandler(this.SubscribeButton_Click);
+            // 
+            // UnsubscribeButton
+            // 
+            this.UnsubscribeButton.BackColor = System.Drawing.Color.LightSalmon;
+            this.UnsubscribeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.UnsubscribeButton.Location = new System.Drawing.Point(620, 370);
+            this.UnsubscribeButton.Name = "UnsubscribeButton";
+            this.UnsubscribeButton.Size = new System.Drawing.Size(100, 35);
+            this.UnsubscribeButton.TabIndex = 11;
+            this.UnsubscribeButton.Text = "Unsubscribe";
+            this.UnsubscribeButton.UseVisualStyleBackColor = true;
+            this.UnsubscribeButton.Click += new System.EventHandler(this.UnsubscribeButton_Click);
+            // 
             // ClientenForm
             // 
             this.ClientSize = new System.Drawing.Size(796, 445);
@@ -188,6 +214,8 @@
             this.Controls.Add(this.MessageTextBox);
             this.Controls.Add(this.ViewPreviousDataButton);
             this.Controls.Add(this.ClientenGridView);
+            this.Controls.Add(this.SubscribeButton);
+            this.Controls.Add(this.UnsubscribeButton);
             this.Name = "ClientenForm";
             this.Load += new System.EventHandler(this.ClientenForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ClientenGridView)).EndInit();
@@ -208,6 +236,8 @@
         private System.Windows.Forms.Button ViewPreviousDataButton;
         private System.Windows.Forms.Button AdjustResistanceButton;
         private System.Windows.Forms.Button ViewTrainingDataButton;
+        private System.Windows.Forms.Button SubscribeButton;
+        private System.Windows.Forms.Button UnsubscribeButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn PatientName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Resistance;
         private System.Windows.Forms.DataGridViewTextBoxColumn LastUpdateColumn;

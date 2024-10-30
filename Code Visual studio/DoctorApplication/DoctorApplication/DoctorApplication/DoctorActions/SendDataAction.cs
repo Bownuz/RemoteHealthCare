@@ -16,7 +16,7 @@ namespace DoctorApplication.DoctorActions {
 
         public void SendData(string clientName, string message) {
             var command = new {
-                Action = "SendData",
+                Action = "Send Data",
                 TargetClient = clientName,
                 Message = message
             };

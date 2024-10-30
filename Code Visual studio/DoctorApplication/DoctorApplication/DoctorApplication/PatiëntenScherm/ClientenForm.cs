@@ -82,7 +82,7 @@ namespace DoctorApplication {
         private async Task<List<TrainingData>> FetchTrainingDataForClient(string client) {
             try {
                 var command = new {
-                    Action = "FetchTrainingData",
+                    Action = "Retrieve Data",
                     TargetClient = client
                 };
 
@@ -119,6 +119,20 @@ namespace DoctorApplication {
             }
             else {
                 MessageBox.Show("Voer een geldige waarde in voor de weerstand.");
+            }
+        }
+
+        private void SubscribeButton_Click(object sender, EventArgs e) {
+            foreach(string client in GetSelectedClients()) {
+                doctorState.subscribe.Subscribe(client);
+                MessageBox.Show($"Subscribed to {client}.");
+            }
+        }
+
+        private void UnsubscribeButton_Click(object sender, EventArgs e) {
+            foreach(string client in GetSelectedClients()) {
+                doctorState.unsubscribe.Unsubscribe(client);
+                MessageBox.Show($"Unsubscribed from {client}.");
             }
         }
 

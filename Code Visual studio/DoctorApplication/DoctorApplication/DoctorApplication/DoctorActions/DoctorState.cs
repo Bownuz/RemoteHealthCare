@@ -8,6 +8,8 @@ public class DoctorState {
     public EmergencyStopAction emergencyStop;
     public SendDataAction sendData;
     public ViewTrainingDataAction viewTrainingData;
+    public SubscribeAction subscribe;
+    public UnsubscribeAction unsubscribe;
 
     public DoctorState(ClientenForm form, ServerConnection serverConnection) {
         adjustResistance = new AdjustResistanceAction(form, serverConnection);
@@ -16,5 +18,7 @@ public class DoctorState {
         emergencyStop = new EmergencyStopAction(form, serverConnection);
         sendData = new SendDataAction(form, serverConnection);
         viewTrainingData = new ViewTrainingDataAction(form, serverConnection);
+        subscribe = new SubscribeAction(form, serverConnection);
+        unsubscribe = new UnsubscribeAction(form, serverConnection);
     }
 }
