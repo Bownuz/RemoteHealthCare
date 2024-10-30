@@ -19,6 +19,7 @@ namespace Server.ThreadHandlers {
 
         public void HandleThread() {
             DataProtocol protocol = new DataProtocol(communicationType, this);
+            protocol.processInput("");
             while (networkStream.CanRead) {
                 string receivedMessage;
                 string response;
