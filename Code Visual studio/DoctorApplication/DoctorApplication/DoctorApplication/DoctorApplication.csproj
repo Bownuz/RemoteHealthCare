@@ -81,6 +81,7 @@
     <Compile Include="DoctorActions\SendDataAction.cs" />
     <Compile Include="DoctorActions\StartTrainingAction.cs" />
     <Compile Include="DoctorActions\StopTrainingAction.cs" />
+    <Compile Include="DoctorActions\SubscribeAction.cs" />
     <Compile Include="DoctorActions\ViewTrainingDataAction.cs" />
     <Compile Include="PatiëntenScherm\ClientenForm.cs">
       <SubType>Form</SubType>
