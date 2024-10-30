@@ -21,10 +21,8 @@ namespace ClientApplication {
             while (true) {
                 Thread.Sleep(1000);
                 //WriteData(tcpClient, handler.printAsJson());
-                Console.WriteLine("t");
                 //if (stream.DataAvailable) {
                 string simulatorData = ReadTextMessage(tcpClient);
-                //Console.WriteLine($"Received data from simulator: {simulatorData}");
                 if (!string.IsNullOrEmpty(simulatorData)) {
                     ProcessMessage(simulatorData, handler);
                 }
@@ -68,16 +66,16 @@ namespace ClientApplication {
 
         private static void ConvertData(byte[] rawData) {
             if (rawData[4] == 0x10) {
-                Console.WriteLine("Received from {0}: {1}, {2}", rawData,
-                BitConverter.ToString(rawData).Replace("-", " "),
-                Encoding.UTF8.GetString(rawData));
+                //Console.WriteLine("Received from {0}: {1}, {2}", rawData,
+                //BitConverter.ToString(rawData).Replace("-", " "),
+                //Encoding.UTF8.GetString(rawData));
 
                 int speedLSB = rawData[8];
                 int speedMSB = rawData[9];
                 int speedRaw = (speedMSB << 5) | speedLSB;
                 double speedMetersPerSecond = speedRaw * 0.01;
                 double speedKmPerHour = speedMetersPerSecond * 3.6;
-                Console.WriteLine(speedKmPerHour.ToString());
+                //Console.WriteLine(speedKmPerHour.ToString());
             }
         }
 
