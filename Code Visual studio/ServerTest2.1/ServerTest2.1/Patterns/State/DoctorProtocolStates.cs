@@ -150,11 +150,12 @@ namespace Server.Patterns.State.DoctorStates {
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
 
             if (doctorHandler.fileStorage.PatientExists(input) && doctorHandler.fileStorage.GetPatient(input).currentSession.observers.Contains(doctorHandler)) {
-                doctorHandler.fileStorage.GetPatient(input).currentSession.RemoveObserver(doctorHandler);
-                MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
+                doctorHandler.fileStorage.GetPatient(input).currentSession.RemoveObserver(doctorHandler);     
             } else {
                 MessageCommunication.SendMessage(doctorHandler.networkStream, $"Failed to remove: {input} - This patient does not exist or is not subscribed.");
             }
+
+            MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
         }
     }
 
@@ -169,7 +170,7 @@ namespace Server.Patterns.State.DoctorStates {
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
 
             if (!jsonRegex.IsMatch(input)) {
-                MessageCommunication.SendMessage(doctorHandler.networkStream, "Add failed message");
+                MessageCommunication.SendMessage(doctorHandler.networkStream, "This message is not a JSON string");
                 return;
             }
 
