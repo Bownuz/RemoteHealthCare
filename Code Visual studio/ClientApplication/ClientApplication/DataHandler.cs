@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace ClientApplication {
-    internal class DataHandler {
+    public class DataHandler {
         public string deviceName { get; set; }
         public int currentSpeed { get; set; }
         public int currentHeartRate { get; set; }
@@ -38,7 +38,6 @@ namespace ClientApplication {
             }
 
             if (simulatorIsActive) {
-                //TcpClient client = new TcpClient("192.168.178.101", 4790);
                 TcpClient client = new TcpClient("localhost", 4788);
                 Thread connectionThread = new Thread(() => SimulatorConnection.HandleConnection(client, this));
                 connectionThread.Start();
@@ -53,9 +52,9 @@ namespace ClientApplication {
                 deviceName = ergometerID;
             }
 
-            //if (!simulatorIsActive) {
-            //    await device.ConnectToBLE_Device(deviceName);
-            //}
+            if (!simulatorIsActive) {
+                await device.ConnectToBLE_Device(deviceName);
+            }
         }
 
         public void SimulateBLEData(byte[] bikeData, byte[] heartRateData) {
@@ -81,11 +80,5 @@ namespace ClientApplication {
             this.patientName = patientName;
             return JsonSerializer.Serialize<PatientInitialisationMessage>(jsonPatientID);
         }
-
-        //public void setpatientInfo(string patientName, string ergometerID, string heartRateMonitorID) {
-        //    this.patientName = patientName;
-        //    this.ergometerID = ergometerID;
-        //    this.heartRateMonitorID = heartRateMonitorID;
-        //}
     }
 }

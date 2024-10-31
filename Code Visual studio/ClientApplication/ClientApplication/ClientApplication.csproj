@@ -87,7 +87,6 @@
       <DependentUpon>SignInScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="SimulatorConnection.cs" />
-    <Compile Include="ServerConnection.cs" />
     <Compile Include="GuiScreen\CLientInfoScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -95,7 +94,7 @@
       <DependentUpon>CLientInfoScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="State\DataProtocol.cs" />
-    <Compile Include="State\Handler.cs" />
+    <Compile Include="State\NetworkHandler.cs" />
     <Compile Include="State\ProtocolState.cs" />
     <Compile Include="State\State.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
