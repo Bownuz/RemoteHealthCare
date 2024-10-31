@@ -20,23 +20,5 @@ namespace ConnectionImplemented {
                 deviceListBox.Items.Add(device);
             }
         }
-
-        [Obsolete("Deze methode wordt niet gebruikt")]
-        public void ShowServiceList() {
-            BLE ble = new BLE();
-            var services = ble.GetServices;
-            foreach (var service in services) {
-                deviceListBox.Items.Add($"Service: {service.Name}");
-            }
-        }
-
-        [Obsolete("Deze methode wordt niet gebruikt")]
-        public void ShowCharacteristicsList() {
-            BLE ble = new BLE();
-            var Characteristics = ble.GetCharacteristics;
-            foreach (var characteristic in Characteristics) {
-                deviceListBox.Items.Add($"Characteristic: {characteristic.Name}");
-            }
-        }
     }
 }
