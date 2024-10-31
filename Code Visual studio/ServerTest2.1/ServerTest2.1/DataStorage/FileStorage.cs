@@ -60,7 +60,8 @@ namespace Server.DataStorage {
                         Patients.Add(Name, patient);
                         break;
                     case CommunicationType.DOCTOR:
-                        Doctor doctor = JsonSerializer.Deserialize<Doctor>(fileContent);
+                        DoctorInitialiseMessage doctorData = JsonSerializer.Deserialize<DoctorInitialiseMessage>(fileContent);
+                        Doctor doctor = new Doctor(doctorData.DoctorID, doctorData.DoctorName, doctorData.DoctorPassword);
                         doctors.Add(Name, doctor);
                         break;
                 }
@@ -92,7 +93,8 @@ namespace Server.DataStorage {
             String FilePath = String.Format($"{DoctorDirectoryPath}/{doctorName}.txt");
 
             using (StreamWriter sw = File.CreateText(FilePath)) {
-                String patientString = JsonSerializer.Serialize<Doctor>(doctor);
+                DoctorInitialiseMessage doctorData = new DoctorInitialiseMessage(doctor.DoctorID, doctor.DoctorName, doctor.DoctorPassword);
+                String patientString = JsonSerializer.Serialize<DoctorInitialiseMessage>(doctorData);
                 sw.WriteLine(patientString);
             }
         }
