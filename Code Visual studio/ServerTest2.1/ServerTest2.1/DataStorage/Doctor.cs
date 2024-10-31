@@ -1,9 +1,8 @@
 namespace Server.DataStorage {
     public class Doctor {
-        public String DoctorID { get; set; }
-        public String DoctorName { get; set; }
-
-        public String DoctorPassword { get; set; }
+        public readonly String DoctorID;
+        public readonly String DoctorName;
+        public readonly String DoctorPassword;
 
         public Doctor(String DoctorID, string DoctorName, string DoctorPassword) {
             this.DoctorID = DoctorID;

@@ -1,4 +1,3 @@
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 
@@ -15,66 +14,78 @@ namespace Server.ThreadHandlers {
             stream.Flush();
         }
     }
-}
 
-public struct PatientInitialisationMessage {
-    public String ClientName { get; set; }
-    public String ConnectedErgometer { get; set; }
-    public String ConnectedHeartRateMonitor { get; set; }
-    public DateTime dateTime { get; set; }
 
-    public PatientInitialisationMessage(string clientName, string connectedErgometer, string connectedHeartRateMonitor, DateTime dateTime) {
-        ClientName = clientName;
-        ConnectedErgometer = connectedErgometer;
-        ConnectedHeartRateMonitor = connectedHeartRateMonitor;
-        this.dateTime = dateTime;
+    public struct PatientInitialisationMessage {
+        public String ClientName { get; set; }
+        public String ConnectedErgometer { get; set; }
+        public String ConnectedHeartRateMonitor { get; set; }
+        public DateTime dateTime { get; set; }
+
+        public PatientInitialisationMessage(string clientName, string connectedErgometer, string connectedHeartRateMonitor, DateTime dateTime) {
+            ClientName = clientName;
+            ConnectedErgometer = connectedErgometer;
+            ConnectedHeartRateMonitor = connectedHeartRateMonitor;
+            this.dateTime = dateTime;
+        }
     }
-}
 
-public struct PatientRecieveData {
-    public String patientName { get; set; }
-    public double BicycleSpeed { get; set; }
-    public int Heartrate { get; set; }
-    public DateTime dateTime { get; set; }
+    public struct PatientRecieveData {
+        public String patientName { get; set; }
+        public double BicycleSpeed { get; set; }
+        public int Heartrate { get; set; }
+        public DateTime dateTime { get; set; }
 
-    public PatientRecieveData(string patientName, double bicycleSpeed, int heartrate, DateTime dateTime) {
-        this.patientName = patientName;
-        BicycleSpeed = bicycleSpeed;
-        Heartrate = heartrate;
-        this.dateTime = dateTime;
+        public PatientRecieveData(string patientName, double bicycleSpeed, int heartrate, DateTime dateTime) {
+            this.patientName = patientName;
+            BicycleSpeed = bicycleSpeed;
+            Heartrate = heartrate;
+            this.dateTime = dateTime;
+        }
     }
-}
 
-public struct AddRemoveObserverMessage {
-    public String Message { get; set; }
-    public String[] PatientNames { get; set; }
+    public struct AddRemoveObserverMessage {
+        public String Message { get; set; }
+        public String[] PatientNames { get; set; }
 
-    public AddRemoveObserverMessage(string message, string[] patientNames) {
-        Message = message;
-        PatientNames = patientNames;
+        public AddRemoveObserverMessage(string message, string[] patientNames) {
+            Message = message;
+            PatientNames = patientNames;
+        }
     }
-}
 
-public struct DoctorDataMessage {
-    public String PatientName { get; set; }
-    public String Message { get; set; }
-    public int newResistance { get; set; }
+    public struct DoctorInitialiseMessage {
+        public readonly String DoctorID;
+        public readonly String DoctorName;
+        public readonly String DoctorPassword;
 
-    public DoctorDataMessage(string patientName, string message, int newResistance) {
-        PatientName = patientName;
-        Message = message;
-        this.newResistance = newResistance;
+        public DoctorInitialiseMessage(string doctorID, string doctorName, string doctorPassword) {
+            DoctorID = doctorID;
+            DoctorName = doctorName;
+            DoctorPassword = doctorPassword;
+        }
     }
-}
 
-public struct DoctorFetchData {
-    public String PatientName { get; set; }
-    public DateTime SessionDate { get; set; }
+    public struct DoctorDataMessage {
+        public String PatientName { get; set; }
+        public String Message { get; set; }
+        public int newResistance { get; set; }
 
-    public DoctorFetchData(string patientName, DateTime sessionDate) {
-        PatientName = patientName;
-        SessionDate = sessionDate;
+        public DoctorDataMessage(string patientName, string message, int newResistance) {
+            PatientName = patientName;
+            Message = message;
+            this.newResistance = newResistance;
+        }
     }
-}
+
+    public struct DoctorFetchData {
+        public String PatientName { get; set; }
+        public DateTime SessionDate { get; set; }
+
+        public DoctorFetchData(string patientName, DateTime sessionDate) {
+            PatientName = patientName;
+            SessionDate = sessionDate;
+        }
+    }
 }
 

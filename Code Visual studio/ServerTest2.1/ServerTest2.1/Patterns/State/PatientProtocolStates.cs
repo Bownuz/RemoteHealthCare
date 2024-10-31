@@ -23,27 +23,25 @@ namespace Server.Patterns.State.PatientStates {
                 PatientInitialisationMessage dataFromMessage = JsonSerializer.Deserialize<PatientInitialisationMessage>(input);
                 Patient connectedPerson;
                 FileStorage storageFromThread = patientHandler.fileStorage;
+                Session currentSession;
 
                 if (!storageFromThread.PatientExists(dataFromMessage.ClientName)) {
                     storageFromThread.AddPatient(dataFromMessage.ClientName);
                 }
                 patientHandler.connectedPatient = storageFromThread.GetPatient(dataFromMessage.ClientName);
                 connectedPerson = patientHandler.connectedPatient;
+                currentSession = connectedPerson.currentSession;
 
-                connectedPerson.currentSession =
-                    new Session(
-                        dataFromMessage.dateTime,
-                        dataFromMessage.ConnectedErgometer,
-                        dataFromMessage.ConnectedHeartRateMonitor
-                        );
-                connectedPerson.addSession(connectedPerson.currentSession);
-                connectedPerson.currentSession.AddObserver(patientHandler);
-                if (!connectedPerson.currentSession.observers.Contains(storageFromThread)) {
-                    connectedPerson.currentSession.AddObserver(storageFromThread);
+                connectedPerson.lastConnectedErgometer = dataFromMessage.ConnectedErgometer;
+                connectedPerson.lastConnectedHeartrateMonitor = dataFromMessage.ConnectedHeartRateMonitor;
+
+                if (currentSession != null) {
+                    currentSession.ergometerName = dataFromMessage.ConnectedErgometer;
+                    currentSession.heartRateMonitorName = dataFromMessage.ConnectedHeartRateMonitor;
+                    currentSession.AddObserver(patientHandler);
                 }
 
-
-                protocol.ChangeState(new P_RecievingData(protocol, patientHandler));
+                protocol.ChangeState(new P_RecievingData(protocol, patientHandler,connectedPerson));
                 MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
             }
             MessageCommunication.SendMessage(patientHandler.networkStream, "add failed message");
@@ -51,11 +49,16 @@ namespace Server.Patterns.State.PatientStates {
 
     }
 
-    public class P_RecievingData(DataProtocol protocol, PatientHandler patientHandler) : PatientState(protocol, patientHandler) {
+    public class P_RecievingData(DataProtocol protocol, PatientHandler patientHandler,Patient patient) : PatientState(protocol, patientHandler) {
+        Patient patient = patient;
         public override void CheckInput(string input) {
             if (input.Equals("Quit Communication")) {
                 MessageCommunication.SendMessage(patientHandler.networkStream, "Goodbye");
                 patientHandler.networkStream.Close();
+            }
+
+            if (patient.currentSession != null && !patient.currentSession.observers.Contains(patientHandler)) {
+                patient.currentSession.AddObserver(patientHandler);
             }
 
             if (jsonRegex.IsMatch(input)) {
