@@ -11,28 +11,9 @@ namespace Server.ThreadHandlers {
         }
 
         public override void Update(CommunicationType communicationOrigin, Session session) {
-            if(communicationOrigin == CommunicationType.PATIENT) {
+            if (communicationOrigin == CommunicationType.PATIENT) {
                 Console.WriteLine(session.getLatestMessage(communicationOrigin));
                 MessageCommunication.SendMessage(networkStream, session.getLatestMessage(communicationOrigin));
-            }
-        }
-
-        public void ProcessCommand(string commandJson) {
-            var command = JsonSerializer.Deserialize<DoctorDataMessage>(commandJson);
-
-            switch(command.Action) {
-                case "StartTraining":
-                    StartTraining(command.PatientName);
-                    break;
-                case "StopTraining":
-                    StopTraining(command.PatientName);
-                    break;
-                case "EmergencyStop":
-                    EmergencyStop(command.PatientName, command.newResistance);
-                    break;
-                default:
-                    MessageCommunication.SendMessage(networkStream, "Onbekend commando ontvangen.");
-                    break;
             }
         }
 

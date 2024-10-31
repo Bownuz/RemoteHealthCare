@@ -44,11 +44,11 @@ namespace Server.ThreadHandlers {
         }
     }
 
-    public struct AddRemoveObserverMessage {
+    public struct DoctorMessageWithList {
         public String Message { get; set; }
         public String[] PatientNames { get; set; }
 
-        public AddRemoveObserverMessage(string message, string[] patientNames) {
+        public DoctorMessageWithList(string message, string[] patientNames) {
             Message = message;
             PatientNames = patientNames;
         }
@@ -87,5 +87,6 @@ namespace Server.ThreadHandlers {
             SessionDate = sessionDate;
         }
     }
+
 }
 

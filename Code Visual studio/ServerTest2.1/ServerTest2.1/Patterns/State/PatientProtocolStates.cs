@@ -16,6 +16,7 @@ namespace Server.Patterns.State.PatientStates {
             if (input.Equals("Quit Communication")) {
                 MessageCommunication.SendMessage(patientHandler.networkStream, "Goodbye");
                 patientHandler.networkStream.Close();
+                return;
             }
 
 
@@ -43,8 +44,9 @@ namespace Server.Patterns.State.PatientStates {
 
                 protocol.ChangeState(new P_RecievingData(protocol, patientHandler,connectedPerson));
                 MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
+                return;
             }
-            MessageCommunication.SendMessage(patientHandler.networkStream, "add failed message");
+            MessageCommunication.SendMessage(patientHandler.networkStream, "This message was not a Json String");
         }
 
     }
@@ -55,6 +57,7 @@ namespace Server.Patterns.State.PatientStates {
             if (input.Equals("Quit Communication")) {
                 MessageCommunication.SendMessage(patientHandler.networkStream, "Goodbye");
                 patientHandler.networkStream.Close();
+                return;
             }
 
             if (patient.currentSession != null && !patient.currentSession.observers.Contains(patientHandler)) {
@@ -64,8 +67,9 @@ namespace Server.Patterns.State.PatientStates {
             if (jsonRegex.IsMatch(input)) {
                 patientHandler.connectedPatient.currentSession.addMessage(input, CommunicationType.PATIENT);
                 MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
+                return;
             }
-            MessageCommunication.SendMessage(patientHandler.networkStream, "add failed message");
+            MessageCommunication.SendMessage(patientHandler.networkStream, "This message was not a Json String");
         }
     }
 }
