@@ -28,6 +28,7 @@ namespace Server.Patterns.State.PatientStates {
 
                 if (!storageFromThread.PatientExists(dataFromMessage.ClientName)) {
                     storageFromThread.AddPatient(dataFromMessage.ClientName);
+                    storageFromThread.SaveToFile();
                 }
                 patientHandler.connectedPatient = storageFromThread.GetPatient(dataFromMessage.ClientName);
                 connectedPerson = patientHandler.connectedPatient;
@@ -61,6 +62,8 @@ namespace Server.Patterns.State.PatientStates {
             }
 
             if (patient.currentSession == null) {
+                MessageCommunication.SendMessage(patientHandler.networkStream, "No current Session Active");
+                MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
                 return;
             }
 
@@ -68,12 +71,13 @@ namespace Server.Patterns.State.PatientStates {
                 patient.currentSession.AddObserver(patientHandler);
             }
 
-            if (jsonRegex.IsMatch(input)) {
-                patientHandler.connectedPatient.currentSession.addMessage(input, CommunicationType.PATIENT);
-                MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
-                return;
+            if (!jsonRegex.IsMatch(input)) {
+                MessageCommunication.SendMessage(patientHandler.networkStream, "This message was not a Json String");
+            } else {
+                patient.currentSession.addMessage(input, CommunicationType.PATIENT);
             }
-            MessageCommunication.SendMessage(patientHandler.networkStream, "This message was not a Json String");
+            
+            MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
         }
     }
 }

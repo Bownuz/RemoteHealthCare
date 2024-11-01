@@ -2,7 +2,6 @@ using Server.DataStorage;
 using Server.ThreadHandlers;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 
 namespace Server {
     public class ConnectionService {
@@ -17,14 +16,14 @@ namespace Server {
 
             Console.WriteLine("Starting up server and waiting for connections.....");
 
-            while(true) {
-                if(PatientListner.Pending()) {
+            while (true) {
+                if (PatientListner.Pending()) {
                     TcpClient client = PatientListner.AcceptTcpClient();
                     Thread clientThread = new Thread(() => HandleClient(client, fileStorage));
                     threads.Add(clientThread);
                     clientThread.Start();
                 }
-                if(DoctorListner.Pending()) {
+                if (DoctorListner.Pending()) {
                     TcpClient doctor = DoctorListner.AcceptTcpClient();
                     Thread doctorThread = new Thread(() => HandleDoctor(doctor, fileStorage));
                     threads.Add(doctorThread);
@@ -40,14 +39,9 @@ namespace Server {
         }
 
         static void HandleDoctor(TcpClient doctor, FileStorage fileStorage) {
-            try {
-                NetworkStream networkStream = doctor.GetStream();
-                DoctorHandler doctorThread = new DoctorHandler(fileStorage, networkStream);
-                doctorThread.HandleThread();
-            }
-            catch(Exception ex) {
-                Console.WriteLine("Error in handling doctor connection: " + ex.Message);
-            }
+            NetworkStream networkStream = doctor.GetStream();
+            DoctorHandler doctorThread = new DoctorHandler(fileStorage, networkStream);
+            doctorThread.HandleThread();
         }
     }
 }

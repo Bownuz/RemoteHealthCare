@@ -55,14 +55,14 @@ namespace Server.ThreadHandlers {
     }
 
     public struct DoctorInitialiseMessage {
-        public readonly String DoctorID;
-        public readonly String DoctorName;
-        public readonly String DoctorPassword;
+        public String DoctorID { get; set; }
+        public String DoctorName { get; set; }
+        public String DoctorPassword { get; set; }
 
-        public DoctorInitialiseMessage(string doctorID, string doctorName, string doctorPassword) {
-            DoctorID = doctorID;
-            DoctorName = doctorName;
-            DoctorPassword = doctorPassword;
+        public DoctorInitialiseMessage(string DoctorID, string DoctorName, string DoctorPassword) {
+            this.DoctorID = DoctorID;
+            this.DoctorName = DoctorName;
+            this.DoctorPassword = DoctorPassword;
         }
     }
 

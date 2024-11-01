@@ -75,7 +75,7 @@ namespace Server.Patterns.State.DoctorStates {
                     MessageCommunication.SendMessage(doctorHandler.networkStream, MessageWithPatientsList("Which Patient should a session start?"));
                     break;
                 case "End Session":
-                    protocol.ChangeState(new D_StartingSession(protocol, doctorHandler));
+                    protocol.ChangeState(new D_EndingSession(protocol, doctorHandler));
                     MessageCommunication.SendMessage(doctorHandler.networkStream, MessageWithPatientsList("Which Patient should a session End?"));
                     break;
                 default:
@@ -207,6 +207,7 @@ namespace Server.Patterns.State.DoctorStates {
             patient.sessions.Add(patient.currentSession);
             patient.currentSession.AddObserver(doctorHandler.fileStorage);
             patient.currentSession.AddObserver(doctorHandler);
+            doctorHandler.fileStorage.SaveToFile();
 
             MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
         }
@@ -227,11 +228,10 @@ namespace Server.Patterns.State.DoctorStates {
             }
 
             Patient patient = doctorHandler.fileStorage.GetPatient(input);
-
             patient.currentSession.sessionEnd = DateTime.Now;
-
             patient.currentSession = null;
 
+            doctorHandler.fileStorage.SaveToFile();
             MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
         }
     }
