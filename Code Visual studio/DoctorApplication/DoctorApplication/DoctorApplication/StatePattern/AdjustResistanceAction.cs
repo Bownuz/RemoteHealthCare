@@ -1,14 +1,10 @@
-﻿using System;
-using DoctorApplication.StatePattern;
+﻿using DoctorApplication.StatePattern;
+using System;
 
-namespace DoctorApplication.DoctorActions
-{
-    public class AdjustResistanceAction : DoctorState
-    {
-        public AdjustResistanceAction(DoctorProtocol protocol, ClientenForm form, ServerConnection serverConnection) : base(protocol, form, serverConnection);
-        {
-            this.form = form ?? throw new ArgumentNullException(nameof(form), "Form mag niet null zijn.");
-            this.serverConnection = serverConnection ?? throw new ArgumentNullException(nameof(serverConnection), "ServerConnection mag niet null zijn.");
+namespace DoctorApplication.DoctorActions {
+    public class AdjustResistanceAction : DoctorState {
+        public AdjustResistanceAction(DoctorProtocol protocol, ClientenForm form, ServerConnection serverConnection) : base(protocol, form, serverConnection) { }
+
 
         public override void ProcessInput(string input) {
             throw new NotImplementedException();
@@ -17,18 +13,15 @@ namespace DoctorApplication.DoctorActions
         public override void performAction() {
             throw new NotImplementedException();
         }
-    }
 
-        public void AdjustResistance(string clientName, int resistance)
-        {
-            if (string.IsNullOrEmpty(clientName))
-            {
+
+        public void AdjustResistance(string clientName, int resistance) {
+            if (string.IsNullOrEmpty(clientName)) {
                 form.UpdateStatus("Client naam mag niet leeg zijn bij het aanpassen van de weerstand.");
                 return;
             }
 
-            var command = new
-            {
+            var command = new {
                 Action = "AdjustResistance",
                 TargetClient = clientName,
                 Resistance = resistance
@@ -37,12 +30,6 @@ namespace DoctorApplication.DoctorActions
             form.UpdateStatus($"Weerstand aangepast voor {clientName} naar {resistance}.");
         }
 
-        public override void performAction() {
-            throw new NotImplementedException();
-        }
-
-        public override void ProcessInput(string input) {
-            throw new NotImplementedException();
-        }
     }
 }
+
