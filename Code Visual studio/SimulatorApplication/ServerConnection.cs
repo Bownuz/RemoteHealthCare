@@ -18,7 +18,6 @@ namespace HardwareClientApplication {
 
             while (true) {
                 string data = simulator.getData();
-                //Console.WriteLine(data);
                 Thread.Sleep(1000);
                 WriteData(tcpClient, data);
             }
