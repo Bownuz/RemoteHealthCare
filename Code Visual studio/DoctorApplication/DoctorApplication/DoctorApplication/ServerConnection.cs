@@ -92,7 +92,7 @@ public class ServerConnection {
         SendCommandToServer(command);
     }
 
-    private void SendCommandToServer(object command) {
+    public void SendCommandToServer(object command) {
         try {
             string jsonCommand = JsonSerializer.Serialize(command);
             writer.WriteLine(jsonCommand);
