@@ -61,6 +61,7 @@ namespace Server.Patterns.State.PatientStates {
             }
 
             if (patient.currentSession == null) {
+                MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
                 return;
             }
 
@@ -70,10 +71,11 @@ namespace Server.Patterns.State.PatientStates {
 
             if (jsonRegex.IsMatch(input)) {
                 patientHandler.connectedPatient.currentSession.addMessage(input, CommunicationType.PATIENT);
-                MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
+                MessageCommunication.SendMessage(patientHandler.networkStream, "This message was not a Json String");
                 return;
             }
-            MessageCommunication.SendMessage(patientHandler.networkStream, "This message was not a Json String");
+    
+            MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
         }
     }
 }
