@@ -105,6 +105,7 @@
     <Compile Include="GrafiekScherm\TrainingDataForm.Designer.cs">
       <DependentUpon>TrainingDataForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TrainingData.cs" />
     <EmbeddedResource Include="PatiëntenScherm\ClientenForm.resx">
       <DependentUpon>ClientenForm.cs</DependentUpon>
     </EmbeddedResource>
