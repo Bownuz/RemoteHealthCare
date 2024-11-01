@@ -130,8 +130,8 @@ namespace Server.Patterns.State.DoctorStates {
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
 
             if (doctorHandler.fileStorage.PatientExists(input) && !doctorHandler.fileStorage.GetPatient(input).currentSession.observers.Contains(doctorHandler)) {
-                doctorHandler.fileStorage.GetPatient(input).currentSession.AddObserver(doctorHandler);                
-            } else {  
+                doctorHandler.fileStorage.GetPatient(input).currentSession.AddObserver(doctorHandler);
+            } else {
                 MessageCommunication.SendMessage(doctorHandler.networkStream, $"Failed to add: {input} - This patient does not exist or is already subscribed.");
             }
 
@@ -150,10 +150,11 @@ namespace Server.Patterns.State.DoctorStates {
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
 
             if (doctorHandler.fileStorage.PatientExists(input) && doctorHandler.fileStorage.GetPatient(input).currentSession.observers.Contains(doctorHandler)) {
-                doctorHandler.fileStorage.GetPatient(input).currentSession.RemoveObserver(doctorHandler);     
+                doctorHandler.fileStorage.GetPatient(input).currentSession.RemoveObserver(doctorHandler);
             } else {
                 MessageCommunication.SendMessage(doctorHandler.networkStream, $"Failed to remove: {input} - This patient does not exist or is not subscribed.");
             }
+
 
             MessageCommunication.SendMessage(doctorHandler.networkStream, "Ready to receive command");
         }

@@ -42,7 +42,7 @@ namespace Server.Patterns.State.PatientStates {
                     currentSession.AddObserver(patientHandler);
                 }
 
-                protocol.ChangeState(new P_RecievingData(protocol, patientHandler,connectedPerson));
+                protocol.ChangeState(new P_RecievingData(protocol, patientHandler, connectedPerson));
                 MessageCommunication.SendMessage(patientHandler.networkStream, "Ready to recieve data");
                 return;
             }
@@ -51,12 +51,16 @@ namespace Server.Patterns.State.PatientStates {
 
     }
 
-    public class P_RecievingData(DataProtocol protocol, PatientHandler patientHandler,Patient patient) : PatientState(protocol, patientHandler) {
+    public class P_RecievingData(DataProtocol protocol, PatientHandler patientHandler, Patient patient) : PatientState(protocol, patientHandler) {
         Patient patient = patient;
         public override void CheckInput(string input) {
             if (input.Equals("Quit Communication")) {
                 MessageCommunication.SendMessage(patientHandler.networkStream, "Goodbye");
                 patientHandler.networkStream.Close();
+                return;
+            }
+
+            if (patient.currentSession == null) {
                 return;
             }
 
