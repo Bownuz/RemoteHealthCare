@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Text.Json;
 using DoctorApplication;
+using DoctorApplication.StatePattern;
 
 namespace DoctorApplication.DoctorActions
 {
-    public class SubscribeAction
+    public class SubscribeAction : DoctorState
     {
         private ServerConnection serverConnection;
         private ClientenForm form;
 
-        public SubscribeAction(ClientenForm form, ServerConnection serverConnection)
+        public SubscribeAction(DoctorProtocol protocol, ClientenForm form, ServerConnection serverConnection): base(protocol, form, serverConnection)
         {
             this.form = form ?? throw new ArgumentNullException(nameof(form), "Form mag niet null zijn.");
             this.serverConnection = serverConnection ?? throw new ArgumentNullException(nameof(serverConnection), "ServerConnection mag niet null zijn.");
@@ -30,6 +31,15 @@ namespace DoctorApplication.DoctorActions
             };
             serverConnection.SendCommandToServer(command);
             form.UpdateStatus($"Subscribed to {clientName}.");
+        }
+        public override void performAction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ProcessInput(string input)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -60,5 +70,7 @@ namespace DoctorApplication.DoctorActions
             serverConnection.SendCommandToServer(command);
             form.UpdateStatus($"Unsubscribed from {clientName}.");
         }
+
+
     }
 }

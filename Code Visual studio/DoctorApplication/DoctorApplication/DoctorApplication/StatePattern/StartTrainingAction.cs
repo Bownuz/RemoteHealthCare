@@ -1,14 +1,15 @@
 ﻿using System;
 using DoctorApplication;
+using DoctorApplication.StatePattern;
 
 namespace DoctorApplication.DoctorActions
 {
-    public class StartTrainingAction
+    public class StartTrainingAction : DoctorState
     {
         private ServerConnection serverConnection;
         private ClientenForm form;
 
-        public StartTrainingAction(ClientenForm form, ServerConnection serverConnection)
+        public StartTrainingAction(DoctorProtocol protocol, ClientenForm form, ServerConnection serverConnection) : base(protocol, form, serverConnection)
         {
             this.form = form ?? throw new ArgumentNullException(nameof(form), "Form mag niet null zijn.");
             this.serverConnection = serverConnection ?? throw new ArgumentNullException(nameof(serverConnection), "ServerConnection mag niet null zijn.");
@@ -29,6 +30,15 @@ namespace DoctorApplication.DoctorActions
             };
             serverConnection.SendCommandToServer(command);
             form.UpdateStatus($"Trainingssessie gestart voor {clientName}.");
+        }
+        public override void performAction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ProcessInput(string input)
+        {
+            throw new NotImplementedException();
         }
     }
 }
