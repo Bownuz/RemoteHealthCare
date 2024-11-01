@@ -1,23 +1,20 @@
 using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace DoctorApplication
-{
-    public partial class Form1 : Form
-    {
+namespace DoctorApplication {
+    public partial class Form1 : Form {
         private ServerConnection serverConnection;
+        NetworkStream networkStream;
 
-        public Form1()
-        {
+        public Form1(NetworkStream networkStream) {
             InitializeComponent();
+            this.networkStream = networkStream;
         }
 
-        private async void LoginButton_Click(object sender, EventArgs e)
-        {
+        private async void LoginButton_Click(object sender, EventArgs e) {
             string doctorIdText = DoctorIDTextBox.Text;
             string username = UsernameTextBox.Text;
             string password = PasswordTextBox.Text;
@@ -27,60 +24,32 @@ namespace DoctorApplication
                 return;
             }
 
-            if (!int.TryParse(doctorIdText, out int doctorId)) {
-                MessageBox.Show("Voer een geldig DoctorID in.");
-                return;
-            }
-
             await LoginDoctor(doctorIdText, username, password);
         }
 
         private async Task LoginDoctor(String doctorId, string username, string password) {
-            try
-            {
-                serverConnection = new ServerConnection();
-                await serverConnection.ConnectToServer("localhost", 4790);
+            try {
+                var loginData = new {
+                    DoctorID = doctorId,
+                    DoctorName = username,
+                    DoctorPassword = password
+                };
+                String help = MessageCommunication.ReceiveMessage(networkStream);
 
-            networkStream = Program.client.GetStream();
+                String loginDataJson = JsonSerializer.Serialize(loginData);
+                MessageCommunication.SendMessage(networkStream, loginDataJson);
 
-            var loginData = new {
-                DoctorID = doctorId,
-                DoctorName = username,
-                DoctorPassword = password
-            };
-                serverConnection.SendCommandToServer(loginData);
+                String response = MessageCommunication.ReceiveMessage(networkStream);
 
-                using (var reader = new StreamReader(serverConnection.NetworkStream))
-                {
-                    string response = await reader.ReadLineAsync();
-                    if (response != null && response.Contains("Login Successful"))
-                    {
-                        MessageBox.Show("Inlog succesvol.");
-                        OpenClientenForm();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Ongeldige inloggegevens.");
-                    }
-            SendCommandToServer(loginData);
-
-            using (var reader = new System.IO.StreamReader(networkStream)) {
-                string response = await reader.ReadLineAsync();
-                if (response.Contains("Login Successful")) {
+                if (response != null && response.Contains("Login Successful")) {
                     MessageBox.Show("Inlog succesvol.");
                     OpenClientenForm();
                 } else {
                     MessageBox.Show("Ongeldige inloggegevens.");
                 }
 
-            }
-            catch (SocketException ex)
-            {
+            } catch (SocketException ex) {
                 MessageBox.Show("Kan geen verbinding maken met de server: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Er is een fout opgetreden: " + ex.Message);
             }
         }
 
@@ -96,20 +65,17 @@ namespace DoctorApplication
             }
         }
 
-        private void OpenClientenForm()
-        {
+        private void OpenClientenForm() {
             ClientenForm clientenForm = new ClientenForm(serverConnection);
             clientenForm.Show();
             this.Hide();
         }
 
-        private void CloseButton_Click(object sender, EventArgs e)
-        {
+        private void CloseButton_Click(object sender, EventArgs e) {
             Application.Exit();
         }
 
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
+        protected override void OnFormClosed(FormClosedEventArgs e) {
             base.OnFormClosed(e);
             serverConnection?.Disconnect();
         }

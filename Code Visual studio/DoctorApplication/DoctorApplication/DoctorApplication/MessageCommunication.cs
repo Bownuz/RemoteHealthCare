@@ -1,17 +1,17 @@
+﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 
-namespace Server.ThreadHandlers {
+namespace DoctorApplication {
     public class MessageCommunication {
         public static string ReceiveMessage(NetworkStream networkStream) {
             var stream = new StreamReader(networkStream, Encoding.ASCII);
-            String line = stream.ReadLine();
-            Console.WriteLine(line);
-            return line;
+            return stream.ReadLine();
         }
 
         public static void SendMessage(NetworkStream networkStream, string message) {
-            var stream = new StreamWriter(networkStream, Encoding.ASCII, -1, true);
+            var stream = new StreamWriter(networkStream, Encoding.ASCII, 128, true);
             stream.WriteLine(message);
             stream.Flush();
         }

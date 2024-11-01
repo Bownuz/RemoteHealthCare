@@ -5,8 +5,7 @@ using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DoctorApplication;
-using DoctorApplication.DoctorActions;
+using DoctorApplication.StatePattern;
 
 namespace DoctorApplication
 {
@@ -19,7 +18,7 @@ namespace DoctorApplication
         {
             InitializeComponent();
             this.serverConnection = serverConnection ?? throw new ArgumentNullException(nameof(serverConnection), "ServerConnection mag niet null zijn.");
-            doctorState = new DoctorState(this, serverConnection);
+            
         }
 
         private void ClientenForm_Load(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -75,21 +75,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientData.cs" />
-    <Compile Include="DoctorActions\AdjustResistanceAction.cs" />
-    <Compile Include="DoctorActions\EmergencyStopAction.cs" />
-    <Compile Include="DoctorActions\SendDataAction.cs" />
-    <Compile Include="DoctorActions\StartTrainingAction.cs" />
-    <Compile Include="DoctorActions\StopTrainingAction.cs" />
-    <Compile Include="DoctorActions\SubscribeAction.cs" />
-    <Compile Include="DoctorActions\ViewTrainingDataAction.cs" />
+    <Compile Include="Data\ClientData.cs" />
+    <Compile Include="Data\TrainingData.cs" />
+    <Compile Include="StatePattern\AdjustResistanceAction.cs" />
+    <Compile Include="StatePattern\DoctorProtocol.cs" />
+    <Compile Include="StatePattern\EmergencyStopAction.cs" />
+    <Compile Include="StatePattern\SendDataAction.cs" />
+    <Compile Include="StatePattern\StartTrainingAction.cs" />
+    <Compile Include="StatePattern\StopTrainingAction.cs" />
+    <Compile Include="StatePattern\SubscribeAction.cs" />
+    <Compile Include="StatePattern\ViewTrainingDataAction.cs" />
+    <Compile Include="MessageCommunication.cs" />
     <Compile Include="PatiëntenScherm\ClientenForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PatiëntenScherm\ClientenForm.Designer.cs">
       <DependentUpon>ClientenForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DoctorActions\DoctorState.cs" />
+    <Compile Include="StatePattern\DoctorState.cs" />
     <Compile Include="LoginScherm\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,7 +108,6 @@
     <Compile Include="GrafiekScherm\TrainingDataForm.Designer.cs">
       <DependentUpon>TrainingDataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TrainingData.cs" />
     <EmbeddedResource Include="PatiëntenScherm\ClientenForm.resx">
       <DependentUpon>ClientenForm.cs</DependentUpon>
     </EmbeddedResource>
