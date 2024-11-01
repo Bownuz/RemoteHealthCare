@@ -9,23 +9,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ClientApplication.State;
 
 namespace ClientApplication {
     internal partial class ClientInfoScreen : UserControl {
         private Ergometer ergometer;
         private HeartRateMonitor heartRateMonitor;
-        private DataHandler handler;
+        private DataHandler dataHandler;
         private Form mainForm;
         private Timer updateTimer;
-        public ClientInfoScreen(DataHandler dataHandler, Form mainForm, Ergometer ergometer, HeartRateMonitor heartRateMonitor) {
+        private NetworkHandler handler;
+        public ClientInfoScreen(DataHandler dataHandler, Form mainForm, Ergometer ergometer, HeartRateMonitor heartRateMonitor, NetworkHandler handler) {
             InitializeComponent();
             this.mainForm = mainForm;
             this.ergometer = ergometer;
             this.heartRateMonitor = heartRateMonitor;
-            this.handler = dataHandler;
+            this.dataHandler = dataHandler;
+            this.handler = handler;
+
+            this.handler.NewDoctorMessage += UpdateMessage;
 
             InitializeTimer();
         }
+
+        private void UpdateMessage(string message) {
+            listBox1.Invoke((MethodInvoker)delegate {
+                listBox1.Items.Add(message);
+                listBox1.TopIndex = listBox1.Items.Count - 1;
+            });
+        }
+
 
         private void SpeedPatientLabel(object sender, EventArgs e) {
         }
@@ -71,6 +84,13 @@ namespace ClientApplication {
         }
         private void UpdateLocalDate() {
             Date.Text = DateTime.Now.ToShortDateString();
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
+            //string doctorMessage = ServerConnection.getDocterMessage();
+            //if (doctorMessage != null) {
+            //    listBox1.Items.Add(doctorMessage);
+            //}
         }
     }
 }

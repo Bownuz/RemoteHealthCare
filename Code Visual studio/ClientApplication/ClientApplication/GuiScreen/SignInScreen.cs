@@ -5,14 +5,18 @@ using System.Drawing;
 using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using ClientApplication.State;
+using System.Threading.Tasks;
 
 namespace ClientApplication {
     internal partial class SignInScreen : UserControl {
-        private DataHandler handler;
+        private DataHandler dataHandler = null;
         private Form mainForm;
         private ListDisplay listDisplay;
         private Ergometer ergometer;
         private HeartRateMonitor heartRateMonitor;
+        private NetworkHandler handler;
         private Boolean simulatorActive = false;
 
         public SignInScreen(Form mainForm) {
@@ -22,7 +26,8 @@ namespace ClientApplication {
             listBox1.Items.Add("");
             listBox1.Items.Add("");
             listDisplay.ShowDeviceList();
-            //listBox1.BackColor = Color.AliceBlue;
+
+            this.handler = new NetworkHandler(ergometer);
         }
 
         private void CloseButton(object sender, EventArgs e) {
@@ -33,11 +38,9 @@ namespace ClientApplication {
         }
 
         private void SubmitButton(object sender, EventArgs e) {
-            //MessageBox.Show($"Welcome: " + textBox1.Text);
             if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && textBox2.Text.StartsWith("Tacx Flux") || simulatorActive && !string.IsNullOrWhiteSpace(textBox1.Text)) {
                 StartClient();
                 ChangeScreen();
-                //StartConnectionWithServer();
             } else {
                 MessageBox.Show("You haven't filled everything in, or the bike id doens't begin with Tacx Flux");
             }
@@ -48,14 +51,8 @@ namespace ClientApplication {
             this.ergometer = new Ergometer();
             BleDevice[] bleDevices = { ergometer, heartRateMonitor };
 
-            this.handler = new DataHandler(bleDevices, textBox3.Text, textBox2.Text, ergometer, heartRateMonitor, simulatorActive);
-        }
-
-        public void StartConnectionWithServer() {
-            //TcpClient client = new TcpClient("192.168.178.101", 4789);
-            TcpClient client = new TcpClient("localhost", 4789);
-            Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, handler, ergometer));
-            connectionThread.Start();
+            this.dataHandler = new DataHandler(bleDevices, textBox3.Text, textBox2.Text, textBox1.Text, ergometer, heartRateMonitor, simulatorActive);
+            handler.AddDataHandler(dataHandler);
         }
 
         private void UsernameTextBox(object sender, EventArgs e) {
@@ -71,7 +68,7 @@ namespace ClientApplication {
         }
 
         private void ChangeScreen() {
-            ClientInfoScreen clientInfoScreen = new ClientInfoScreen(handler, mainForm, ergometer, heartRateMonitor);
+            ClientInfoScreen clientInfoScreen = new ClientInfoScreen(dataHandler, mainForm, ergometer, heartRateMonitor, handler);
             mainForm.Controls.Clear();
             mainForm.Controls.Add(clientInfoScreen);
             clientInfoScreen.Dock = DockStyle.Fill;
