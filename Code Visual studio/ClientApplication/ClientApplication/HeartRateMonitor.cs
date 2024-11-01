@@ -2,7 +2,7 @@ using System;
 
 
 namespace ConnectionImplemented {
-    internal class HeartRateMonitor : BleDevice {
+    public class HeartRateMonitor : BleDevice {
         private int heartRate { get; set; }
 
         public HeartRateMonitor() : base("HeartRate", "HeartRateMeasurement") {
@@ -26,7 +26,7 @@ namespace ConnectionImplemented {
             return -1;
         }
 
-        protected override void updateDataToHandler() {
+        public override void UpdateDataToHandler() {
             base.handler.updateCurrentHeartRate(heartRate);
         }
 

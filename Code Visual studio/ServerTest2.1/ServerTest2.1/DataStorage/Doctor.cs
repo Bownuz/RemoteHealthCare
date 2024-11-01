@@ -1,20 +1,13 @@
-using System;
+namespace Server.DataStorage {
+    public class Doctor {
+        public readonly String DoctorID;
+        public readonly String DoctorName;
+        public readonly String DoctorPassword;
 
-namespace Server.DataStorage
-{
-	public class Doctor
-	{
-		private int DoctorID;
-
-		private String Name;
-
-		private String Password;
-
-        public Doctor(int doctorID, string name, string password)
-        {
-            DoctorID = doctorID;
-            Name = name;
-            Password = password;
+        public Doctor(String DoctorID, string DoctorName, string DoctorPassword) {
+            this.DoctorID = DoctorID;
+            this.DoctorName = DoctorName;
+            this.DoctorPassword = DoctorPassword;
         }
     }
 

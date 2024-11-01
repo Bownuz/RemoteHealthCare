@@ -2,19 +2,16 @@ using Server.Patterns.Observer;
 using Server.ThreadHandlers;
 
 
-namespace Server.DataStorage
-{
-    public class Session : Subject
-    {
-        DateTime sessionStart { get; }
-        DateTime sessionEnd { get; }
-        String ergometerName { get; }
-        String heartRateMonitorName { get; }
-        List<string> clientMessages { get; }
-        List<string> doctorMessages { get; }
+namespace Server.DataStorage {
+    public class Session : Subject {
+        public DateTime sessionStart { get; set; }
+        public DateTime sessionEnd { get; set; }
+        public String ergometerName { get; set; }
+        public String heartRateMonitorName { get; set; }
+        public List<string> clientMessages { get; set; }
+        public List<string> doctorMessages { get; set; }
 
-        public Session(DateTime sessionStart, string ergometerName, string heartRateMonitorName)
-        {
+        public Session(DateTime sessionStart, string ergometerName, string heartRateMonitorName) {
             clientMessages = new List<string>();
             doctorMessages = new List<string>();
             this.sessionStart = sessionStart;
@@ -22,10 +19,8 @@ namespace Server.DataStorage
             this.heartRateMonitorName = heartRateMonitorName;
         }
 
-        public void addMessage(String message, CommunicationType messageType)
-        {
-            switch (messageType)
-            {
+        public void addMessage(String message, CommunicationType messageType) {
+            switch (messageType) {
                 case CommunicationType.PATIENT:
                     clientMessages.Add(message);
                     break;
@@ -39,16 +34,14 @@ namespace Server.DataStorage
             UpdateObservers(messageType, this);
         }
 
-        public String getLatestMessage(CommunicationType messageType)
-        {
-            switch (messageType)
-            {
+        public String getLatestMessage(CommunicationType messageType) {
+            switch (messageType) {
                 case CommunicationType.PATIENT:
-                    if (doctorMessages.Count > 0)
+                    if (clientMessages.Count > 0)
                         return clientMessages[^1];
                     return "this list is empty";
                 case CommunicationType.DOCTOR:
-                    if (clientMessages.Count > 0)
+                    if (doctorMessages.Count > 0)
                         return doctorMessages[^1];
                     return "this list is empty";
                 default:

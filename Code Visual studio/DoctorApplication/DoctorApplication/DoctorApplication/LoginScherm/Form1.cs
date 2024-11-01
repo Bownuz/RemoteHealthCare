@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DoctorApplication;
 
 namespace DoctorApplication
 {
@@ -23,35 +22,32 @@ namespace DoctorApplication
             string username = UsernameTextBox.Text;
             string password = PasswordTextBox.Text;
 
-            if (string.IsNullOrEmpty(doctorIdText) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-            {
+            if (string.IsNullOrEmpty(doctorIdText) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) {
                 MessageBox.Show("Vul DoctorID, gebruikersnaam en wachtwoord in.");
                 return;
             }
 
-            if (!int.TryParse(doctorIdText, out int doctorId))
-            {
+            if (!int.TryParse(doctorIdText, out int doctorId)) {
                 MessageBox.Show("Voer een geldig DoctorID in.");
                 return;
             }
 
-            await LoginDoctor(doctorId, username, password);
+            await LoginDoctor(doctorIdText, username, password);
         }
 
-        private async Task LoginDoctor(int doctorId, string username, string password)
-        {
+        private async Task LoginDoctor(String doctorId, string username, string password) {
             try
             {
                 serverConnection = new ServerConnection();
                 await serverConnection.ConnectToServer("localhost", 4790);
 
-                var loginData = new
-                {
-                    DoctorID = doctorId,
-                    DoctorName = username,
-                    DoctorPassword = password
-                };
+            networkStream = Program.client.GetStream();
 
+            var loginData = new {
+                DoctorID = doctorId,
+                DoctorName = username,
+                DoctorPassword = password
+            };
                 serverConnection.SendCommandToServer(loginData);
 
                 using (var reader = new StreamReader(serverConnection.NetworkStream))
@@ -66,7 +62,17 @@ namespace DoctorApplication
                     {
                         MessageBox.Show("Ongeldige inloggegevens.");
                     }
+            SendCommandToServer(loginData);
+
+            using (var reader = new System.IO.StreamReader(networkStream)) {
+                string response = await reader.ReadLineAsync();
+                if (response.Contains("Login Successful")) {
+                    MessageBox.Show("Inlog succesvol.");
+                    OpenClientenForm();
+                } else {
+                    MessageBox.Show("Ongeldige inloggegevens.");
                 }
+
             }
             catch (SocketException ex)
             {
@@ -75,6 +81,18 @@ namespace DoctorApplication
             catch (Exception ex)
             {
                 MessageBox.Show("Er is een fout opgetreden: " + ex.Message);
+            }
+        }
+
+        private void SendCommandToServer(object command) {
+            try {
+                string jsonCommand = System.Text.Json.JsonSerializer.Serialize(command);
+                using (var writer = new System.IO.StreamWriter(networkStream) { AutoFlush = true }) {
+                    writer.WriteLine(jsonCommand);
+                }
+                MessageBox.Show("Commando succesvol verzonden.");
+            } catch (Exception ex) {
+                MessageBox.Show("Fout bij het verzenden van commando: " + ex.Message);
             }
         }
 

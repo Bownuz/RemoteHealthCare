@@ -1,43 +1,42 @@
 using Server.DataStorage;
 using Server.Patterns.Observer;
-using System;
+using System.Net.Security;
 using System.Net.Sockets;
 
-namespace Server.ThreadHandlers
-{
-	public abstract class CommunicationHandler(FileStorage fileStorage, TcpClient tcpClient) : Observer
-    {
-		protected TcpClient tcpClient = tcpClient;
+namespace Server.ThreadHandlers {
+    public abstract class CommunicationHandler : Observer {
 
-		public readonly FileStorage fileStorage = fileStorage;
+        public NetworkStream networkStream;
 
-		protected CommunicationType communicationType;
+        public readonly FileStorage fileStorage;
 
-        public void HandleThread()
-		{
+        protected CommunicationType communicationType;
+
+        public CommunicationHandler(FileStorage fileStorage, NetworkStream networkStream) {
+            this.fileStorage = fileStorage;
+            this.networkStream = networkStream;
+        }
+
+        public void HandleThread() {
             DataProtocol protocol = new DataProtocol(communicationType, this);
+            protocol.processInput("");
+            while (networkStream.CanRead) {
+                string receivedMessage;
+                string response;
 
-            MessageCommunication.SendMessage(tcpClient, protocol.processInput(""));
-            while (tcpClient.Connected)
-            {
-                string recievedMessage;
-                String response;
-                if ((recievedMessage = MessageCommunication.ReciveMessage(tcpClient)) != null)
-                {
-                    response = protocol.processInput(recievedMessage);
-                    MessageCommunication.SendMessage(tcpClient, response);
-
-                    if (response.Equals("Goodbye"))
-                    {
-                        tcpClient.Close();
+                try {
+                    if ((receivedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
+                        continue;
                     }
+
+                    protocol.processInput(receivedMessage);
+
+                } catch (IOException ex) {
+                    Console.WriteLine(ex.Message);
+                    networkStream.Close();
                 }
             }
         }
-
         public abstract void Update(CommunicationType communicationOrigin, Session session);
-        
     }
-
 }
-
