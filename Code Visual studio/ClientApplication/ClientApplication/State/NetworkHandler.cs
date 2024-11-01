@@ -2,19 +2,14 @@
 using Server;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace ClientApplication.State {
     public class NetworkHandler {
         public event Action<string> NewDoctorMessage;
-        protected TcpClient tcpClient;
+        public TcpClient tcpClient;
         private Ergometer ergoMeter;
         public DataHandler dataHandler;
         private DataProtocol protocol;
@@ -36,33 +31,39 @@ namespace ClientApplication.State {
         }
 
         private void StartConnectionWithServer() {
-            this.tcpClient = new TcpClient("localhost", 4789);
+            this.tcpClient = new TcpClient("192.168.178.58", 4789);
             NetworkStream stream = tcpClient.GetStream();
             Task.Run(async () => await HandleNetworkThread());
         }
 
         public async Task HandleNetworkThread() {
             this.protocol = new DataProtocol(this);
-            var serverCommands = new List<string> { "Ready to receive data", "Goodbye", "Welcome Client", "add failed message" };
+            var serverCommands = new List<string> {"Goodbye", "Welcome Client", "add failed message" };
 
             while (tcpClient.Connected) {
+                Thread.Sleep(500);
                 string recievedMessage;
                 string response;
-                if ((recievedMessage = await MessageCommunication.RecieveMessage(tcpClient)) != null) {
-                    if (recievedMessage.StartsWith("HeartRate:")) {
-                        ergoMeter.ChangeResistanceOfBike(byte.Parse(recievedMessage));
-                    } else if (!serverCommands.Contains(recievedMessage)) {
-                        NewDoctorMessage?.Invoke(recievedMessage);
-                    }
-                    response = protocol.processInput(recievedMessage);
-                    if (response != "") {
-                        MessageCommunication.SendMessage(tcpClient, response);
-                        if (response.Equals("Goodbye")) {
-                            tcpClient.Close();
-                        }
+                if ((recievedMessage = await MessageCommunication.RecieveMessage(tcpClient)) == null) {
+                    continue;
+                }
+
+                if (recievedMessage.StartsWith("HeartRate:")) {
+                    ergoMeter.ChangeResistanceOfBike(byte.Parse(recievedMessage));
+                }
+                if (!serverCommands.Contains(recievedMessage)) {
+                    NewDoctorMessage?.Invoke(recievedMessage);
+                }
+
+                response = protocol.processInput(recievedMessage);
+                if (response != "") {
+                    MessageCommunication.SendMessage(tcpClient, response);
+                    if (response.Equals("Goodbye")) {
+                        tcpClient.Close();
                     }
                 }
             }
         }
     }
+
 }

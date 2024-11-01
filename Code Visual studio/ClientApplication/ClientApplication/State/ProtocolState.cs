@@ -1,16 +1,4 @@
-﻿using ConnectionImplemented;
-using Server;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Markup;
+﻿using Server;
 
 namespace ClientApplication.State {
     public class Connecting : State {
@@ -38,7 +26,7 @@ namespace ClientApplication.State {
                 protocol.ChangeState(new SendData(protocol, networkHandler));
             }
 
-           return patientInfo;
+            return patientInfo;
         }
     }
 
@@ -47,11 +35,12 @@ namespace ClientApplication.State {
         }
 
         public override string CheckInput(string input) {
-            string patientData = null;
+            string response = "";
             if (input.Equals("Ready to recieve data")) {
-                patientData = networkHandler.dataHandler.printDataAsJson();
+                response = networkHandler.dataHandler.printDataAsJson();
+                return response;
             }
-            return patientData;
+            return response;
         }
     }
 
@@ -60,6 +49,9 @@ namespace ClientApplication.State {
         }
 
         public override string CheckInput(string input) {
+            if (input.Equals("Goodbye")) {
+                networkHandler.tcpClient.Close();
+            }
             return "";
         }
     }
