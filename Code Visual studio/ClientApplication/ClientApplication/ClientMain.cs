@@ -23,7 +23,7 @@ namespace ClientApplication {
         public static void StartGui() {
             Form mainForm = new Form();
             SignInScreen userControl = new SignInScreen(mainForm);
-            // Zorgt ervoor dat de UserControl het hele form vult
+
             userControl.Dock = DockStyle.Fill;
 
             mainForm.WindowState = FormWindowState.Maximized;

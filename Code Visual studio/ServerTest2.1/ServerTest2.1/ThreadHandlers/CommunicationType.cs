@@ -1,10 +1,8 @@
-namespace Server.ThreadHandlers
-{
-	public enum CommunicationType
-	{
-		PATIENT,
-		DOCTOR
-	}
+namespace Server.ThreadHandlers {
+    public enum CommunicationType {
+        PATIENT,
+        DOCTOR
+    }
 
 }
 

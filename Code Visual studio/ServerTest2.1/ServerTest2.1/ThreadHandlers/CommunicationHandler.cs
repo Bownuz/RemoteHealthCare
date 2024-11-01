@@ -1,47 +1,39 @@
 using Server.DataStorage;
 using Server.Patterns.Observer;
-using System;
-using System.IO;
 using System.Net.Security;
+using System.Net.Sockets;
 
 namespace Server.ThreadHandlers {
     public abstract class CommunicationHandler : Observer {
-      
-        protected readonly SslStream sslStream;
 
-        protected readonly FileStorage fileStorage;
+        public NetworkStream networkStream;
+
+        public readonly FileStorage fileStorage;
 
         protected CommunicationType communicationType;
 
-        public CommunicationHandler(FileStorage fileStorage, SslStream sslStream) {
+        public CommunicationHandler(FileStorage fileStorage, NetworkStream networkStream) {
             this.fileStorage = fileStorage;
-            this.sslStream = sslStream;
+            this.networkStream = networkStream;
         }
 
         public void HandleThread() {
             DataProtocol protocol = new DataProtocol(communicationType, this);
-
-            MessageCommunication.SendMessage(sslStream, protocol.processInput(""));
-
-            while(sslStream.CanRead) {
+            protocol.processInput("");
+            while (networkStream.CanRead) {
                 string receivedMessage;
                 string response;
 
                 try {
-                    if((receivedMessage = MessageCommunication.ReceiveMessage(sslStream)) == null) {
+                    if ((receivedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
                         continue;
                     }
 
-                    response = protocol.processInput(receivedMessage);
-                    MessageCommunication.SendMessage(sslStream, response);
+                    protocol.processInput(receivedMessage);
 
-                    if(response.Equals("Goodbye")) {
-                        sslStream.Close();
-                    }
-                }
-                catch(IOException ex) {
+                } catch (IOException ex) {
                     Console.WriteLine(ex.Message);
-                    sslStream.Close();
+                    networkStream.Close();
                 }
             }
         }
