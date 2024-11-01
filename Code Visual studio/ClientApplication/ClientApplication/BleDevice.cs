@@ -6,16 +6,15 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConnectionImplemented {
-    internal abstract class BleDevice {
+    public abstract class BleDevice {
         private String currentData;
         private String service;
         private String characteristic;
         private double currentValue;
-        protected BLE bleDevice;
-        protected DataHandler handler;
+        public BLE bleDevice;
+        public DataHandler handler;
 
-
-        protected BleDevice(String service, String characteristic) {
+        public BleDevice(String service, String characteristic) {
             this.currentData = "";
             this.service = service;
             this.characteristic = characteristic;
@@ -49,15 +48,15 @@ namespace ConnectionImplemented {
 
         public void SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs subsciptionEvent) {
             ConvertData(subsciptionEvent.Data);
-            updateDataToHandler();
+            UpdateDataToHandler();
         }
 
         public void SubscriptionValueChanged(byte[] rawData) {
             ConvertData(rawData);
-            updateDataToHandler();
+            UpdateDataToHandler();
         }
 
-        protected abstract void updateDataToHandler();
+        public abstract void UpdateDataToHandler();
 
         public abstract void ConvertData(byte[] rawData);
 

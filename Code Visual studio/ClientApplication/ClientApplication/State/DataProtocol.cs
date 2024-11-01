@@ -5,11 +5,10 @@ using System;
 
 namespace Server {
     public class DataProtocol {
-        private State state;
+        public State state;
 
-        public DataProtocol(Handler handler) {
-            //this.state = new Connecting(this, handler);
-            this.state = new Initializing(this, handler);
+        public DataProtocol(NetworkHandler networkHandler) {
+            this.state = new Connecting(this, networkHandler);
         }
         public String processInput(String input) {
             return state.CheckInput(input);

@@ -18,8 +18,8 @@ namespace ClientApplication {
         private DataHandler dataHandler;
         private Form mainForm;
         private Timer updateTimer;
-        private Handler handler;
-        public ClientInfoScreen(DataHandler dataHandler, Form mainForm, Ergometer ergometer, HeartRateMonitor heartRateMonitor, Handler handler) {
+        private NetworkHandler handler;
+        public ClientInfoScreen(DataHandler dataHandler, Form mainForm, Ergometer ergometer, HeartRateMonitor heartRateMonitor, NetworkHandler handler) {
             InitializeComponent();
             this.mainForm = mainForm;
             this.ergometer = ergometer;
@@ -27,10 +27,18 @@ namespace ClientApplication {
             this.dataHandler = dataHandler;
             this.handler = handler;
 
-            //handler.NewDoctorMessage += UpdateMessage;
+            this.handler.NewDoctorMessage += UpdateMessage;
 
             InitializeTimer();
         }
+
+        private void UpdateMessage(string message) {
+            listBox1.Invoke((MethodInvoker)delegate {
+                listBox1.Items.Add(message);
+                listBox1.TopIndex = listBox1.Items.Count - 1;
+            });
+        }
+
 
         private void SpeedPatientLabel(object sender, EventArgs e) {
         }
@@ -76,10 +84,6 @@ namespace ClientApplication {
         }
         private void UpdateLocalDate() {
             Date.Text = DateTime.Now.ToShortDateString();
-        }
-
-        public void UpdateMessage(string message) {
-            listBox1.Items.Add(message);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {

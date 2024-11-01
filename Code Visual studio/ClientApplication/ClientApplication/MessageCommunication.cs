@@ -3,16 +3,18 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Markup;
 
 
 namespace ClientApplication {
     public class MessageCommunication {
-        public static string RecieveMessage(TcpClient client) {
+        public static async Task<string> RecieveMessage(TcpClient client) {
             try {
                 var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
                 Console.WriteLine("Wachten op bericht...");
-                string message = stream.ReadLine();
+                string message = await stream.ReadLineAsync();
                 Console.WriteLine("Bericht ontvangen: " + message);
                 return message;
             }
@@ -22,12 +24,11 @@ namespace ClientApplication {
             }
         }
 
-        public static void SendMessage(TcpClient client, string message) {
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII, 128, true);
-            {
-                stream.WriteLine(message);
-                stream.Flush();
-            }
+        public static async Task SendMessage(TcpClient client, string message) {
+            //MessageBox.Show(message);
+            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
+            await stream.WriteLineAsync(message);
+            await stream.FlushAsync();
         }
 
     }

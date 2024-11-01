@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace ClientApplication.State {
     public abstract class State {
-        protected DataProtocol protocol;
-        protected Handler handler;
+        public DataProtocol protocol;
+        public NetworkHandler networkHandler;
 
-        protected State(DataProtocol protocol, Handler handler) {
+        public State(DataProtocol protocol, NetworkHandler networkHandler) {
             this.protocol = protocol;
-            this.handler = handler;
+            this.networkHandler = networkHandler;
         }
 
         public abstract String CheckInput(String input);
