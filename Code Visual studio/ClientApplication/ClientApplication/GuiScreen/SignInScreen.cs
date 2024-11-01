@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using ClientApplication.State;
+using System.Threading.Tasks;
 
 namespace ClientApplication {
     internal partial class SignInScreen : UserControl {
@@ -15,7 +16,7 @@ namespace ClientApplication {
         private ListDisplay listDisplay;
         private Ergometer ergometer;
         private HeartRateMonitor heartRateMonitor;
-        private Handler handler;
+        private NetworkHandler handler;
         private Boolean simulatorActive = false;
 
         public SignInScreen(Form mainForm) {
@@ -26,7 +27,7 @@ namespace ClientApplication {
             listBox1.Items.Add("");
             listDisplay.ShowDeviceList();
 
-            StartConnectionWithServer();
+            this.handler = new NetworkHandler(ergometer);
         }
 
         private void CloseButton(object sender, EventArgs e) {
@@ -37,11 +38,9 @@ namespace ClientApplication {
         }
 
         private void SubmitButton(object sender, EventArgs e) {
-            //MessageBox.Show($"Welcome: " + textBox1.Text);
             if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && textBox2.Text.StartsWith("Tacx Flux") || simulatorActive && !string.IsNullOrWhiteSpace(textBox1.Text)) {
                 StartClient();
                 ChangeScreen();
-                //dataHandler.setpatientInfo(textBox1.Text, textBox2.Text, textBox3.Text);
             } else {
                 MessageBox.Show("You haven't filled everything in, or the bike id doens't begin with Tacx Flux");
             }
@@ -53,22 +52,7 @@ namespace ClientApplication {
             BleDevice[] bleDevices = { ergometer, heartRateMonitor };
 
             this.dataHandler = new DataHandler(bleDevices, textBox3.Text, textBox2.Text, textBox1.Text, ergometer, heartRateMonitor, simulatorActive);
-            handler.addDataHandler(dataHandler);
-        }
-
-        public void StartConnectionWithServer() {
-            //TcpClient client = new TcpClient("localhost", 4789);
-            //Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, handler, ergometer, textBox1.Text, textBox2.Text, textBox3.Text));
-            //connectionThread.Start();
-
-            TcpClient client = new TcpClient("localhost", 4789);
-            this.handler = new Handler(client, ergometer, textBox1.Text, textBox2.Text, textBox3.Text);
-            Thread connectionThread = new Thread(() => handler.HandleThread());
-            connectionThread.Start();
-
-            //TcpClient client = Clientlistener.AcceptTcpClient();
-            //Thread clientThread = new Thread(() => HandleClient(client, fileStorage));
-            //clientThread.Start();
+            handler.AddDataHandler(dataHandler);
         }
 
         private void UsernameTextBox(object sender, EventArgs e) {
