@@ -1,21 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DoctorApplication;
 
-namespace DoctorApplication.DoctorActions {
-    public class AdjustResistanceAction {
+namespace DoctorApplication.DoctorActions
+{
+    public class AdjustResistanceAction
+    {
         private ServerConnection serverConnection;
         private ClientenForm form;
 
-        public AdjustResistanceAction(ClientenForm form, ServerConnection serverConnection) {
-            this.form = form;
-            this.serverConnection = serverConnection;
+        public AdjustResistanceAction(ClientenForm form, ServerConnection serverConnection)
+        {
+            this.form = form ?? throw new ArgumentNullException(nameof(form), "Form mag niet null zijn.");
+            this.serverConnection = serverConnection ?? throw new ArgumentNullException(nameof(serverConnection), "ServerConnection mag niet null zijn.");
         }
 
-        public void AdjustResistance(string clientName, int resistance) {
-            var command = new {
+        public void AdjustResistance(string clientName, int resistance)
+        {
+            if (string.IsNullOrEmpty(clientName))
+            {
+                form.UpdateStatus("Client naam mag niet leeg zijn bij het aanpassen van de weerstand.");
+                return;
+            }
+
+            var command = new
+            {
                 Action = "AdjustResistance",
                 TargetClient = clientName,
                 Resistance = resistance

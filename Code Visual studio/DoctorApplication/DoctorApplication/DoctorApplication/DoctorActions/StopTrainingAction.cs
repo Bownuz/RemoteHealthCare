@@ -1,21 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DoctorApplication;
 
-namespace DoctorApplication.DoctorActions {
-    public class StopTrainingAction {
+namespace DoctorApplication.DoctorActions
+{
+    public class StopTrainingAction
+    {
         private ServerConnection serverConnection;
         private ClientenForm form;
 
-        public StopTrainingAction(ClientenForm form, ServerConnection serverConnection) {
-            this.form = form;
-            this.serverConnection = serverConnection;
+        public StopTrainingAction(ClientenForm form, ServerConnection serverConnection)
+        {
+            this.form = form ?? throw new ArgumentNullException(nameof(form), "Form mag niet null zijn.");
+            this.serverConnection = serverConnection ?? throw new ArgumentNullException(nameof(serverConnection), "ServerConnection mag niet null zijn.");
         }
 
-        public void StopTraining(string clientName) {
-            var command = new {
+        public void StopTraining(string clientName)
+        {
+            if (string.IsNullOrEmpty(clientName))
+            {
+                form.UpdateStatus("Client naam mag niet leeg zijn bij het stoppen van de training.");
+                return;
+            }
+
+            var command = new
+            {
                 Action = "StopTraining",
                 TargetClient = clientName
             };
