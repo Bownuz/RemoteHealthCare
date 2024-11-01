@@ -26,6 +26,26 @@ namespace ClientApplication.Vr {
             }
         }
 
+        public static void SaveScene() {
+            VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
+                                    ""id"" : ""scene/save"",
+                                    ""data"" : {{
+                                        ""filename"" : ""ck.json"",
+                                        ""overwrite"" : true
+                                    }}
+                                }}"));
+        }
+
+        public static void LoadScene() {
+            VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
+                                    ""id"" : ""scene/load"",
+                                    ""data"" : {{
+                                        ""filename"" : ""ck.json""
+                                    }}
+                                }}"));
+            GetScene();
+        }
+
         public static void GetScene() {
             VrConnection.SendJsonObjectViaTunnelFromFile("scene_get.json");
             for (; ; ) {
@@ -43,6 +63,22 @@ namespace ClientApplication.Vr {
             VrConnection.SendJsonObjectViaTunnelFromFile("scene_terrain_add.json");
             VrConnection.SendJsonObjectViaTunnelFromFile("scene_node_add.json");
             GetScene();
+        }
+
+        public static void AddSceneNodeLayer() {
+            string uuid = GetNodeUUIDFromSceneChildren("MyNode");
+            Console.WriteLine(uuid);
+            VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
+                                    ""id"" : ""scene/node/addlayer"",
+                                    ""data"" : {{
+                                        ""id"" : ""{uuid}"",
+                                        ""diffuse"" : ""grass_green_d.jpg"",
+                                        ""normal"" : ""grass_diffuse.png"",
+                                        ""minHeight"" : 0,
+                                        ""maxHeight"" : 10,
+                                        ""fadeDist"" : 1
+                                    }}
+                                }}"));
         }
 
         public static void NewRoute() {
@@ -117,11 +153,8 @@ namespace ClientApplication.Vr {
 
         public static void DeleteGroundPlaneNode() {
             JsonElement sceneComponents = JsonDocument.Parse(scene).RootElement.GetProperty("data").GetProperty("data").GetProperty("data").GetProperty("children");
-            string nodeId = null;
-            for (int i = sceneComponents.GetArrayLength() - 1; i > -1; i--) {
-                if (sceneComponents[i].GetProperty("name").ToString().Equals("GroundPlane"))
-                    nodeId = sceneComponents[i].GetProperty("uuid").ToString();
-            }
+            string nodeId = GetNodeUUIDFromSceneChildren("GroundPlane");
+
             VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes($@"{{
                                     ""id"" : ""scene/node/delete"",
                                     ""data"" : {{
