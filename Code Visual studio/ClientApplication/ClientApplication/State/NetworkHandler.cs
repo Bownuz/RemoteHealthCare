@@ -43,7 +43,7 @@ namespace ClientApplication.State {
 
         public async Task HandleNetworkThread() {
             this.protocol = new DataProtocol(this);
-            var serverCommands = new List<string> { "Ready to receive data", "Goodbye", "Welcome Client", "add failed message" };
+            var serverCommands = new List<string> { "Ready to recieve data", "Goodbye", "Welcome Client", "add failed message" };
 
             while (tcpClient.Connected) {
                 string recievedMessage;
