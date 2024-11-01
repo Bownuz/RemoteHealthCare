@@ -14,7 +14,7 @@ using System.Windows;
 namespace ClientApplication.State {
     public class NetworkHandler {
         public event Action<string> NewDoctorMessage;
-        protected TcpClient tcpClient;
+        public TcpClient tcpClient;
         private Ergometer ergoMeter;
         public DataHandler dataHandler;
         private DataProtocol protocol;

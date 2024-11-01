@@ -30,13 +30,6 @@ namespace ClientApplication {
             this.handler = new NetworkHandler(ergometer);
         }
 
-        private void CloseButton(object sender, EventArgs e) {
-            DialogResult dialog = MessageBox.Show("Do you want to close this window", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialog == DialogResult.Yes) {
-                this.ParentForm?.Close();
-            }
-        }
-
         private void SubmitButton(object sender, EventArgs e) {
             if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && textBox2.Text.StartsWith("Tacx Flux") || simulatorActive && !string.IsNullOrWhiteSpace(textBox1.Text)) {
                 StartClient();
@@ -104,7 +97,7 @@ namespace ClientApplication {
                 label4.Visible = !label4.Visible;
                 textBox3.Visible = !textBox3.Visible;
                 listBox1.Visible = !listBox1.Visible;
-                
+
                 if (simulatorActive) {
                     button3.Text = "Simulator";
                 } else {

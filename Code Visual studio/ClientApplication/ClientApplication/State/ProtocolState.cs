@@ -38,7 +38,7 @@ namespace ClientApplication.State {
                 protocol.ChangeState(new SendData(protocol, networkHandler));
             }
 
-           return patientInfo;
+            return patientInfo;
         }
     }
 
@@ -60,7 +60,7 @@ namespace ClientApplication.State {
         }
 
         public override string CheckInput(string input) {
-            return "";
+            return "Goodbye";
         }
     }
 }

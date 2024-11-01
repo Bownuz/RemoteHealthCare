@@ -46,13 +46,6 @@ namespace ClientApplication {
         private void HeartRatePatientLabel(object sender, EventArgs e) {
         }
 
-        private void CloseButton_Click(object sender, EventArgs e) {
-            DialogResult dialog = MessageBox.Show("Do you want to close this window", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialog == DialogResult.Yes) {
-                this.ParentForm?.Close();
-            }
-        }
-
         private void InitializeTimer() {
             updateTimer = new Timer();
             updateTimer.Interval = 1000;
@@ -87,10 +80,6 @@ namespace ClientApplication {
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
-            //string doctorMessage = ServerConnection.getDocterMessage();
-            //if (doctorMessage != null) {
-            //    listBox1.Items.Add(doctorMessage);
-            //}
         }
     }
 }
