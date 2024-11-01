@@ -93,7 +93,7 @@ namespace DoctorApplication
             {
                 List<TrainingData> clientTrainingData = await FetchTrainingDataForClient(client);
 
-                TrainingDataForm dataForm = new TrainingDataForm(clientTrainingData, serverConnection.NetworkStream);
+                TrainingDataForm dataForm = new TrainingDataForm(clientTrainingData, serverConnection);
                 dataForm.Show();
                 this.Hide();
             }
