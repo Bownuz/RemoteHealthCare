@@ -6,7 +6,6 @@ namespace Server.ThreadHandlers {
         public static string ReceiveMessage(NetworkStream networkStream) {
             var stream = new StreamReader(networkStream, Encoding.ASCII);
             String line = stream.ReadLine();
-            Console.WriteLine(line);
             return line;
         }
 
