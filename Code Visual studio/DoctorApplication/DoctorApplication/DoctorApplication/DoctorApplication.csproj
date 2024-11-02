@@ -77,24 +77,18 @@
   <ItemGroup>
     <Compile Include="Data\ClientData.cs" />
     <Compile Include="Data\TrainingData.cs" />
-    <Compile Include="StatePattern\AdjustResistanceAction.cs" />
     <Compile Include="StatePattern\DoctorProtocol.cs" />
-    <Compile Include="StatePattern\EmergencyStopAction.cs" />
-    <Compile Include="StatePattern\SendDataAction.cs" />
-    <Compile Include="StatePattern\StartTrainingAction.cs" />
-    <Compile Include="StatePattern\StopTrainingAction.cs" />
-    <Compile Include="StatePattern\SubscribeAction.cs" />
-    <Compile Include="StatePattern\ViewTrainingDataAction.cs" />
+    <Compile Include="StatePattern\DoctorStates.cs" />
     <Compile Include="MessageCommunication.cs" />
     <Compile Include="PatiëntenScherm\ClientenForm.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PatiëntenScherm\ClientenForm.Designer.cs">
       <DependentUpon>ClientenForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="StatePattern\DoctorState.cs" />
+    <Compile Include="StatePattern\DoctorAbstractState.cs" />
     <Compile Include="LoginScherm\Form1.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="LoginScherm\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>

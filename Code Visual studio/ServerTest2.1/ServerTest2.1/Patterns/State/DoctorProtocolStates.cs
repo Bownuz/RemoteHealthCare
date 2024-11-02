@@ -40,7 +40,7 @@ namespace Server.Patterns.State.DoctorStates {
 
             doctorHandler.connectedDoctor = doctorHandler.fileStorage.getDoctor(doctor.DoctorID);
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
-            MessageCommunication.SendMessage(doctorHandler.networkStream, "This Login State Should Still be Added");
+            MessageCommunication.SendMessage(doctorHandler.networkStream, "Login Successful");
         }
     }
 

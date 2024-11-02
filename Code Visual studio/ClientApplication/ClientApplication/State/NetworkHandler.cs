@@ -31,14 +31,14 @@ namespace ClientApplication.State {
         }
 
         private void StartConnectionWithServer() {
-            this.tcpClient = new TcpClient("192.168.178.58", 4789);
+            this.tcpClient = new TcpClient("192.168.163.244", 4789);
             NetworkStream stream = tcpClient.GetStream();
             Task.Run(async () => await HandleNetworkThread());
         }
 
         public async Task HandleNetworkThread() {
             this.protocol = new DataProtocol(this);
-            var serverCommands = new List<string> {"Goodbye", "Welcome Client", "add failed message" };
+            var serverCommands = new List<string> { "Goodbye", "Welcome Client", "add failed message" };
 
             while (tcpClient.Connected) {
                 Thread.Sleep(500);

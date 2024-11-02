@@ -1,18 +1,22 @@
 using System;
-using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoctorApplication {
-    public partial class Form1 : Form {
+    public partial class Form1 : UserControl {
         private ServerConnection serverConnection;
-        NetworkStream networkStream;
+        private Form mainForm;
 
-        public Form1(NetworkStream networkStream) {
+        public Form1(Form form) {
             InitializeComponent();
-            this.networkStream = networkStream;
+            this.serverConnection = new ServerConnection();
+            this.mainForm = form;
+
+            Task.Run(async () => serverConnection.RunConnection());
         }
+
+
 
         private async void LoginButton_Click(object sender, EventArgs e) {
             string doctorIdText = DoctorIDTextBox.Text;
@@ -24,44 +28,19 @@ namespace DoctorApplication {
                 return;
             }
 
-            await LoginDoctor(doctorIdText, username, password);
-        }
+            var loginData = new {
+                DoctorID = doctorIdText,
+                DoctorName = username,
+                DoctorPassword = password
+            };
 
-        private async Task LoginDoctor(String doctorId, string username, string password) {
-            try {
-                var loginData = new {
-                    DoctorID = doctorId,
-                    DoctorName = username,
-                    DoctorPassword = password
-                };
-                String help = MessageCommunication.ReceiveMessage(networkStream);
+            String JsonLoginString = JsonSerializer.Serialize(loginData);
 
-                String loginDataJson = JsonSerializer.Serialize(loginData);
-                MessageCommunication.SendMessage(networkStream, loginDataJson);
-
-                String response = MessageCommunication.ReceiveMessage(networkStream);
-
-                if (response != null && response.Contains("Login Successful")) {
-                    MessageBox.Show("Inlog succesvol.");
-                    OpenClientenForm();
-                } else {
-                    MessageBox.Show("Ongeldige inloggegevens.");
-                }
-
-            } catch (SocketException ex) {
-                MessageBox.Show("Kan geen verbinding maken met de server: " + ex.Message);
-            }
-        }
-
-        private void SendCommandToServer(object command) {
-            try {
-                string jsonCommand = System.Text.Json.JsonSerializer.Serialize(command);
-                using (var writer = new System.IO.StreamWriter(networkStream) { AutoFlush = true }) {
-                    writer.WriteLine(jsonCommand);
-                }
-                MessageBox.Show("Commando succesvol verzonden.");
-            } catch (Exception ex) {
-                MessageBox.Show("Fout bij het verzenden van commando: " + ex.Message);
+            if (serverConnection.protocol.doctorState.performAction(JsonLoginString)) {
+                ClientenForm clientInfoScreen = new ClientenForm(serverConnection);
+                mainForm.Controls.Clear();
+                mainForm.Controls.Add(clientInfoScreen);
+                clientInfoScreen.Dock = DockStyle.Fill;
             }
         }
 
@@ -75,9 +54,5 @@ namespace DoctorApplication {
             Application.Exit();
         }
 
-        protected override void OnFormClosed(FormClosedEventArgs e) {
-            base.OnFormClosed(e);
-            serverConnection?.Disconnect();
-        }
     }
 }

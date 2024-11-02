@@ -1,20 +1,29 @@
 ﻿using System;
-using System.Net.Sockets;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoctorApplication {
     internal static class Program {
-        public static TcpClient client = new TcpClient("192.168.178.58", 4790);
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main() {
-            NetworkStream networkStream = client.GetStream();
-
+        static async Task Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(networkStream));
+
+            StartGui();
+        }
+        public static void StartGui() {
+            Form mainForm = new Form();
+            Form1 initialWindow = new Form1(mainForm);
+
+            initialWindow.Dock = DockStyle.Fill;
+
+            mainForm.WindowState = FormWindowState.Maximized;
+            mainForm.Controls.Add(initialWindow);
+            mainForm.Text = "DoctorApplication";
+            Application.Run(mainForm);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DoctorApplication;
+using DoctorApplication.StatePattern;
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -6,92 +7,57 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class ServerConnection
-{
-    private TcpClient client;
+public class ServerConnection {
+    public TcpClient client { get; set; }
     private StreamReader reader;
     private StreamWriter writer;
-    private NetworkStream networkStream;
+    public NetworkStream networkStream { get; set; }
     private CancellationTokenSource cancellationTokenSource;
+    public readonly DoctorProtocol protocol;
 
     public event Action<ClientData> OnDataReceived;
 
-    public NetworkStream NetworkStream => networkStream;
-
-    public ServerConnection() { }
-
-    public async Task ConnectToServer(string serverAddress, int port)
-    {
-        try
-        {
-            client = new TcpClient(serverAddress, port);
-            networkStream = client.GetStream();
-
-            reader = new StreamReader(networkStream);
-            writer = new StreamWriter(networkStream) { AutoFlush = true };
-
-            cancellationTokenSource = new CancellationTokenSource();
-            await ListenForLiveData(cancellationTokenSource.Token);
-        }
-        catch (Exception ex)
-        {
-            Disconnect();
-            throw new Exception("Kan geen verbinding maken: " + ex.Message, ex);
-        }
+    public ServerConnection() {
+        protocol = new DoctorProtocol(this);
     }
 
-    private async Task ListenForLiveData(CancellationToken cancellationToken)
-    {
-        try
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
+    public void ConnectToServer() {
+        client = new TcpClient("192.168.163.244", 4790);
+        networkStream = client.GetStream();
+    }
+
+    private async Task ListenForLiveData(CancellationToken cancellationToken) {
+        try {
+            while (!cancellationToken.IsCancellationRequested) {
                 string jsonData = await reader.ReadLineAsync();
-                if (!string.IsNullOrEmpty(jsonData))
-                {
-                    try
-                    {
+                if (!string.IsNullOrEmpty(jsonData)) {
+                    try {
                         var clientData = JsonSerializer.Deserialize<ClientData>(jsonData);
-                        if (clientData != null)
-                        {
+                        if (clientData != null) {
                             OnDataReceived?.Invoke(clientData);
-                        }
-                        else
-                        {
+                        } else {
                             Console.WriteLine("Ontvangen client data is null of onvolledig.");
                         }
-                    }
-                    catch (JsonException ex)
-                    {
+                    } catch (JsonException ex) {
                         Console.WriteLine("JSON-deserialisatie fout: " + ex.Message);
                     }
                 }
             }
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Console.WriteLine("Verbinding gesloten: " + ex.Message);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             throw new Exception("Fout bij het ontvangen van gegevens: " + ex.Message, ex);
         }
     }
 
-    public void Disconnect()
-    {
-        try
-        {
+    public void Disconnect() {
+        try {
             cancellationTokenSource?.Cancel();
             client?.Close();
             networkStream?.Close();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Console.WriteLine("Fout bij het verbreken van de verbinding: " + ex.Message);
-        }
-        finally
-        {
+        } finally {
             client = null;
             networkStream = null;
             reader = null;
@@ -99,48 +65,39 @@ public class ServerConnection
         }
     }
 
-    public void StartTrainingForClient(string clientName)
-    {
-        if (string.IsNullOrEmpty(clientName))
-        {
+    public void StartTrainingForClient(string clientName) {
+        if (string.IsNullOrEmpty(clientName)) {
             Console.WriteLine("Client naam mag niet leeg zijn voor StartTraining.");
             return;
         }
 
-        var command = new
-        {
+        var command = new {
             Action = "StartTraining",
             TargetClient = clientName
         };
         SendCommandToServer(command);
     }
 
-    public void StopTrainingForClient(string clientName)
-    {
-        if (string.IsNullOrEmpty(clientName))
-        {
+    public void StopTrainingForClient(string clientName) {
+        if (string.IsNullOrEmpty(clientName)) {
             Console.WriteLine("Client naam mag niet leeg zijn voor StopTraining.");
             return;
         }
 
-        var command = new
-        {
+        var command = new {
             Action = "StopTraining",
             TargetClient = clientName
         };
         SendCommandToServer(command);
     }
 
-    public void SendEmergencyStopToClient(string clientName)
-    {
-        if (string.IsNullOrEmpty(clientName))
-        {
+    public void SendEmergencyStopToClient(string clientName) {
+        if (string.IsNullOrEmpty(clientName)) {
             Console.WriteLine("Client naam mag niet leeg zijn voor EmergencyStop.");
             return;
         }
 
-        var command = new
-        {
+        var command = new {
             Action = "EmergencyStop",
             TargetClient = clientName,
             Message = "NOODSTOP",
@@ -149,26 +106,35 @@ public class ServerConnection
         SendCommandToServer(command);
     }
 
-    public void SendCommandToServer(object command)
-    {
-        try
-        {
-            if (command == null)
-            {
+    public void SendCommandToServer(object command) {
+        try {
+            if (command == null) {
                 throw new ArgumentNullException(nameof(command), "Command mag niet null zijn.");
             }
 
             string jsonCommand = JsonSerializer.Serialize(command);
             writer.WriteLine(jsonCommand);
             writer.Flush();
-        }
-        catch (ArgumentNullException ex)
-        {
+        } catch (ArgumentNullException ex) {
             Console.WriteLine("Command is niet ingesteld: " + ex.Message);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Console.WriteLine("Fout bij het verzenden van commando: " + ex.Message);
+        }
+    }
+
+    internal async Task RunConnection() {
+        protocol.doctorState.performAction("");
+
+        while (client.Connected) {
+            String recievedMessage;
+            if ((recievedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
+                continue;
+            }
+            if (recievedMessage.Equals("Login Successful")) {
+                protocol.Respond(MessageCommunication.ReceiveMessage(networkStream));
+            }
+
+
         }
     }
 }

@@ -1,18 +1,17 @@
-﻿
-
-using System.Threading;
-
-namespace DoctorApplication.StatePattern {
+﻿namespace DoctorApplication.StatePattern {
     public class DoctorProtocol {
-        DoctorState doctorState;
+        public DoctorAbstractState doctorState { get; private set; }
 
-
-        public void Respond(string input) {
-            doctorState.ProcessInput(input);
+        public DoctorProtocol(ServerConnection serverConnection) {
+            this.doctorState = new Connecting(this, serverConnection);
         }
 
-        public void changeState(DoctorState newState) { 
-        doctorState = newState;
+        public void Respond(string input) {
+            doctorState.performAction(input);
+        }
+
+        public void changeState(DoctorAbstractState newState) {
+            doctorState = newState;
         }
     }
 }
