@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace DoctorApplication.StatePattern {
     public class Connecting : DoctorAbstractState {
         public Connecting(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string data) {
+        public override void PerformAction(string data) {
             serverConnection.ConnectToServer();
             protocol.changeState(new Login(protocol, serverConnection));
-            return true;
         }
 
         public override void ProcessInput(string input) {
@@ -24,20 +25,22 @@ namespace DoctorApplication.StatePattern {
         public Login(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string message) {
-            if (!message.Equals("Login Successful")) {
-                MessageCommunication.SendMessage(serverConnection.networkStream, message);
-                return false;
-            } else {
-                return true;
-            }
-
+        public override void PerformAction(string message) {
+            MessageCommunication.SendMessage(serverConnection.networkStream, message);
         }
 
         public override void ProcessInput(string input) {
             if (input.Equals("Login Successful")) {
                 protocol.changeState(new CommandType(protocol, serverConnection));
+                serverConnection.mainForm.Invoke((MethodInvoker)delegate{
+                    ClientenForm clientInfoScreen = new ClientenForm(serverConnection);
+                    serverConnection.mainForm.Controls.Clear();
+                    serverConnection.mainForm.Controls.Add(clientInfoScreen);
+                    clientInfoScreen.Dock = DockStyle.Fill;
+                });
+                protocol.changeState(new CommandType(protocol, serverConnection));
             }
+
 
         }
     }
@@ -46,7 +49,7 @@ namespace DoctorApplication.StatePattern {
         public CommandType(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string data) {
+        public override void PerformAction(string data) {
             throw new NotImplementedException();
         }
 
@@ -60,7 +63,7 @@ namespace DoctorApplication.StatePattern {
         public SendDataAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string action) {
+        public override void PerformAction(string action) {
             throw new NotImplementedException();
         }
 
@@ -106,7 +109,7 @@ namespace DoctorApplication.StatePattern {
         public ViewTrainingDataAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string action) {
+        public override void PerformAction(string action) {
             throw new NotImplementedException();
         }
 
@@ -135,7 +138,7 @@ namespace DoctorApplication.StatePattern {
         public SubscribeAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string action) {
+        public override void PerformAction(string action) {
             throw new NotImplementedException();
         }
 
@@ -163,7 +166,7 @@ namespace DoctorApplication.StatePattern {
         public UnsubscribeAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string data) {
+        public override void PerformAction(string data) {
             throw new NotImplementedException();
         }
 
@@ -191,7 +194,7 @@ namespace DoctorApplication.StatePattern {
         public StopTrainingAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string action) {
+        public override void PerformAction(string action) {
             throw new NotImplementedException();
         }
 
@@ -220,7 +223,7 @@ namespace DoctorApplication.StatePattern {
         public StartTrainingAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string action) {
+        public override void PerformAction(string action) {
             throw new NotImplementedException();
         }
 
@@ -249,7 +252,7 @@ namespace DoctorApplication.StatePattern {
         public EmergencyStopAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override Boolean performAction(string action) {
+        public override void PerformAction(string action) {
             throw new NotImplementedException();
         }
 

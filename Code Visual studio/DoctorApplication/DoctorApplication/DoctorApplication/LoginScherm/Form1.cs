@@ -10,7 +10,7 @@ namespace DoctorApplication {
 
         public Form1(Form form) {
             InitializeComponent();
-            this.serverConnection = new ServerConnection();
+            this.serverConnection = new ServerConnection(form);
             this.mainForm = form;
 
             Task.Run(async () => serverConnection.RunConnection());
@@ -36,12 +36,8 @@ namespace DoctorApplication {
 
             String JsonLoginString = JsonSerializer.Serialize(loginData);
 
-            if (serverConnection.protocol.doctorState.performAction(JsonLoginString)) {
-                ClientenForm clientInfoScreen = new ClientenForm(serverConnection);
-                mainForm.Controls.Clear();
-                mainForm.Controls.Add(clientInfoScreen);
-                clientInfoScreen.Dock = DockStyle.Fill;
-            }
+            serverConnection.protocol.doctorState.PerformAction(JsonLoginString);
+
         }
 
         private void OpenClientenForm() {
@@ -52,6 +48,13 @@ namespace DoctorApplication {
 
         private void CloseButton_Click(object sender, EventArgs e) {
             Application.Exit();
+        }
+
+        public void showNextScreen() {
+            ClientenForm clientInfoScreen = new ClientenForm(serverConnection);
+            mainForm.Controls.Clear();
+            mainForm.Controls.Add(clientInfoScreen);
+            clientInfoScreen.Dock = DockStyle.Fill;
         }
 
     }

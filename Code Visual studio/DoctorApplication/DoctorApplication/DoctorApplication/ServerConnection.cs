@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public class ServerConnection {
     public TcpClient client { get; set; }
@@ -14,15 +15,16 @@ public class ServerConnection {
     public NetworkStream networkStream { get; set; }
     private CancellationTokenSource cancellationTokenSource;
     public readonly DoctorProtocol protocol;
-
+    public Form mainForm;
     public event Action<ClientData> OnDataReceived;
 
-    public ServerConnection() {
+    public ServerConnection(Form form) {
         protocol = new DoctorProtocol(this);
+        this.mainForm = form;
     }
 
     public void ConnectToServer() {
-        client = new TcpClient("192.168.163.244", 4790);
+        client = new TcpClient("192.168.0.131", 4790);
         networkStream = client.GetStream();
     }
 
@@ -123,18 +125,15 @@ public class ServerConnection {
     }
 
     internal async Task RunConnection() {
-        protocol.doctorState.performAction("");
+        protocol.doctorState.PerformAction("");
 
         while (client.Connected) {
             String recievedMessage;
             if ((recievedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
                 continue;
             }
-            if (recievedMessage.Equals("Login Successful")) {
-                protocol.Respond(MessageCommunication.ReceiveMessage(networkStream));
-            }
 
-
+            protocol.Respond(recievedMessage);
         }
     }
 }

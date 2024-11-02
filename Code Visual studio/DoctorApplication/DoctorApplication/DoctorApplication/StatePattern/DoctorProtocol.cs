@@ -7,7 +7,7 @@
         }
 
         public void Respond(string input) {
-            doctorState.performAction(input);
+            doctorState.ProcessInput(input);
         }
 
         public void changeState(DoctorAbstractState newState) {

@@ -11,5 +11,5 @@ public abstract class DoctorAbstractState {
     }
 
     public abstract void ProcessInput(string input);
-    public abstract Boolean performAction(string data);
+    public abstract void PerformAction(string data);
 }
