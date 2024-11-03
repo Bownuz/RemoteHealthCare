@@ -95,6 +95,7 @@
       <DependentUpon>CLientInfoScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Vr\VrConnection.cs" />
+    <Compile Include="Vr\VrInit.cs" />
     <Compile Include="Vr\VrJsonObjectMaker.cs" />
     <Compile Include="Vr\VrScene.cs" />
     <Compile Include="Vr\VrTest.cs" />
