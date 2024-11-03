@@ -21,7 +21,7 @@ namespace Server.Patterns.State.PatientStates {
 
 
             if (!isJson(input)) {
-                return;  
+                return;
             }
 
             PatientInitialisationMessage dataFromMessage = JsonSerializer.Deserialize<PatientInitialisationMessage>(input);
@@ -62,6 +62,10 @@ namespace Server.Patterns.State.PatientStates {
                 return;
             }
 
+            if (!isJson(input)) {
+                goto readyMessage;
+            }
+
             if (patient.currentSession == null) {
                 MessageCommunication.SendMessage(patientHandler.networkStream, ValidMessages.p_noSessionActive);
                 goto readyMessage;
@@ -71,12 +75,12 @@ namespace Server.Patterns.State.PatientStates {
                 patient.currentSession.AddObserver(patientHandler);
             }
 
-            if (!isJson(input)) {
-                goto readyMessage;
+            if (patient.currentSession != null && !patient.currentSession.observers.Contains(patientHandler.fileStorage)) {
+                patient.currentSession.AddObserver(patientHandler.fileStorage);
             }
 
             patient.currentSession.addMessage(input, CommunicationType.PATIENT);
-            readyMessage:  MessageCommunication.SendMessage(patientHandler.networkStream, ValidMessages.p_readyToRecieve);
+            readyMessage: MessageCommunication.SendMessage(patientHandler.networkStream, ValidMessages.p_readyToRecieve);
         }
     }
 }

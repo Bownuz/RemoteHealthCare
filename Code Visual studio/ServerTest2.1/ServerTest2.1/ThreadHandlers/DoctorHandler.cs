@@ -18,36 +18,5 @@ namespace Server.ThreadHandlers {
                 }
             }
         }
-
-        private void StartTraining(string patientName) {
-            var patient = fileStorage.GetPatient(patientName);
-            if(patient?.currentSession == null) {
-                MessageCommunication.SendMessage(networkStream, $"Error: Patient {patientName} or session not found.");
-                return;
-            }
-
-            patient.currentSession.addMessage($"Training started for {patientName}", CommunicationType.DOCTOR);
-        }
-
-        private void StopTraining(string patientName) {
-            var patient = fileStorage.GetPatient(patientName);
-            if(patient?.currentSession == null) {
-                MessageCommunication.SendMessage(networkStream, $"Error: Patient {patientName} or session not found.");
-                return;
-            }
-
-            patient.currentSession.addMessage($"Training stopped for {patientName}", CommunicationType.DOCTOR);
-        }
-
-        private void EmergencyStop(string patientName, int resistance) {
-            var patient = fileStorage.GetPatient(patientName);
-            if(patient?.currentSession == null) {
-                MessageCommunication.SendMessage(networkStream, $"Error: Patient {patientName} or session not found.");
-                return;
-            }
-
-            patient.currentSession.addMessage($"{patientName} ; message: NOODSTOP ; newResistance: {resistance}", CommunicationType.DOCTOR);
-            MessageCommunication.SendMessage(networkStream, $"{patientName} ; message: NOODSTOP ; newResistance: {resistance}");
-        }
     }
 }
