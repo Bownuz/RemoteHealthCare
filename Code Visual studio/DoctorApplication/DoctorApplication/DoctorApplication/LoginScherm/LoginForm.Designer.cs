@@ -1,5 +1,5 @@
 ﻿namespace DoctorApplication {
-    partial class Form1 {
+    partial class LoginForm {
         private System.ComponentModel.IContainer components = null;
 
         protected override void Dispose(bool disposing) {

@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoctorApplication {
-    public partial class Form1 : UserControl {
+    public partial class LoginForm : UserControl {
         private ServerConnection serverConnection;
         private Form mainForm;
 
-        public Form1(Form form) {
+        public LoginForm(Form form) {
             InitializeComponent();
             this.serverConnection = new ServerConnection(form);
             this.mainForm = form;
