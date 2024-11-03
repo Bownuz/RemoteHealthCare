@@ -32,7 +32,6 @@ namespace ClientApplication.State {
 
         private void StartConnectionWithServer() {
             this.tcpClient = new TcpClient("192.168.178.58", 4789);
-            NetworkStream stream = tcpClient.GetStream();
             Task.Run(async () => await HandleNetworkThread());
         }
 
@@ -48,7 +47,7 @@ namespace ClientApplication.State {
                     continue;
                 }
 
-                if (recievedMessage.StartsWith("HeartRate:")) {
+                if (recievedMessage.StartsWith("Resistance:")) {
                     ergoMeter.ChangeResistanceOfBike(byte.Parse(recievedMessage));
                 }
                 if (!serverCommands.Contains(recievedMessage)) {
@@ -64,6 +63,15 @@ namespace ClientApplication.State {
                 }
             }
         }
-    }
 
+        public void CloseConnection() {
+            if (tcpClient?.Connected == true) {
+                protocol.ChangeState(new Exit(protocol, this));
+
+                string exitMessage = protocol.processInput("Goodbye");
+
+                tcpClient.Close();
+            }
+        }
+    }
 }

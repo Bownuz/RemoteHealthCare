@@ -16,7 +16,7 @@ namespace ClientApplication {
         private ListDisplay listDisplay;
         private Ergometer ergometer;
         private HeartRateMonitor heartRateMonitor;
-        private NetworkHandler handler;
+        private NetworkHandler networkHandler;
         private Boolean simulatorActive = false;
 
         public SignInScreen(Form mainForm) {
@@ -27,7 +27,7 @@ namespace ClientApplication {
             listBox1.Items.Add("");
             listDisplay.ShowDeviceList();
 
-            this.handler = new NetworkHandler(ergometer);
+            this.networkHandler = new NetworkHandler(ergometer);
         }
 
         private void SubmitButton(object sender, EventArgs e) {
@@ -45,7 +45,7 @@ namespace ClientApplication {
             BleDevice[] bleDevices = { ergometer, heartRateMonitor };
 
             this.dataHandler = new DataHandler(bleDevices, textBox3.Text, textBox2.Text, textBox1.Text, ergometer, heartRateMonitor, simulatorActive);
-            handler.AddDataHandler(dataHandler);
+            networkHandler.AddDataHandler(dataHandler);
         }
 
         private void UsernameTextBox(object sender, EventArgs e) {
@@ -61,7 +61,7 @@ namespace ClientApplication {
         }
 
         private void ChangeScreen() {
-            ClientInfoScreen clientInfoScreen = new ClientInfoScreen(dataHandler, mainForm, ergometer, heartRateMonitor, handler);
+            ClientInfoScreen clientInfoScreen = new ClientInfoScreen(dataHandler, mainForm, ergometer, heartRateMonitor, networkHandler);
             mainForm.Controls.Clear();
             mainForm.Controls.Add(clientInfoScreen);
             clientInfoScreen.Dock = DockStyle.Fill;
@@ -82,6 +82,12 @@ namespace ClientApplication {
         private void label4_Click(object sender, EventArgs e) {
         }
 
+        public void CloseNetworkConnection() {
+            if (networkHandler != null) {
+                networkHandler.CloseConnection();
+            }
+        }
+
         private void SwitchDevice(object sender, EventArgs e) {
             DialogResult changeInputDataDialog;
             if (simulatorActive) {
@@ -97,7 +103,7 @@ namespace ClientApplication {
                 label4.Visible = !label4.Visible;
                 textBox3.Visible = !textBox3.Visible;
                 listBox1.Visible = !listBox1.Visible;
-
+                
                 if (simulatorActive) {
                     button3.Text = "Simulator";
                 } else {
