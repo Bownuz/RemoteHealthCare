@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace DoctorApplication.StatePattern {
@@ -32,7 +31,7 @@ namespace DoctorApplication.StatePattern {
         public override void ProcessInput(string input) {
             if (input.Equals("Login Successful")) {
                 protocol.changeState(new CommandType(protocol, serverConnection));
-                serverConnection.mainForm.Invoke((MethodInvoker)delegate{
+                serverConnection.mainForm.Invoke((MethodInvoker)delegate {
                     ClientenForm clientInfoScreen = new ClientenForm(serverConnection);
                     serverConnection.mainForm.Controls.Clear();
                     serverConnection.mainForm.Controls.Add(clientInfoScreen);
