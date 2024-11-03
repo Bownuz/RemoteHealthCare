@@ -21,8 +21,6 @@ namespace DoctorApplication.StatePattern {
     }
 
 
-
-
     public class Login : DoctorAbstractState {
         public Login(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
@@ -163,16 +161,4 @@ namespace DoctorApplication.StatePattern {
         }
     }
 
-    public class EmergencyStopAction : DoctorAbstractState {
-        public EmergencyStopAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
-        }
-
-        public override void PerformAction(string action) {
-            throw new NotImplementedException();
-        }
-
-        public override void ProcessInput(string input) {
-            throw new NotImplementedException();
-        }
-    }
 }

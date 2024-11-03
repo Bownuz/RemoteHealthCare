@@ -6,7 +6,6 @@ using System.Windows.Forms;
 namespace DoctorApplication {
     public partial class ClientenForm : UserControl {
         private ServerConnection serverConnection;
-        private DoctorAbstractState doctorState;
 
         public ClientenForm(ServerConnection serverConnection) {
             InitializeComponent();

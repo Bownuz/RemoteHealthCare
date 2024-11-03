@@ -40,21 +40,8 @@ namespace DoctorApplication {
 
         }
 
-        private void OpenClientenForm() {
-            ClientenForm clientenForm = new ClientenForm(serverConnection);
-            clientenForm.Show();
-            this.Hide();
-        }
-
         private void CloseButton_Click(object sender, EventArgs e) {
             Application.Exit();
-        }
-
-        public void showNextScreen() {
-            ClientenForm clientInfoScreen = new ClientenForm(serverConnection);
-            mainForm.Controls.Clear();
-            mainForm.Controls.Add(clientInfoScreen);
-            clientInfoScreen.Dock = DockStyle.Fill;
         }
 
     }
