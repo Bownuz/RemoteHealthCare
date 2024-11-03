@@ -6,11 +6,13 @@ namespace Server.ThreadHandlers {
         public static string ReceiveMessage(NetworkStream networkStream) {
             var stream = new StreamReader(networkStream, Encoding.ASCII);
             String line = stream.ReadLine();
+            Console.WriteLine(line);
             return line;
         }
 
         public static void SendMessage(NetworkStream networkStream, string message) {
             var stream = new StreamWriter(networkStream, Encoding.ASCII, -1, true);
+            Console.WriteLine(message);
             stream.WriteLine(message);
             stream.Flush();
         }
