@@ -1,4 +1,4 @@
-﻿using DoctorApplication;
+using DoctorApplication;
 using DoctorApplication.StatePattern;
 using System;
 using System.IO;
@@ -125,15 +125,13 @@ public class ServerConnection {
     }
 
     internal async Task RunConnection() {
-        protocol.doctorState.PerformAction("");
-
-        while (client.Connected) {
+        while (true) {
             String recievedMessage;
             if ((recievedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
                 continue;
             }
 
-            protocol.Respond(recievedMessage);
+            await protocol.Respond(recievedMessage);
         }
     }
 }

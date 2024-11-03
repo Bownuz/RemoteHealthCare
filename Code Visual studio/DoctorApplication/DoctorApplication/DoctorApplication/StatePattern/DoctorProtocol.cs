@@ -1,4 +1,6 @@
-﻿namespace DoctorApplication.StatePattern {
+﻿using System.Threading.Tasks;
+
+namespace DoctorApplication.StatePattern {
     public class DoctorProtocol {
         public DoctorAbstractState doctorState { get; private set; }
 
@@ -6,7 +8,7 @@
             this.doctorState = new Connecting(this, serverConnection);
         }
 
-        public void Respond(string input) {
+        public async Task Respond(string input) {
             doctorState.ProcessInput(input);
         }
 
