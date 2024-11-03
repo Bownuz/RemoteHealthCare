@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -75,23 +75,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientData.cs" />
-    <Compile Include="DoctorActions\AdjustResistanceAction.cs" />
-    <Compile Include="DoctorActions\EmergencyStopAction.cs" />
-    <Compile Include="DoctorActions\SendDataAction.cs" />
-    <Compile Include="DoctorActions\StartTrainingAction.cs" />
-    <Compile Include="DoctorActions\StopTrainingAction.cs" />
-    <Compile Include="DoctorActions\SubscribeAction.cs" />
-    <Compile Include="DoctorActions\ViewTrainingDataAction.cs" />
+    <Compile Include="Data\ClientData.cs" />
+    <Compile Include="Data\TrainingData.cs" />
+    <Compile Include="StatePattern\DoctorProtocol.cs" />
+    <Compile Include="StatePattern\DoctorStates.cs" />
+    <Compile Include="MessageCommunication.cs" />
     <Compile Include="PatiëntenScherm\ClientenForm.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PatiëntenScherm\ClientenForm.Designer.cs">
       <DependentUpon>ClientenForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DoctorActions\DoctorState.cs" />
+    <Compile Include="StatePattern\DoctorAbstractState.cs" />
     <Compile Include="LoginScherm\Form1.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="LoginScherm\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
