@@ -75,39 +75,6 @@ namespace DoctorApplication.StatePattern {
         public override void ProcessInput(string input) {
             throw new NotImplementedException();
         }
-
-        //oude methode
-        public void SendData(string clientName, string message) {
-            if (string.IsNullOrEmpty(clientName) || string.IsNullOrEmpty(message)) {
-
-                return;
-            }
-
-            var command = new {
-                Action = "Send Data",
-                TargetClient = clientName,
-                Message = message
-            };
-            serverConnection.SendCommandToServer(command);
-
-        }
-
-        //oude methode
-        public void AdjustResistance(string clientName, int resistance) {
-            if (string.IsNullOrEmpty(clientName)) {
-
-                return;
-            }
-
-            var command = new {
-                Action = "AdjustResistance",
-                TargetClient = clientName,
-                Resistance = resistance
-            };
-            serverConnection.SendCommandToServer(command);
-
-        }
-
     }
 
     public class ViewTrainingDataAction : DoctorAbstractState {
@@ -121,22 +88,6 @@ namespace DoctorApplication.StatePattern {
         public override void ProcessInput(string input) {
             throw new NotImplementedException();
         }
-
-        //oude methode
-        public void ViewTrainingData(string clientName) {
-            if (string.IsNullOrEmpty(clientName)) {
-
-                return;
-            }
-
-            var command = new {
-                Action = "Retrieve Data",
-                TargetClient = clientName
-            };
-            serverConnection.SendCommandToServer(command);
-
-        }
-
     }
 
     public class SubscribeAction : DoctorAbstractState {
@@ -171,22 +122,6 @@ namespace DoctorApplication.StatePattern {
 
             }
         }
-
-
-        //oude methode
-        public void Subscribe(string clientName) {
-            if (string.IsNullOrEmpty(clientName)) {
-
-                return;
-            }
-
-            var command = new {
-                Action = "Subscribe",
-                TargetClient = clientName
-            };
-            serverConnection.SendCommandToServer(command);
-
-        }
     }
 
     public class UnsubscribeAction : DoctorAbstractState {
@@ -199,21 +134,6 @@ namespace DoctorApplication.StatePattern {
 
         public override void ProcessInput(string input) {
             throw new NotImplementedException();
-        }
-
-        //oude methode
-        public void Unsubscribe(string clientName) {
-            if (string.IsNullOrEmpty(clientName)) {
-
-                return;
-            }
-
-            var command = new {
-                Action = "Unsubscribe",
-                TargetClient = clientName
-            };
-            serverConnection.SendCommandToServer(command);
-
         }
     }
 
@@ -228,22 +148,6 @@ namespace DoctorApplication.StatePattern {
         public override void ProcessInput(string input) {
             throw new NotImplementedException();
         }
-
-        //oude methode
-        public void StopTraining(string clientName) {
-            if (string.IsNullOrEmpty(clientName)) {
-
-                return;
-            }
-
-            var command = new {
-                Action = "StopTraining",
-                TargetClient = clientName
-            };
-            serverConnection.SendCommandToServer(command);
-
-        }
-
     }
 
     public class StartTrainingAction : DoctorAbstractState {
@@ -257,22 +161,6 @@ namespace DoctorApplication.StatePattern {
         public override void ProcessInput(string input) {
             throw new NotImplementedException();
         }
-
-        //oude methode
-        public void StartTraining(string clientName) {
-            if (string.IsNullOrEmpty(clientName)) {
-
-                return;
-            }
-
-            var command = new {
-                Action = "StartTraining",
-                TargetClient = clientName
-            };
-            serverConnection.SendCommandToServer(command);
-
-        }
-
     }
 
     public class EmergencyStopAction : DoctorAbstractState {
@@ -286,29 +174,5 @@ namespace DoctorApplication.StatePattern {
         public override void ProcessInput(string input) {
             throw new NotImplementedException();
         }
-
-        //oude methode
-        public void EmergencyStop(string clientName) {
-            if (string.IsNullOrEmpty(clientName)) {
-
-                return;
-            }
-
-
-            string message = $"PatientName ; {clientName}, \"message\" NOODSTOP, new resistance 255";
-
-            var command = new {
-                Action = "EmergencyStop",
-                TargetClient = clientName,
-                Message = message,
-                Resistance = 255
-            };
-
-            serverConnection.SendCommandToServer(command);
-
-        }
-
-
     }
-
 }
