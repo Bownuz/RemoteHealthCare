@@ -11,7 +11,7 @@ namespace DoctorApplication {
         public ClientenForm(ServerConnection serverConnection) {
             InitializeComponent();
             this.serverConnection = serverConnection;
-
+            Task.Run(async () => serverConnection.RunConnection());
         }
 
         private void ClientenForm_Load(object sender, EventArgs e) {
@@ -85,10 +85,20 @@ namespace DoctorApplication {
         }
 
         private void SubscribeButton_Click(object sender, EventArgs e) {
-            foreach (string client in GetSelectedClients()) {
-                //doctorState.subscribe.Subscribe(client);
-                MessageBox.Show($"Subscribed to {client}.");
+            serverConnection.protocol.doctorState.PerformAction("Subscribe");
+            string[] selectedPatients = GetSelectedClients();
+
+            if (selectedPatients.Length == 0) {
+                selectedPatients = new string[1];
+                selectedPatients[0] = "null";
             }
+
+            foreach (string clientName in selectedPatients) {
+                serverConnection.protocol.doctorState.PerformAction(clientName);
+                MessageBox.Show($"Subscribed to {clientName}.");
+            }
+
+
         }
 
         private void UnsubscribeButton_Click(object sender, EventArgs e) {
@@ -138,6 +148,18 @@ namespace DoctorApplication {
                 DataGridViewCheckBoxCell checkBoxCell = (DataGridViewCheckBoxCell)ClientenGridView.Rows[e.RowIndex].Cells["SelectClientColumn"];
                 checkBoxCell.Value = !(bool)(checkBoxCell.Value ?? false);
             }
+        }
+
+        private void ResistanceTextBox_TextChanged(object sender, EventArgs e) {
+
+        }
+
+        private void ClientenGridView_CellContentClick_1(object sender, DataGridViewCellEventArgs e) {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e) {
+
         }
     }
 }
