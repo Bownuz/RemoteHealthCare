@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace DoctorApplication.StatePattern {
@@ -6,13 +8,14 @@ namespace DoctorApplication.StatePattern {
         public Connecting(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
         }
 
-        public override void PerformAction(string data) {
-            serverConnection.ConnectToServer();
-            protocol.changeState(new Login(protocol, serverConnection));
+        public override void PerformAction(string ipAdress) {
+            serverConnection.ConnectToServer(ipAdress);
         }
 
         public override void ProcessInput(string input) {
-            throw new NotImplementedException();
+            if (input.Equals("Enter Login Data")) {
+                protocol.changeState(new Login(protocol, serverConnection));
+            }
         }
 
     }
@@ -39,8 +42,6 @@ namespace DoctorApplication.StatePattern {
                 });
                 protocol.changeState(new CommandType(protocol, serverConnection));
             }
-
-
         }
     }
 
@@ -49,7 +50,12 @@ namespace DoctorApplication.StatePattern {
         }
 
         public override void PerformAction(string data) {
-            throw new NotImplementedException();
+            switch (data) {
+                case "Subscribe":
+                    protocol.changeState(new SubscribeAction(protocol, serverConnection));
+                    MessageCommunication.SendMessage(serverConnection.networkStream, data);
+                    break;
+            }
         }
 
         public override void ProcessInput(string input) {
@@ -134,16 +140,38 @@ namespace DoctorApplication.StatePattern {
     }
 
     public class SubscribeAction : DoctorAbstractState {
+        private List<string> names;
+
         public SubscribeAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
+            names = new List<string>();
         }
 
-        public override void PerformAction(string action) {
-            throw new NotImplementedException();
+        public override void PerformAction(string patientName) {
+            names.Add(patientName);
         }
 
         public override void ProcessInput(string input) {
-            throw new NotImplementedException();
+            if (!input.StartsWith("{") && !input.EndsWith("}")) {
+                goto notJson;
+            }
+
+            DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
+            if (message.Message.Equals("Which patient should be subscribed to?")) {
+                MessageCommunication.SendMessage(serverConnection.networkStream, names[0]);
+                names.RemoveAt(0);
+                return;
+            }
+
+            notJson: if (input.Equals("Ready to receive command")) {
+                if (names.Count == 0) {
+                    protocol.changeState(new CommandType(protocol, serverConnection));
+                } else {
+                    MessageCommunication.SendMessage(serverConnection.networkStream, "Subscribe");
+                }
+
+            }
         }
+
 
         //oude methode
         public void Subscribe(string clientName) {

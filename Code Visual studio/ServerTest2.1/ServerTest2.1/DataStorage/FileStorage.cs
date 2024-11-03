@@ -18,9 +18,6 @@ namespace Server.DataStorage {
         }
 
         public void SaveToFile() {
-
-
-            Console.WriteLine("I should Save now!!");
             foreach (KeyValuePair<String, Patient> patientEntry in Patients) {
                 Patient patient = patientEntry.Value;
                 String patientName = patientEntry.Key;
