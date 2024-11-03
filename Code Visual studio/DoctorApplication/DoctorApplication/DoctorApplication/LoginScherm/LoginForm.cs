@@ -13,6 +13,7 @@ namespace DoctorApplication {
             this.serverConnection = new ServerConnection(form);
             this.mainForm = form;
 
+            serverConnection.protocol.doctorState.PerformAction("192.168.0.133");
             Task.Run(async () => serverConnection.RunConnection());
         }
 
@@ -35,7 +36,6 @@ namespace DoctorApplication {
             };
 
             String JsonLoginString = JsonSerializer.Serialize(loginData);
-
             serverConnection.protocol.doctorState.PerformAction(JsonLoginString);
 
         }
