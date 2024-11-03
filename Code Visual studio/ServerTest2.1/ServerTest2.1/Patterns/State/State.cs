@@ -11,6 +11,7 @@ namespace Server.Patterns.State {
         }
 
         public abstract void CheckInput(String input);
+        public abstract bool isJson(String input);
 
     }
 

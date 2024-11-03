@@ -1,16 +1,22 @@
-﻿using System;
-using System.Net.Sockets;
+using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoctorApplication {
-    public partial class Form1 : Form {
-        private NetworkStream networkStream;
-        private TcpClient doctorClient;
+    public partial class Form1 : UserControl {
+        private ServerConnection serverConnection;
+        private Form mainForm;
 
-        public Form1() {
+        public Form1(Form form) {
             InitializeComponent();
+            this.serverConnection = new ServerConnection(form);
+            this.mainForm = form;
+
+            Task.Run(async () => serverConnection.RunConnection());
         }
+
+
 
         private async void LoginButton_Click(object sender, EventArgs e) {
             string doctorIdText = DoctorIDTextBox.Text;
@@ -22,57 +28,34 @@ namespace DoctorApplication {
                 return;
             }
 
-            if (!int.TryParse(doctorIdText, out int doctorId)) {
-                MessageBox.Show("Voer een geldig DoctorID in.");
-                return;
-            }
-
-            await LoginDoctor(doctorIdText, username, password);
-        }
-
-        private async Task LoginDoctor(String doctorId, string username, string password) {
-
-            networkStream = Program.client.GetStream();
-
             var loginData = new {
-                DoctorID = doctorId,
+                DoctorID = doctorIdText,
                 DoctorName = username,
                 DoctorPassword = password
             };
 
-            SendCommandToServer(loginData);
+            String JsonLoginString = JsonSerializer.Serialize(loginData);
 
-            using (var reader = new System.IO.StreamReader(networkStream)) {
-                string response = await reader.ReadLineAsync();
-                if (response.Contains("Login Successful")) {
-                    MessageBox.Show("Inlog succesvol.");
-                    OpenClientenForm();
-                } else {
-                    MessageBox.Show("Ongeldige inloggegevens.");
-                }
+            serverConnection.protocol.doctorState.PerformAction(JsonLoginString);
 
-            }
-        }
-
-        private void SendCommandToServer(object command) {
-            try {
-                string jsonCommand = System.Text.Json.JsonSerializer.Serialize(command);
-                using (var writer = new System.IO.StreamWriter(networkStream) { AutoFlush = true }) {
-                    writer.WriteLine(jsonCommand);
-                }
-                MessageBox.Show("Commando succesvol verzonden.");
-            } catch (Exception ex) {
-                MessageBox.Show("Fout bij het verzenden van commando: " + ex.Message);
-            }
         }
 
         private void OpenClientenForm() {
-            ClientenForm clientenForm = new ClientenForm(networkStream);
+            ClientenForm clientenForm = new ClientenForm(serverConnection);
             clientenForm.Show();
             this.Hide();
         }
+
         private void CloseButton_Click(object sender, EventArgs e) {
             Application.Exit();
         }
+
+        public void showNextScreen() {
+            ClientenForm clientInfoScreen = new ClientenForm(serverConnection);
+            mainForm.Controls.Clear();
+            mainForm.Controls.Add(clientInfoScreen);
+            clientInfoScreen.Dock = DockStyle.Fill;
+        }
+
     }
 }
