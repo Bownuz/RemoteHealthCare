@@ -1,10 +1,7 @@
 ﻿using DoctorApplication;
 using DoctorApplication.StatePattern;
 using System;
-using System.IO;
 using System.Net.Sockets;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,16 +9,18 @@ public class ServerConnection {
     public TcpClient client { get; set; }
     public NetworkStream networkStream { get; set; }
     public readonly DoctorProtocol protocol;
+    public readonly UserControl currentForm;
     public Form mainForm;
 
 
     public ServerConnection(Form form) {
         protocol = new DoctorProtocol(this);
         this.mainForm = form;
+        this.currentForm = currentForm;
     }
 
     public void ConnectToServer(string ipAdress) {
-        client = new TcpClient("192.168.163.244", 4790);
+        client = new TcpClient("145.49.9.63", 4790);
         networkStream = client.GetStream();
 
     }

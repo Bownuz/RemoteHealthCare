@@ -104,7 +104,7 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-        notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
                 if (dataMessages.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
@@ -154,7 +154,7 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-        notJson: if (input.Equals("Ready to receive command")) {
+            notJson: if (input.Equals("Ready to receive command")) {
                 if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
@@ -181,19 +181,13 @@ namespace DoctorApplication.StatePattern {
             }
 
             DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
-            foreach (string name in message.PatientNames) {
-                // bestaat deze patientnaam in de lijst
-                //zo ja niets doen 
-
-                //zo nee voeg toe in lijst
-            }
             if (message.Message.Equals(ValidMessages.d_unsubscribeResponse)) {
                 MessageCommunication.SendMessage(serverConnection.networkStream, names[0]);
                 names.RemoveAt(0);
                 return;
             }
 
-        notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
                 if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
@@ -227,7 +221,7 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-        notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
                 if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
@@ -260,7 +254,7 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-        notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
                 if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
