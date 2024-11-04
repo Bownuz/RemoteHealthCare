@@ -49,7 +49,10 @@ namespace ClientApplication.State {
         }
 
         public override string CheckInput(string input) {
-            return "Goodbye";
+            if (input.Equals("Goodbye")) {
+                return "Quit Communication";
+            }
+            return "";
         }
     }
 }

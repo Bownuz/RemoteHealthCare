@@ -47,6 +47,9 @@ namespace ClientApplication.State {
                 if ((recievedMessage = await MessageCommunication.RecieveMessage(tcpClient)) == null) {
                     continue;
                 }
+                if (recievedMessage == "Goodbye") {
+                    tcpClient.Close();
+                }
 
                 if (recievedMessage.StartsWith("Resistance:")) {
                     ergoMeter.ChangeResistanceOfBike(byte.Parse(recievedMessage));
@@ -62,10 +65,7 @@ namespace ClientApplication.State {
                 response = protocol.processInput(recievedMessage);
                 if (response != "") {
                     MessageCommunication.SendMessage(tcpClient, response);
-                    if (response.Equals("Goodbye")) {
-                        tcpClient.Close();
-                    }
-                }
+                                    }
             }
         }
 
@@ -74,8 +74,7 @@ namespace ClientApplication.State {
                 protocol.ChangeState(new Exit(protocol, this));
 
                 string exitMessage = protocol.processInput("Goodbye");
-
-                tcpClient.Close();
+                MessageCommunication.SendMessage(tcpClient, exitMessage);
             }
         }
     }
