@@ -123,41 +123,120 @@ namespace DoctorApplication.StatePattern {
     }
 
     public class UnsubscribeAction : DoctorAbstractState {
+        private List<string> names;
         public UnsubscribeAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
+            names = new List<string>();
         }
 
         public override void PerformAction(string data) {
-            throw new NotImplementedException();
+            names.Add(data);
         }
 
         public override void ProcessInput(string input) {
-            throw new NotImplementedException();
+            if (!input.StartsWith("{") && !input.EndsWith("}"))
+            {
+                goto notJson;
+            }
+
+            DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
+            if (message.Message.Equals(ValidMessages.d_unsubscribeResponse))
+            {
+                MessageCommunication.SendMessage(serverConnection.networkStream, names[0]);
+                names.RemoveAt(0);
+                return;
+            }
+
+        notJson: if (input.Equals(ValidMessages.d_readyToRecieve))
+            {
+                if (names.Count == 0)
+                {
+                    protocol.changeState(new CommandType(protocol, serverConnection));
+                }
+                else
+                {
+                    MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
+                }
+
+            }
+
         }
     }
 
     public class StopTrainingAction : DoctorAbstractState {
+        private List<string> names;
         public StopTrainingAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
+            names = new List<string>();
         }
 
         public override void PerformAction(string action) {
-            throw new NotImplementedException();
+            names.Add(action);
         }
 
         public override void ProcessInput(string input) {
-            throw new NotImplementedException();
+            if (!input.StartsWith("{") && !input.EndsWith("}"))
+            {
+                goto notJson;
+            }
+
+            DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
+            if (message.Message.Equals(ValidMessages.d_endSessionResponse))
+            {
+                MessageCommunication.SendMessage(serverConnection.networkStream, names[0]);
+                names.RemoveAt(0);
+                return;
+            }
+
+        notJson: if (input.Equals(ValidMessages.d_readyToRecieve))
+            {
+                if (names.Count == 0)
+                {
+                    protocol.changeState(new CommandType(protocol, serverConnection));
+                }
+                else
+                {
+                    MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
+                }
+
+            }
         }
     }
 
     public class StartTrainingAction : DoctorAbstractState {
+        private List<string> names;
         public StartTrainingAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
+            names = new List<string>();
         }
 
         public override void PerformAction(string action) {
-            throw new NotImplementedException();
+            names.Add(action);
         }
 
         public override void ProcessInput(string input) {
-            throw new NotImplementedException();
+            if (!input.StartsWith("{") && !input.EndsWith("}"))
+            {
+                goto notJson;
+            }
+
+            DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
+            if (message.Message.Equals(ValidMessages.d_startSessionResponse))
+            {
+                MessageCommunication.SendMessage(serverConnection.networkStream, names[0]);
+                names.RemoveAt(0);
+                return;
+            }
+
+        notJson: if (input.Equals(ValidMessages.d_readyToRecieve))
+            {
+                if (names.Count == 0)
+                {
+                    protocol.changeState(new CommandType(protocol, serverConnection));
+                }
+                else
+                {
+                    MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
+                }
+
+            }
         }
     }
 
