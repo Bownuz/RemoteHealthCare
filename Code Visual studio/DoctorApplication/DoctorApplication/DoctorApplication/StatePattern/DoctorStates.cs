@@ -49,8 +49,28 @@ namespace DoctorApplication.StatePattern {
 
         public override void PerformAction(string data) {
             switch (data) {
-                case "Subscribe":
+                case ValidMessages.d_sendData:
+                    protocol.changeState(new SendDataAction(protocol, serverConnection));
+                    MessageCommunication.SendMessage(serverConnection.networkStream, data);
+                    break;
+                case ValidMessages.d_retrieveData:
+                    protocol.changeState(new ViewTrainingDataAction(protocol, serverConnection));
+                    MessageCommunication.SendMessage(serverConnection.networkStream, data);
+                    break;
+                case ValidMessages.d_subscribe:
                     protocol.changeState(new SubscribeAction(protocol, serverConnection));
+                    MessageCommunication.SendMessage(serverConnection.networkStream, data);
+                    break;
+                case ValidMessages.d_unsubscribe:
+                    protocol.changeState(new UnsubscribeAction(protocol, serverConnection));
+                    MessageCommunication.SendMessage(serverConnection.networkStream, data);
+                    break;
+                case ValidMessages.d_startSession:
+                    protocol.changeState(new StartTrainingAction(protocol, serverConnection));
+                    MessageCommunication.SendMessage(serverConnection.networkStream, data);
+                    break;
+                case ValidMessages.d_endSession:
+                    protocol.changeState(new StopTrainingAction(protocol, serverConnection));
                     MessageCommunication.SendMessage(serverConnection.networkStream, data);
                     break;
             }
@@ -63,7 +83,9 @@ namespace DoctorApplication.StatePattern {
 
 
     public class SendDataAction : DoctorAbstractState {
+        private List<string> dataMessages;
         public SendDataAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
+            dataMessages = new List<string>();
         }
 
         public override void PerformAction(string action) {
@@ -71,20 +93,41 @@ namespace DoctorApplication.StatePattern {
         }
 
         public override void ProcessInput(string input) {
-            throw new NotImplementedException();
+            if (!input.StartsWith("{") && !input.EndsWith("}")) {
+                goto notJson;
+            }
+
+            DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
+            if (message.Message.Equals(ValidMessages.d_sendDataResponse)) {
+                MessageCommunication.SendMessage(serverConnection.networkStream, dataMessages[0]);
+                dataMessages.RemoveAt(0);
+                return;
+            }
+
+            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+                if (dataMessages.Count == 0) {
+                    protocol.changeState(new CommandType(protocol, serverConnection));
+                } else {
+                    MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_sendData);
+                }
+
+            }
         }
     }
 
     public class ViewTrainingDataAction : DoctorAbstractState {
+        private List<string> names;
+
         public ViewTrainingDataAction(DoctorProtocol protocol, ServerConnection serverConnection) : base(protocol, serverConnection) {
+            names = new List<string>();
         }
 
-        public override void PerformAction(string action) {
-            throw new NotImplementedException();
+        public override void PerformAction(string patientName) {
+            names.Add(patientName);
         }
 
         public override void ProcessInput(string input) {
-            throw new NotImplementedException();
+            Console.WriteLine("I wanna die");
         }
     }
 
@@ -133,27 +176,21 @@ namespace DoctorApplication.StatePattern {
         }
 
         public override void ProcessInput(string input) {
-            if (!input.StartsWith("{") && !input.EndsWith("}"))
-            {
+            if (!input.StartsWith("{") && !input.EndsWith("}")) {
                 goto notJson;
             }
 
             DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
-            if (message.Message.Equals(ValidMessages.d_unsubscribeResponse))
-            {
+            if (message.Message.Equals(ValidMessages.d_unsubscribeResponse)) {
                 MessageCommunication.SendMessage(serverConnection.networkStream, names[0]);
                 names.RemoveAt(0);
                 return;
             }
 
-        notJson: if (input.Equals(ValidMessages.d_readyToRecieve))
-            {
-                if (names.Count == 0)
-                {
+            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+                if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
-                }
-                else
-                {
+                } else {
                     MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
                 }
 
@@ -173,27 +210,21 @@ namespace DoctorApplication.StatePattern {
         }
 
         public override void ProcessInput(string input) {
-            if (!input.StartsWith("{") && !input.EndsWith("}"))
-            {
+            if (!input.StartsWith("{") && !input.EndsWith("}")) {
                 goto notJson;
             }
 
             DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
-            if (message.Message.Equals(ValidMessages.d_endSessionResponse))
-            {
+            if (message.Message.Equals(ValidMessages.d_endSessionResponse)) {
                 MessageCommunication.SendMessage(serverConnection.networkStream, names[0]);
                 names.RemoveAt(0);
                 return;
             }
 
-        notJson: if (input.Equals(ValidMessages.d_readyToRecieve))
-            {
-                if (names.Count == 0)
-                {
+            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+                if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
-                }
-                else
-                {
+                } else {
                     MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
                 }
 
@@ -212,27 +243,21 @@ namespace DoctorApplication.StatePattern {
         }
 
         public override void ProcessInput(string input) {
-            if (!input.StartsWith("{") && !input.EndsWith("}"))
-            {
+            if (!input.StartsWith("{") && !input.EndsWith("}")) {
                 goto notJson;
             }
 
             DoctorMessageWithList message = JsonSerializer.Deserialize<DoctorMessageWithList>(input);
-            if (message.Message.Equals(ValidMessages.d_startSessionResponse))
-            {
+            if (message.Message.Equals(ValidMessages.d_startSessionResponse)) {
                 MessageCommunication.SendMessage(serverConnection.networkStream, names[0]);
                 names.RemoveAt(0);
                 return;
             }
 
-        notJson: if (input.Equals(ValidMessages.d_readyToRecieve))
-            {
-                if (names.Count == 0)
-                {
+            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+                if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
-                }
-                else
-                {
+                } else {
                     MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
                 }
 
