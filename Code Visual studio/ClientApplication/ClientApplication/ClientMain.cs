@@ -1,15 +1,6 @@
-﻿using ConnectionImplemented;
-using ClientApplication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using ClientApplication.Vr;
 
 namespace ClientApplication {
     internal static class ClientMain {
@@ -19,7 +10,7 @@ namespace ClientApplication {
         static async Task Main(string[] args) {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            VrInit.StandardInit("127.0.0.1");
+            //VrInit.StandardInit("127.0.0.1");
             StartGui();
         }
 

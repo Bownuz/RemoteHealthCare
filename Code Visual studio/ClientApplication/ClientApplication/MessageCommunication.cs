@@ -2,35 +2,32 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Markup;
 
 
 namespace ClientApplication {
     public class MessageCommunication {
-        public static async Task<string> RecieveMessage(TcpClient client) {
-            try {
-                var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
-                Console.WriteLine("Wachten op bericht...");
-                string message = await stream.ReadLineAsync();
-                Console.WriteLine("Bericht ontvangen: " + message);
-                return message;
-            }
-            catch (IOException ex) {
-                Console.WriteLine("Fout bij ontvangen bericht: " + ex.Message);
-                return null;
-            }
+        public static string ReceiveMessage(NetworkStream networkStream) {
+            var stream = new StreamReader(networkStream, Encoding.ASCII, true, 128);
+            return stream.ReadLine();
         }
 
-        public static async Task SendMessage(TcpClient client, string message) {
-            //MessageBox.Show(message);
-            var stream = new StreamWriter(client.GetStream(), Encoding.ASCII);
-            await stream.WriteLineAsync(message);
-            await stream.FlushAsync();
+        public static void SendMessage(NetworkStream networkStream, string message) {
+            var stream = new StreamWriter(networkStream, Encoding.ASCII, 128, true);
+            stream.WriteLine(message);
+            stream.Flush();
         }
 
+    }
+
+    public static class ValidMessages {
+        public const String p_welcome = "Welcome Client";
+        public const String p_readyToRecieve = "Ready to recieve data";
+        public const String p_noSessionActive = "No current Session Active";
+
+        public const String a_patientNotExist = "This patient does not exist";
+        public const String a_notJson = "This message was not a Json String";
+        public const String a_goodbye = "Goodbye";
+        public const String a_quit = "Quit Communication";
     }
     public struct PatientInitialisationMessage {
         public String ClientName { get; set; }

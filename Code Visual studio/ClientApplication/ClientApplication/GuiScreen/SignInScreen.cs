@@ -1,13 +1,9 @@
-﻿using ConnectionImplemented;
-using ClientApplication;
+﻿using ClientApplication.State;
+using ConnectionImplemented;
 using System;
-using System.Drawing;
-using System.Net.Sockets;
-using System.Threading;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using ClientApplication.State;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ClientApplication {
     internal partial class SignInScreen : UserControl {
@@ -27,12 +23,17 @@ namespace ClientApplication {
             listBox1.Items.Add("");
             listDisplay.ShowDeviceList();
 
-            this.networkHandler = new NetworkHandler(ergometer);
+            networkHandler = new NetworkHandler(ergometer);
+            Task.Run(() => networkHandler.HandleNetworkThread());
         }
 
         private void SubmitButton(object sender, EventArgs e) {
             if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && textBox2.Text.StartsWith("Tacx Flux") || simulatorActive && !string.IsNullOrWhiteSpace(textBox1.Text)) {
                 StartClient();
+                // inlog bericht formuleren
+                PatientInitialisationMessage messageData = new PatientInitialisationMessage(textBox1.Text, textBox2.Text, textBox3.Text, DateTime.Now);
+                String messageJson = JsonSerializer.Serialize(messageData);
+                Task.Run(async () => networkHandler.protocol.processInput(messageJson));
                 ChangeScreen();
             } else {
                 MessageBox.Show("You haven't filled everything in, or the bike id doens't begin with Tacx Flux");
@@ -103,7 +104,7 @@ namespace ClientApplication {
                 label4.Visible = !label4.Visible;
                 textBox3.Visible = !textBox3.Visible;
                 listBox1.Visible = !listBox1.Visible;
-                
+
                 if (simulatorActive) {
                     button3.Text = "Simulator";
                 } else {
