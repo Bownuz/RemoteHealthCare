@@ -22,12 +22,6 @@ namespace ClientApplication.State {
 
         internal void AddDataHandler(DataHandler dataHandler) {
             this.dataHandler = dataHandler;
-
-            //Zorgt ervoor dat hij de processInput niet wordt gecalled is hij nog niet in de Initializing state zit
-            //while (protocol.state.ToString() == "ClientApplication.State.Connecting") {
-            //    Thread.Sleep(1000);
-            //}
-            //MessageCommunication.SendMessage(tcpClient, await protocol.processInput("Added dataHandler"));
         }
 
         private void StartConnectionWithServer() {

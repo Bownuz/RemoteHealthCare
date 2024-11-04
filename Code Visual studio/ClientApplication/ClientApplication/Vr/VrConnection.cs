@@ -64,7 +64,7 @@ namespace ClientApplication {
         }
 
         public static string GetMostRecentResponseUsingString(string searchPattern) {
-            for (int i = responses.Count-1; i > 0; i--) {
+            for (int i = responses.Count - 1; i > 0; i--) {
                 if (JsonDocument.Parse(responses[i]).RootElement.GetProperty("data").GetProperty("id").GetString().Equals(searchPattern))
                     return responses[i];
             }
@@ -72,7 +72,7 @@ namespace ClientApplication {
         }
 
         public static string GetMostRecentTunnelResponseUsingString(string searchPattern) {
-            for (int i = responsesFromTunnel.Count-1; i > -1; i--) {
+            for (int i = responsesFromTunnel.Count - 1; i > -1; i--) {
                 if (JsonDocument.Parse(responsesFromTunnel[i]).RootElement.GetProperty("data").GetProperty("data").GetProperty("id").GetString().Equals(searchPattern))
                     return responsesFromTunnel[i];
             }
@@ -82,7 +82,7 @@ namespace ClientApplication {
         private static void AutoCreateTunnel() {
             SendJsonObjectFromFile("session_list.json");
             JsonDocument sessionList = JsonDocument.Parse(RecieveJsonObjectFromServer());
-            string sessionID = sessionList.RootElement.GetProperty("data")[sessionList.RootElement.GetProperty("data").GetArrayLength()-1].GetProperty("id").GetString();
+            string sessionID = sessionList.RootElement.GetProperty("data")[sessionList.RootElement.GetProperty("data").GetArrayLength() - 1].GetProperty("id").GetString();
             SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{ \"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
             JsonDocument tunnelIdDoc = JsonDocument.Parse(RecieveJsonObjectFromServer());
             tunnelID = tunnelIdDoc.RootElement.GetProperty("data").GetProperty("id").GetString();
@@ -109,7 +109,7 @@ namespace ClientApplication {
         private static void TunnelCreater() {
             SendJsonObjectFromFile("session_list.json");
             JsonDocument sessionList = JsonDocument.Parse(RecieveJsonObjectFromServer());
-            string sessionID = sessionList.RootElement.GetProperty("data")[sessionList.RootElement.GetProperty("data").GetArrayLength()-1].GetProperty("id").GetString();
+            string sessionID = sessionList.RootElement.GetProperty("data")[sessionList.RootElement.GetProperty("data").GetArrayLength() - 1].GetProperty("id").GetString();
             SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{\"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
             JsonDocument tunnelIdDoc = JsonDocument.Parse(RecieveJsonObjectFromServer());
             tunnelID = tunnelIdDoc.RootElement.GetProperty("data").GetProperty("id").GetString();
