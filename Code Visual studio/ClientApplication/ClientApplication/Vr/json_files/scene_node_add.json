@@ -1,0 +1,11 @@
+{
+    "id": "scene/node/add",
+    "data": {
+        "name": "MyNode",
+        "components": {
+            "terrain": {
+                "smoothnormals": true
+            }
+        }
+    }
+}
