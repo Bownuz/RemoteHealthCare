@@ -12,6 +12,8 @@ using System.Windows.Forms;
 
 namespace ClientApplication {
     internal static class ClientMain {
+        private static SignInScreen userControl;
+
         [STAThread]
         static async Task Main(string[] args) {
             Application.EnableVisualStyles();
@@ -22,14 +24,22 @@ namespace ClientApplication {
 
         public static void StartGui() {
             Form mainForm = new Form();
-            SignInScreen userControl = new SignInScreen(mainForm);
-            // Zorgt ervoor dat de UserControl het hele form vult
+            userControl = new SignInScreen(mainForm);
+
             userControl.Dock = DockStyle.Fill;
 
             mainForm.WindowState = FormWindowState.Maximized;
             mainForm.Controls.Add(userControl);
             mainForm.Text = "Client Application";
+            mainForm.FormClosed += (sender, e) => Shutdown();
+
             Application.Run(mainForm);
+        }
+
+        private static void Shutdown() {
+            userControl.CloseNetworkConnection();
+            Task.Delay(100);
+            Application.Exit();
         }
     }
 }
