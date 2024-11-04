@@ -82,7 +82,7 @@ namespace ClientApplication {
         private static void AutoCreateTunnel() {
             SendJsonObjectFromFile("session_list.json");
             JsonDocument sessionList = JsonDocument.Parse(RecieveJsonObjectFromServer());
-            string sessionID = sessionList.RootElement.GetProperty("data")[0].GetProperty("id").GetString();
+            string sessionID = sessionList.RootElement.GetProperty("data")[sessionList.RootElement.GetProperty("data").GetArrayLength()-1].GetProperty("id").GetString();
             SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{ \"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
             JsonDocument tunnelIdDoc = JsonDocument.Parse(RecieveJsonObjectFromServer());
             tunnelID = tunnelIdDoc.RootElement.GetProperty("data").GetProperty("id").GetString();
@@ -109,7 +109,7 @@ namespace ClientApplication {
         private static void TunnelCreater() {
             SendJsonObjectFromFile("session_list.json");
             JsonDocument sessionList = JsonDocument.Parse(RecieveJsonObjectFromServer());
-            string sessionID = sessionList.RootElement.GetProperty("data")[0].GetProperty("id").GetString();
+            string sessionID = sessionList.RootElement.GetProperty("data")[sessionList.RootElement.GetProperty("data").GetArrayLength()-1].GetProperty("id").GetString();
             SendJsonObjectFromBytes(Encoding.UTF8.GetBytes($"{{\"id\": \"tunnel/create\", \"data\": {{\"session\": \"{sessionID}\", \"key\": \"\"}}}}"));
             JsonDocument tunnelIdDoc = JsonDocument.Parse(RecieveJsonObjectFromServer());
             tunnelID = tunnelIdDoc.RootElement.GetProperty("data").GetProperty("id").GetString();
