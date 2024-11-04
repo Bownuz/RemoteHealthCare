@@ -1,4 +1,5 @@
 using Avans.TI.BLE;
+using ClientApplication.Vr;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,6 +52,7 @@ namespace ConnectionImplemented {
         }
 
         public override void UpdateDataToHandler() {
+            VrScene.ChangeRouteSpeed(speedKmPerHour);
             base.handler.updateCurrentSpeed((int)speedKmPerHour);
         }
 

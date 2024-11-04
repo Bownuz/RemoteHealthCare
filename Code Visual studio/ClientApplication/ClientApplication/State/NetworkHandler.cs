@@ -1,4 +1,4 @@
-﻿using ConnectionImplemented;
+using ConnectionImplemented;
 using Server;
 using System;
 using System.Collections.Generic;
@@ -38,7 +38,8 @@ namespace ClientApplication.State {
 
         public async Task HandleNetworkThread() {
             this.protocol = new DataProtocol(this);
-            var serverCommands = new List<string> { "Goodbye", "Welcome Client", "add failed message" };
+            var serverCommands = new List<string> { "Ready to recieve data", "Goodbye", "Welcome Client", "add failed message", "No current Session Active" };
+            var serverErrors = new List<string> { "This message was not a Json String" };
 
             while (tcpClient.Connected) {
                 Thread.Sleep(500);
@@ -47,23 +48,35 @@ namespace ClientApplication.State {
                 if ((recievedMessage = await MessageCommunication.RecieveMessage(tcpClient)) == null) {
                     continue;
                 }
+                if (recievedMessage == "Goodbye") {
+                    tcpClient.Close();
+                }
 
-                if (recievedMessage.StartsWith("HeartRate:")) {
+                if (recievedMessage.StartsWith("Resistance:")) {
                     ergoMeter.ChangeResistanceOfBike(byte.Parse(recievedMessage));
                 }
                 if (!serverCommands.Contains(recievedMessage)) {
                     NewDoctorMessage?.Invoke(recievedMessage);
+                } 
+
+                if (serverErrors.Contains(recievedMessage)) {
+                    Console.WriteLine(recievedMessage);
                 }
 
                 response = protocol.processInput(recievedMessage);
                 if (response != "") {
                     MessageCommunication.SendMessage(tcpClient, response);
-                    if (response.Equals("Goodbye")) {
-                        tcpClient.Close();
-                    }
-                }
+                                    }
+            }
+        }
+
+        public void CloseConnection() {
+            if (tcpClient?.Connected == true) {
+                protocol.ChangeState(new Exit(protocol, this));
+
+                string exitMessage = protocol.processInput("Goodbye");
+                MessageCommunication.SendMessage(tcpClient, exitMessage);
             }
         }
     }
-
 }

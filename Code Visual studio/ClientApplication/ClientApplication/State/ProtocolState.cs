@@ -1,4 +1,4 @@
-﻿using Server;
+using Server;
 
 namespace ClientApplication.State {
     public class Connecting : State {
@@ -19,12 +19,11 @@ namespace ClientApplication.State {
         }
 
         public override string CheckInput(string input) {
-            string patientInfo = null;
-            if (input.Equals("Added dataHandler")) {
-                patientInfo = networkHandler.dataHandler.PatientInitialisationMessage();
-
-                protocol.ChangeState(new SendData(protocol, networkHandler));
+            while (networkHandler.dataHandler == null) {
             }
+
+            string patientInfo = networkHandler.dataHandler.PatientInitialisationMessage();
+            protocol.ChangeState(new SendData(protocol, networkHandler));
 
             return patientInfo;
         }
@@ -50,7 +49,7 @@ namespace ClientApplication.State {
 
         public override string CheckInput(string input) {
             if (input.Equals("Goodbye")) {
-                networkHandler.tcpClient.Close();
+                return "Quit Communication";
             }
             return "";
         }
