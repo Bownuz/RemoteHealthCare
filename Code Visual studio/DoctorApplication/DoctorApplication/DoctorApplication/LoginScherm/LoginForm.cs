@@ -18,7 +18,6 @@ namespace DoctorApplication {
         }
 
 
-
         private async void LoginButton_Click(object sender, EventArgs e) {
             string doctorIdText = DoctorIDTextBox.Text;
             string username = UsernameTextBox.Text;
@@ -37,12 +36,10 @@ namespace DoctorApplication {
 
             String JsonLoginString = JsonSerializer.Serialize(loginData);
             serverConnection.protocol.doctorState.PerformAction(JsonLoginString);
-
         }
 
         private void CloseButton_Click(object sender, EventArgs e) {
             Application.Exit();
         }
-
     }
 }

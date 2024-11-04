@@ -5,5 +5,4 @@
         public int Speed { get; set; }
         public string LastUpdate { get; set; }
     }
-
 }

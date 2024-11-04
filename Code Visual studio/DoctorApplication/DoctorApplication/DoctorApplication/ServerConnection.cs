@@ -12,7 +12,6 @@ public class ServerConnection {
     public readonly UserControl currentForm;
     public Form mainForm;
 
-
     public ServerConnection(Form form) {
         protocol = new DoctorProtocol(this);
         this.mainForm = form;
@@ -22,7 +21,6 @@ public class ServerConnection {
     public void ConnectToServer(string ipAdress) {
         client = new TcpClient("145.49.9.63", 4790);
         networkStream = client.GetStream();
-
     }
 
     internal async Task RunConnection() {
@@ -31,7 +29,6 @@ public class ServerConnection {
             if ((recievedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
                 continue;
             }
-
             await protocol.Respond(recievedMessage);
         }
     }
