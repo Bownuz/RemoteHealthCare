@@ -16,7 +16,7 @@ namespace SimulatorApplication {
             while (true) {
                 // Case 1: Page 16 - Willekeurige snelheid                
                 double randomSpeedKmh = GenerateRandomSpeed(1, 70, currentSpeed);
-                currentSpeed = (int) randomSpeedKmh;
+                currentSpeed = (int)randomSpeedKmh;
                 Console.WriteLine($"Willekeurige snelheid: {randomSpeedKmh} km/h");
 
                 // Bereken hexadecimale waarden voor LSB en MSB op basis van de snelheid
@@ -38,7 +38,7 @@ namespace SimulatorApplication {
 
                 // Case 3: Hartslagdata (12 hex bytes)
                 double randomHeartRate = GenerateRandomHeartRate(30, 220, currentHeartRate);
-                currentHeartRate = (int) randomHeartRate;
+                currentHeartRate = (int)randomHeartRate;
                 string heartRateHex = currentHeartRate.ToString("X2");
                 Console.WriteLine($"Willekeurige hartslag: {randomHeartRate} BPM");
 

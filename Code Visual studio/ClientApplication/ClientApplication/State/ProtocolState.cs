@@ -19,12 +19,11 @@ namespace ClientApplication.State {
         }
 
         public override string CheckInput(string input) {
-            string patientInfo = null;
-            if (input.Equals("Added dataHandler")) {
-                patientInfo = networkHandler.dataHandler.PatientInitialisationMessage();
-
-                protocol.ChangeState(new SendData(protocol, networkHandler));
+            while (networkHandler.dataHandler == null) {
             }
+
+            string patientInfo = networkHandler.dataHandler.PatientInitialisationMessage();
+            protocol.ChangeState(new SendData(protocol, networkHandler));
 
             return patientInfo;
         }

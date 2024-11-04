@@ -37,7 +37,7 @@ namespace ClientApplication {
             }
 
             if (simulatorIsActive) {
-                TcpClient client = new TcpClient("127.0.0.1", 4786);
+                TcpClient client = new TcpClient("localhost", 4788);
                 Thread connectionThread = new Thread(() => SimulatorConnection.HandleConnection(client, this));
                 connectionThread.Start();
             }
