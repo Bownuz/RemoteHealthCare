@@ -119,6 +119,5 @@ namespace DoctorApplication {
             SessionDate = sessionDate;
         }
     }
-
 }
 

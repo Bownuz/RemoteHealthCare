@@ -20,7 +20,8 @@ namespace DoctorApplication {
         private async Task ListenForLiveData() {
             try {
                 // Hier moet nog logica komen voor 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 MessageBox.Show("Fout bij het ontvangen van gegevens: " + ex.Message);
             }
         }
@@ -153,19 +154,16 @@ namespace DoctorApplication {
         }
 
         private void ResistanceTextBox_TextChanged(object sender, EventArgs e) {
-
         }
 
         private void ClientenGridView_CellContentClick_1(object sender, DataGridViewCellEventArgs e) {
-
         }
 
         private void label2_Click(object sender, EventArgs e) {
-
         }
+
         private void AdjustResistanceButton_Click(object sender, EventArgs e) {
             // Logica om de weerstand aan te passen
         }
-
     }
 }

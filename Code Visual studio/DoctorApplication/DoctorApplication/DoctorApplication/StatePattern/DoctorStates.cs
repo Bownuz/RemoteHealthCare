@@ -17,7 +17,6 @@ namespace DoctorApplication.StatePattern {
                 protocol.changeState(new Login(protocol, serverConnection));
             }
         }
-
     }
 
 
@@ -104,7 +103,7 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+        notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
                 if (dataMessages.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
@@ -154,13 +153,12 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-            notJson: if (input.Equals("Ready to receive command")) {
+        notJson: if (input.Equals("Ready to receive command")) {
                 if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
                     MessageCommunication.SendMessage(serverConnection.networkStream, "Subscribe");
                 }
-
             }
         }
     }
@@ -187,15 +185,13 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+        notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
                 if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
                     MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
                 }
-
             }
-
         }
     }
 
@@ -221,13 +217,12 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+        notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
                 if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
                     MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
                 }
-
             }
         }
     }
@@ -254,15 +249,13 @@ namespace DoctorApplication.StatePattern {
                 return;
             }
 
-            notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
+        notJson: if (input.Equals(ValidMessages.d_readyToRecieve)) {
                 if (names.Count == 0) {
                     protocol.changeState(new CommandType(protocol, serverConnection));
                 } else {
                     MessageCommunication.SendMessage(serverConnection.networkStream, ValidMessages.d_subscribe);
                 }
-
             }
         }
     }
-
 }
