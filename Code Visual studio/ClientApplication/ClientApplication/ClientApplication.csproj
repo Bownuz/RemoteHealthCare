@@ -97,7 +97,6 @@
     <Compile Include="Vr\VrInit.cs" />
     <Compile Include="Vr\VrJsonObjectMaker.cs" />
     <Compile Include="Vr\VrScene.cs" />
-    <Compile Include="Vr\VrTest.cs" />
     <Compile Include="State\DataProtocol.cs" />
     <Compile Include="State\NetworkHandler.cs" />
     <Compile Include="State\ProtocolState.cs" />

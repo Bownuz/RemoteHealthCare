@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ClientApplication.Vr {
     internal class VrInit {
-        public static void StandardInit() {
-            VrScene.NewScene("127.0.0.1");
+        public static void StandardInit(string ipAddr) {
+            VrScene.NewScene(ipAddr);
             VrScene.NewNodeSceneAndTerrain();
             VrScene.DeleteGroundPlaneNode();
             VrScene.AddSceneNodeLayer();

@@ -31,7 +31,7 @@ namespace ClientApplication.State {
         }
 
         private void StartConnectionWithServer() {
-            this.tcpClient = new TcpClient("192.168.178.58", 4789);
+            this.tcpClient = new TcpClient("127.0.0.1", 4789);
             Task.Run(async () => await HandleNetworkThread());
         }
 

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using ClientApplication.Vr;
 
 namespace ClientApplication {
     internal static class ClientMain {
@@ -18,7 +19,7 @@ namespace ClientApplication {
         static async Task Main(string[] args) {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            VrInit.StandardInit("127.0.0.1");
             StartGui();
         }
 
