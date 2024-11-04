@@ -1,9 +1,13 @@
-﻿namespace DoctorApplication {
-    partial class ClientenForm {
+﻿namespace DoctorApplication
+{
+    partial class ClientenForm
+    {
         private System.ComponentModel.IContainer components = null;
 
-        protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -11,10 +15,10 @@
 
         #region Windows Form Designer generated code
 
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.ClientenGridView = new System.Windows.Forms.DataGridView();
             this.PatientName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Resistance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LastUpdateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HeartRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Speed = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -40,14 +44,13 @@
             this.ClientenGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ClientenGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.PatientName,
-            this.Resistance,
             this.LastUpdateColumn,
             this.HeartRate,
             this.Speed,
             this.SelectClientColumn});
             this.ClientenGridView.Location = new System.Drawing.Point(50, 50);
             this.ClientenGridView.Name = "ClientenGridView";
-            this.ClientenGridView.Size = new System.Drawing.Size(603, 200);
+            this.ClientenGridView.Size = new System.Drawing.Size(503, 200);
             this.ClientenGridView.TabIndex = 0;
             this.ClientenGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ClientenGridView_CellContentClick_1);
             // 
@@ -55,11 +58,6 @@
             // 
             this.PatientName.HeaderText = "Patiëntnaam";
             this.PatientName.Name = "PatientName";
-            // 
-            // Resistance
-            // 
-            this.Resistance.HeaderText = "Weerstandniveau";
-            this.Resistance.Name = "Resistance";
             // 
             // LastUpdateColumn
             // 
@@ -185,64 +183,64 @@
             // 
             this.SubscribeButton.BackColor = System.Drawing.Color.LightGreen;
             this.SubscribeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SubscribeButton.Location = new System.Drawing.Point(49, 361);
+            this.SubscribeButton.Location = new System.Drawing.Point(620, 320);
             this.SubscribeButton.Name = "SubscribeButton";
-            this.SubscribeButton.Size = new System.Drawing.Size(121, 44);
+            this.SubscribeButton.Size = new System.Drawing.Size(100, 35);
             this.SubscribeButton.TabIndex = 10;
-            this.SubscribeButton.Text = "Subscribe";
+            this.SubscribeButton.Text = "Abonneren";
             this.SubscribeButton.UseVisualStyleBackColor = true;
             this.SubscribeButton.Click += new System.EventHandler(this.SubscribeButton_Click);
             // 
             // UnsubscribeButton
             // 
-            this.UnsubscribeButton.BackColor = System.Drawing.Color.LightSalmon;
+            this.UnsubscribeButton.BackColor = System.Drawing.Color.IndianRed;
             this.UnsubscribeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.UnsubscribeButton.Location = new System.Drawing.Point(180, 361);
+            this.UnsubscribeButton.Location = new System.Drawing.Point(620, 370);
             this.UnsubscribeButton.Name = "UnsubscribeButton";
-            this.UnsubscribeButton.Size = new System.Drawing.Size(120, 44);
+            this.UnsubscribeButton.Size = new System.Drawing.Size(100, 35);
             this.UnsubscribeButton.TabIndex = 11;
-            this.UnsubscribeButton.Text = "Unsubscribe";
+            this.UnsubscribeButton.Text = "Afmelden";
             this.UnsubscribeButton.UseVisualStyleBackColor = true;
             this.UnsubscribeButton.Click += new System.EventHandler(this.UnsubscribeButton_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(50, 275);
+            this.label1.Location = new System.Drawing.Point(50, 278);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(99, 13);
+            this.label1.Size = new System.Drawing.Size(96, 13);
             this.label1.TabIndex = 12;
-            this.label1.Text = "Bericht voor patient";
+            this.label1.Text = "Bericht verzenden:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(437, 275);
+            this.label2.Location = new System.Drawing.Point(440, 278);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(131, 13);
+            this.label2.Size = new System.Drawing.Size(98, 13);
             this.label2.TabIndex = 13;
-            this.label2.Text = "nieuwe weerstand waarde";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
+            this.label2.Text = "Weerstand (0-100):";
             // 
             // ClientenForm
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.UnsubscribeButton);
+            this.Controls.Add(this.SubscribeButton);
             this.Controls.Add(this.ViewTrainingDataButton);
-            this.Controls.Add(this.AdjustResistanceButton);
             this.Controls.Add(this.ResistanceTextBox);
+            this.Controls.Add(this.AdjustResistanceButton);
+            this.Controls.Add(this.ViewPreviousDataButton);
+            this.Controls.Add(this.NoodstopButton);
             this.Controls.Add(this.StopTrainingButton);
             this.Controls.Add(this.StartTrainingButton);
-            this.Controls.Add(this.NoodstopButton);
             this.Controls.Add(this.SendMessageButton);
             this.Controls.Add(this.MessageTextBox);
-            this.Controls.Add(this.ViewPreviousDataButton);
             this.Controls.Add(this.ClientenGridView);
-            this.Controls.Add(this.SubscribeButton);
-            this.Controls.Add(this.UnsubscribeButton);
             this.Name = "ClientenForm";
-            this.Size = new System.Drawing.Size(796, 445);
-            this.Load += new System.EventHandler(this.ClientenForm_Load);
+            this.Size = new System.Drawing.Size(800, 450);
             ((System.ComponentModel.ISupportInitialize)(this.ClientenGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -252,23 +250,22 @@
         #endregion
 
         private System.Windows.Forms.DataGridView ClientenGridView;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PatientName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn LastUpdateColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn HeartRate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Speed;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn SelectClientColumn;
         private System.Windows.Forms.TextBox MessageTextBox;
-        private System.Windows.Forms.TextBox ResistanceTextBox;
         private System.Windows.Forms.Button SendMessageButton;
         private System.Windows.Forms.Button StartTrainingButton;
         private System.Windows.Forms.Button StopTrainingButton;
         private System.Windows.Forms.Button NoodstopButton;
         private System.Windows.Forms.Button ViewPreviousDataButton;
         private System.Windows.Forms.Button AdjustResistanceButton;
+        private System.Windows.Forms.TextBox ResistanceTextBox;
         private System.Windows.Forms.Button ViewTrainingDataButton;
         private System.Windows.Forms.Button SubscribeButton;
         private System.Windows.Forms.Button UnsubscribeButton;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PatientName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Resistance;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LastUpdateColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn HeartRate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Speed;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn SelectClientColumn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
     }
