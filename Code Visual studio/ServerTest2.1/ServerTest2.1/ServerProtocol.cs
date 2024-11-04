@@ -18,7 +18,7 @@ namespace Server {
 
             }
         }
-        public void processInput(String input) {
+        public async Task processInput(String input) {
             State.CheckInput(input);
         }
 

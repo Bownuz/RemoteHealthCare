@@ -19,29 +19,32 @@ namespace Server {
             while (true) {
                 if (PatientListner.Pending()) {
                     TcpClient client = PatientListner.AcceptTcpClient();
-                    Thread clientThread = new Thread(() => HandleClient(client, fileStorage));
+                    Thread clientThread = new Thread(async () => HandleClient(client, fileStorage));
                     threads.Add(clientThread);
                     clientThread.Start();
                 }
                 if (DoctorListner.Pending()) {
                     TcpClient doctor = DoctorListner.AcceptTcpClient();
-                    Thread doctorThread = new Thread(() => HandleDoctor(doctor, fileStorage));
+                    Thread doctorThread = new Thread(async () => HandleDoctor(doctor, fileStorage));
                     threads.Add(doctorThread);
                     doctorThread.Start();
                 }
             }
         }
 
-        static void HandleClient(TcpClient client, FileStorage fileStorage) {
+        static async Task HandleClient(TcpClient client, FileStorage fileStorage) {
+
             NetworkStream networkStream = client.GetStream();
             PatientHandler clientThread = new PatientHandler(fileStorage, networkStream);
-            clientThread.HandleThread();
+            clientThread.client = client;
+            await clientThread.HandleThread();
         }
 
-        static void HandleDoctor(TcpClient doctor, FileStorage fileStorage) {
+        static async Task HandleDoctor(TcpClient doctor, FileStorage fileStorage) {
             NetworkStream networkStream = doctor.GetStream();
             DoctorHandler doctorThread = new DoctorHandler(fileStorage, networkStream);
-            doctorThread.HandleThread();
+            doctorThread.client = doctor;
+            await doctorThread.HandleThread();
         }
     }
 }

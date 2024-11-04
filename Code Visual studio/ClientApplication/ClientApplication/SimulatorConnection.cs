@@ -1,17 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Text.Json;
-using ConnectionImplemented;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace ClientApplication {
     internal class SimulatorConnection {
@@ -28,7 +20,7 @@ namespace ClientApplication {
         }
 
         public static string ReadTextMessage(TcpClient client) {
-            var stream = new StreamReader(client.GetStream(), Encoding.ASCII);
+            var stream = new StreamReader(client.GetStream(), Encoding.ASCII, true, 128);
 
             return stream.ReadLine();
         }

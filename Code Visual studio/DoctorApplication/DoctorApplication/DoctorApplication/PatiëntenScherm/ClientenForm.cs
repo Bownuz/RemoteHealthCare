@@ -6,12 +6,11 @@ using System.Windows.Forms;
 namespace DoctorApplication {
     public partial class ClientenForm : UserControl {
         private ServerConnection serverConnection;
-        private DoctorAbstractState doctorState;
 
         public ClientenForm(ServerConnection serverConnection) {
             InitializeComponent();
             this.serverConnection = serverConnection;
-
+            Task.Run(async () => serverConnection.RunConnection());
         }
 
         private void ClientenForm_Load(object sender, EventArgs e) {
@@ -20,8 +19,9 @@ namespace DoctorApplication {
 
         private async Task ListenForLiveData() {
             try {
-
-            } catch (Exception ex) {
+                // Hier moet nog logica komen voor 
+            }
+            catch (Exception ex) {
                 MessageBox.Show("Fout bij het ontvangen van gegevens: " + ex.Message);
             }
         }
@@ -35,23 +35,37 @@ namespace DoctorApplication {
         }
 
         private void StartTrainingButton_Click(object sender, EventArgs e) {
-            foreach (string client in GetSelectedClients()) {
-                //doctorState.startTraining.StartTraining(client);
-                MessageBox.Show($"Trainingssessie gestart voor {client}.");
+            serverConnection.protocol.doctorState.PerformAction(ValidMessages.d_startSession);
+            string[] selectedPatients = GetSelectedClients();
+
+            if (selectedPatients.Length == 0) {
+                selectedPatients = new string[1] { "David" };
+            }
+
+            foreach (string clientName in selectedPatients) {
+                serverConnection.protocol.doctorState.PerformAction(clientName);
+                MessageBox.Show($"Session gestart voor {clientName}.");
             }
         }
 
-        private void StopTrainingButton_Click(object sender, EventArgs e) {
-            foreach (string client in GetSelectedClients()) {
-                //doctorState.stopTraining.StopTraining(client);
-                MessageBox.Show($"Trainingssessie gestopt voor {client}.");
+        private void EndTrainingButton_Click(object sender, EventArgs e) {
+            serverConnection.protocol.doctorState.PerformAction(ValidMessages.d_endSession);
+            string[] selectedPatients = GetSelectedClients();
+
+            if (selectedPatients.Length == 0) {
+                selectedPatients = new string[1] { "David" };
+            }
+
+            foreach (string clientName in selectedPatients) {
+                serverConnection.protocol.doctorState.PerformAction(clientName);
+                MessageBox.Show($"Session gestopt voor {clientName}.");
             }
         }
 
         private void NoodstopButton_Click(object sender, EventArgs e) {
             foreach (string client in GetSelectedClients()) {
                 //doctorState.emergencyStop.EmergencyStop(client);
-                MessageBox.Show($"Noodstop uitgevoerd voor {client} met weerstand 255.");
+                MessageBox.Show($"Noodstop uitgevoerd voor {client}.");
             }
         }
 
@@ -66,35 +80,36 @@ namespace DoctorApplication {
         }
 
         private async Task<List<TrainingData>> FetchTrainingDataForClient(string client) {
-
+            // Voeg hier logica toe om de trainingsdata op te halen
             MessageBox.Show($"Fout bij het ophalen van trainingsdata: {client}");
             return new List<TrainingData>();
-
-        }
-
-        private void AdjustResistanceButton_Click(object sender, EventArgs e) {
-            string resistanceValue = ResistanceTextBox.Text;
-            if (int.TryParse(resistanceValue, out int resistance)) {
-                foreach (string client in GetSelectedClients()) {
-                    //doctorState.adjustResistance.AdjustResistance(client, resistance);
-                    MessageBox.Show($"Weerstand aangepast voor {client} naar {resistance}.");
-                }
-            } else {
-                MessageBox.Show("Voer een geldige waarde in voor de weerstand.");
-            }
         }
 
         private void SubscribeButton_Click(object sender, EventArgs e) {
-            foreach (string client in GetSelectedClients()) {
-                //doctorState.subscribe.Subscribe(client);
-                MessageBox.Show($"Subscribed to {client}.");
+            serverConnection.protocol.doctorState.PerformAction(ValidMessages.d_subscribe);
+            string[] selectedPatients = GetSelectedClients();
+
+            if (selectedPatients.Length == 0) {
+                selectedPatients = new string[1] { "David" };
+            }
+
+            foreach (string clientName in selectedPatients) {
+                serverConnection.protocol.doctorState.PerformAction(clientName);
+                MessageBox.Show($"Geabonneerd op {clientName}.");
             }
         }
 
         private void UnsubscribeButton_Click(object sender, EventArgs e) {
-            foreach (string client in GetSelectedClients()) {
-                //doctorState.unsubscribe.Unsubscribe(client);
-                MessageBox.Show($"Unsubscribed from {client}.");
+            serverConnection.protocol.doctorState.PerformAction(ValidMessages.d_unsubscribe);
+            string[] selectedPatients = GetSelectedClients();
+
+            if (selectedPatients.Length == 0) {
+                selectedPatients = new string[1] { "David" };
+            }
+
+            foreach (string clientName in selectedPatients) {
+                serverConnection.protocol.doctorState.PerformAction(clientName);
+                MessageBox.Show($"Afgemeld van {clientName}.");
             }
         }
 
@@ -109,10 +124,9 @@ namespace DoctorApplication {
             return selectedClients.ToArray();
         }
 
-        private void UpdateDataGridView(ClientData clientData) {
+        public void UpdateDataGridView(ClientData clientData) {
             foreach (DataGridViewRow row in ClientenGridView.Rows) {
                 if (row.Cells["PatientName"].Value?.ToString() == clientData.PatientName) {
-                    row.Cells["Resistance"].Value = clientData.Resistance;
                     row.Cells["HeartRate"].Value = clientData.HeartRate;
                     row.Cells["Speed"].Value = clientData.Speed;
                     row.Cells["LastUpdateColumn"].Value = clientData.LastUpdate;
@@ -122,7 +136,6 @@ namespace DoctorApplication {
 
             ClientenGridView.Rows.Add(
                 clientData.PatientName,
-                clientData.Resistance,
                 clientData.LastUpdate,
                 clientData.HeartRate,
                 clientData.Speed
@@ -138,6 +151,19 @@ namespace DoctorApplication {
                 DataGridViewCheckBoxCell checkBoxCell = (DataGridViewCheckBoxCell)ClientenGridView.Rows[e.RowIndex].Cells["SelectClientColumn"];
                 checkBoxCell.Value = !(bool)(checkBoxCell.Value ?? false);
             }
+        }
+
+        private void ResistanceTextBox_TextChanged(object sender, EventArgs e) {
+        }
+
+        private void ClientenGridView_CellContentClick_1(object sender, DataGridViewCellEventArgs e) {
+        }
+
+        private void label2_Click(object sender, EventArgs e) {
+        }
+
+        private void AdjustResistanceButton_Click(object sender, EventArgs e) {
+            // Logica om de weerstand aan te passen
         }
     }
 }

@@ -1,13 +1,11 @@
 using Server.DataStorage;
 using Server.Patterns.Observer;
-using System.Net.Security;
 using System.Net.Sockets;
 
 namespace Server.ThreadHandlers {
     public abstract class CommunicationHandler : Observer {
-
+        public TcpClient client;
         public NetworkStream networkStream;
-
         public readonly FileStorage fileStorage;
 
         protected CommunicationType communicationType;
@@ -17,24 +15,23 @@ namespace Server.ThreadHandlers {
             this.networkStream = networkStream;
         }
 
-        public void HandleThread() {
+        public async Task HandleThread() {
             DataProtocol protocol = new DataProtocol(communicationType, this);
             protocol.processInput("");
-            while (networkStream.CanRead) {
+            while (client.Connected) {
                 string receivedMessage;
                 string response;
 
-                try {
-                    if ((receivedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
-                        continue;
-                    }
 
-                    protocol.processInput(receivedMessage);
-
-                } catch (IOException ex) {
-                    Console.WriteLine(ex.Message);
-                    networkStream.Close();
+                if ((receivedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
+                    client.Close();
+                    continue;
                 }
+
+                Console.WriteLine(receivedMessage);
+
+
+                await protocol.processInput(receivedMessage);
             }
         }
         public abstract void Update(CommunicationType communicationOrigin, Session session);

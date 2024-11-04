@@ -1,4 +1,4 @@
-﻿using ConnectionImplemented;
+using ConnectionImplemented;
 using System;
 using System.Net.Sockets;
 using System.Text.Json;
@@ -37,7 +37,7 @@ namespace ClientApplication {
             }
 
             if (simulatorIsActive) {
-                TcpClient client = new TcpClient("192.168.163.244", 4789);
+                TcpClient client = new TcpClient("192.168.1.107", 4789);
                 Thread connectionThread = new Thread(() => SimulatorConnection.HandleConnection(client, this));
                 connectionThread.Start();
             }

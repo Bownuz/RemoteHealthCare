@@ -1,15 +1,8 @@
-﻿using ConnectionImplemented;
-using ClientApplication;
+﻿using ClientApplication.State;
+using ConnectionImplemented;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ClientApplication.State;
 
 namespace ClientApplication {
     internal partial class ClientInfoScreen : UserControl {
@@ -28,7 +21,7 @@ namespace ClientApplication {
             this.handler = handler;
 
             this.handler.NewDoctorMessage += UpdateMessage;
-
+            Task.Run(() => this.handler.HandleNetworkThread());
             InitializeTimer();
         }
 
@@ -44,13 +37,6 @@ namespace ClientApplication {
         }
 
         private void HeartRatePatientLabel(object sender, EventArgs e) {
-        }
-
-        private void CloseButton_Click(object sender, EventArgs e) {
-            DialogResult dialog = MessageBox.Show("Do you want to close this window", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialog == DialogResult.Yes) {
-                this.ParentForm?.Close();
-            }
         }
 
         private void InitializeTimer() {
@@ -87,10 +73,6 @@ namespace ClientApplication {
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
-            //string doctorMessage = ServerConnection.getDocterMessage();
-            //if (doctorMessage != null) {
-            //    listBox1.Items.Add(doctorMessage);
-            //}
         }
     }
 }

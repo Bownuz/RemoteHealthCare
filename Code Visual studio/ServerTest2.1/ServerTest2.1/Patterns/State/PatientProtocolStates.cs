@@ -79,7 +79,12 @@ namespace Server.Patterns.State.PatientStates {
                 patient.currentSession.AddObserver(patientHandler.fileStorage);
             }
 
-            patient.currentSession.addMessage(input, CommunicationType.PATIENT);
+            String patientName = patientHandler.connectedPatient.Name;
+            PatientRecieveData patientData = JsonSerializer.Deserialize<PatientRecieveData>(input);
+            patientData.patientName = patientName;
+            String messageWithName = JsonSerializer.Serialize(patientData);
+
+            patient.currentSession.addMessage(messageWithName, CommunicationType.PATIENT);
             readyMessage: MessageCommunication.SendMessage(patientHandler.networkStream, ValidMessages.p_readyToRecieve);
         }
     }

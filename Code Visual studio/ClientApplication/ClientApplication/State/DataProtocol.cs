@@ -1,6 +1,7 @@
 ﻿using ClientApplication;
 using ClientApplication.State;
 using System;
+using System.Threading.Tasks;
 
 
 namespace Server {
@@ -10,8 +11,8 @@ namespace Server {
         public DataProtocol(NetworkHandler networkHandler) {
             this.state = new Connecting(this, networkHandler);
         }
-        public String processInput(String input) {
-            return state.CheckInput(input);
+        public async Task processInput(String input) {
+            state.CheckInput(input);
         }
 
         public void ChangeState(State newState) {

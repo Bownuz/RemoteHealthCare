@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1F818E08-F0F1-43AF-B93B-F0D1F76B8B09}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>DoctorApplication</RootNamespace>
     <AssemblyName>DoctorApplication</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -87,11 +90,11 @@
       <DependentUpon>ClientenForm.cs</DependentUpon>
     </Compile>
     <Compile Include="StatePattern\DoctorAbstractState.cs" />
-    <Compile Include="LoginScherm\Form1.cs">
+    <Compile Include="LoginScherm\LoginForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LoginScherm\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="LoginScherm\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -105,8 +108,8 @@
     <EmbeddedResource Include="PatiëntenScherm\ClientenForm.resx">
       <DependentUpon>ClientenForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LoginScherm\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="LoginScherm\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

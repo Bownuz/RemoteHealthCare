@@ -4,13 +4,14 @@ using System.Text;
 namespace Server.ThreadHandlers {
     public class MessageCommunication {
         public static string ReceiveMessage(NetworkStream networkStream) {
-            var stream = new StreamReader(networkStream, Encoding.ASCII);
+            var stream = new StreamReader(networkStream, Encoding.ASCII, true, 128);
             String line = stream.ReadLine();
             return line;
         }
 
         public static void SendMessage(NetworkStream networkStream, string message) {
-            var stream = new StreamWriter(networkStream, Encoding.ASCII, -1, true);
+            var stream = new StreamWriter(networkStream, Encoding.ASCII, 128, true);
+
             stream.WriteLine(message);
             stream.Flush();
         }

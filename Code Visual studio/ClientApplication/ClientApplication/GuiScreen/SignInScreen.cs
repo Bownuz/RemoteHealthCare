@@ -1,13 +1,9 @@
-﻿using ConnectionImplemented;
-using ClientApplication;
+﻿using ClientApplication.State;
+using ConnectionImplemented;
 using System;
-using System.Drawing;
-using System.Net.Sockets;
-using System.Threading;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using ClientApplication.State;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ClientApplication {
     internal partial class SignInScreen : UserControl {
@@ -16,7 +12,7 @@ namespace ClientApplication {
         private ListDisplay listDisplay;
         private Ergometer ergometer;
         private HeartRateMonitor heartRateMonitor;
-        private NetworkHandler handler;
+        private NetworkHandler networkHandler;
         private Boolean simulatorActive = false;
 
         public SignInScreen(Form mainForm) {
@@ -27,19 +23,17 @@ namespace ClientApplication {
             listBox1.Items.Add("");
             listDisplay.ShowDeviceList();
 
-            this.handler = new NetworkHandler(ergometer);
-        }
-
-        private void CloseButton(object sender, EventArgs e) {
-            DialogResult dialog = MessageBox.Show("Do you want to close this window", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialog == DialogResult.Yes) {
-                this.ParentForm?.Close();
-            }
+            networkHandler = new NetworkHandler(ergometer);
+            Task.Run(() => networkHandler.HandleNetworkThread());
         }
 
         private void SubmitButton(object sender, EventArgs e) {
             if (!string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) && textBox2.Text.StartsWith("Tacx Flux") || simulatorActive && !string.IsNullOrWhiteSpace(textBox1.Text)) {
                 StartClient();
+                // inlog bericht formuleren
+                PatientInitialisationMessage messageData = new PatientInitialisationMessage(textBox1.Text, textBox2.Text, textBox3.Text, DateTime.Now);
+                String messageJson = JsonSerializer.Serialize(messageData);
+                Task.Run(async () => networkHandler.protocol.processInput(messageJson));
                 ChangeScreen();
             } else {
                 MessageBox.Show("You haven't filled everything in, or the bike id doens't begin with Tacx Flux");
@@ -52,7 +46,7 @@ namespace ClientApplication {
             BleDevice[] bleDevices = { ergometer, heartRateMonitor };
 
             this.dataHandler = new DataHandler(bleDevices, textBox3.Text, textBox2.Text, textBox1.Text, ergometer, heartRateMonitor, simulatorActive);
-            handler.AddDataHandler(dataHandler);
+            networkHandler.AddDataHandler(dataHandler);
         }
 
         private void UsernameTextBox(object sender, EventArgs e) {
@@ -68,7 +62,7 @@ namespace ClientApplication {
         }
 
         private void ChangeScreen() {
-            ClientInfoScreen clientInfoScreen = new ClientInfoScreen(dataHandler, mainForm, ergometer, heartRateMonitor, handler);
+            ClientInfoScreen clientInfoScreen = new ClientInfoScreen(dataHandler, mainForm, ergometer, heartRateMonitor, networkHandler);
             mainForm.Controls.Clear();
             mainForm.Controls.Add(clientInfoScreen);
             clientInfoScreen.Dock = DockStyle.Fill;
@@ -89,6 +83,12 @@ namespace ClientApplication {
         private void label4_Click(object sender, EventArgs e) {
         }
 
+        public void CloseNetworkConnection() {
+            if (networkHandler != null) {
+                networkHandler.CloseConnection();
+            }
+        }
+
         private void SwitchDevice(object sender, EventArgs e) {
             DialogResult changeInputDataDialog;
             if (simulatorActive) {
@@ -104,7 +104,7 @@ namespace ClientApplication {
                 label4.Visible = !label4.Visible;
                 textBox3.Visible = !textBox3.Visible;
                 listBox1.Visible = !listBox1.Visible;
-                
+
                 if (simulatorActive) {
                     button3.Text = "Simulator";
                 } else {

@@ -4,18 +4,18 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DoctorApplication {
-    public partial class Form1 : UserControl {
+    public partial class LoginForm : UserControl {
         private ServerConnection serverConnection;
         private Form mainForm;
 
-        public Form1(Form form) {
+        public LoginForm(Form form) {
             InitializeComponent();
             this.serverConnection = new ServerConnection(form);
             this.mainForm = form;
 
+            serverConnection.protocol.doctorState.PerformAction("192.168.0.133");
             Task.Run(async () => serverConnection.RunConnection());
         }
-
 
 
         private async void LoginButton_Click(object sender, EventArgs e) {
@@ -35,27 +35,11 @@ namespace DoctorApplication {
             };
 
             String JsonLoginString = JsonSerializer.Serialize(loginData);
-
             serverConnection.protocol.doctorState.PerformAction(JsonLoginString);
-
-        }
-
-        private void OpenClientenForm() {
-            ClientenForm clientenForm = new ClientenForm(serverConnection);
-            clientenForm.Show();
-            this.Hide();
         }
 
         private void CloseButton_Click(object sender, EventArgs e) {
             Application.Exit();
         }
-
-        public void showNextScreen() {
-            ClientenForm clientInfoScreen = new ClientenForm(serverConnection);
-            mainForm.Controls.Clear();
-            mainForm.Controls.Add(clientInfoScreen);
-            clientInfoScreen.Dock = DockStyle.Fill;
-        }
-
     }
 }

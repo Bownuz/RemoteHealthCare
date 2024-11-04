@@ -8,16 +8,17 @@ namespace SimulatorApplication {
     class SimulatorMain {
         static async Task Main(string[] args) {
             Simulator simulator = new Simulator();
-            TcpListener listener = new TcpListener(IPAddress.Any, 4786);
+            TcpListener listener = new TcpListener(IPAddress.Any, 4788);
             listener.Start();
-            Console.WriteLine("Simulator is listening on port 4786...");
+            Console.WriteLine("Simulator is listening on port 4788...");
             simulator.StartSimulation();
+
             while (true) {
-                    TcpClient client = listener.AcceptTcpClient();
-                    Console.WriteLine("Client connected.");
-                    Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, simulator));
-                    connectionThread.Start();
-                    Console.WriteLine("Verbonden met de client.");
+                TcpClient client = listener.AcceptTcpClient();
+                Console.WriteLine("Client connected.");
+                Thread connectionThread = new Thread(() => ServerConnection.HandleConnection(client, simulator));
+                connectionThread.Start();
+                Console.WriteLine("Verbonden met de client.");
             }
         }
     }

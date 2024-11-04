@@ -15,7 +15,7 @@ namespace ClientApplication.State {
             this.networkHandler = networkHandler;
         }
 
-        public abstract String CheckInput(String input);
+        public abstract void CheckInput(String input);
 
     }
 }

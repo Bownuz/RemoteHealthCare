@@ -1,15 +1,14 @@
-﻿using Server;
+using Server;
 
 namespace ClientApplication.State {
     public class Connecting : State {
         public Connecting(DataProtocol protocol, NetworkHandler networkHandler) : base(protocol, networkHandler) {
         }
 
-        public override string CheckInput(string input) {
+        public override void CheckInput(string input) {
             if (input.Equals("Welcome Client")) {
                 protocol.ChangeState(new Initializing(protocol, networkHandler));
             }
-            return "";
         }
     }
 
@@ -18,15 +17,18 @@ namespace ClientApplication.State {
         public Initializing(DataProtocol protocol, NetworkHandler networkHandler) : base(protocol, networkHandler) {
         }
 
-        public override string CheckInput(string input) {
-            string patientInfo = null;
-            if (input.Equals("Added dataHandler")) {
-                patientInfo = networkHandler.dataHandler.PatientInitialisationMessage();
-
-                protocol.ChangeState(new SendData(protocol, networkHandler));
+        public override void CheckInput(string input) {
+            if (!input.StartsWith("{") && !input.EndsWith("}")) {
+                goto NotJson;
             }
+            MessageCommunication.SendMessage(networkHandler.networkStream, input);
+            return;
 
-            return patientInfo;
+
+        NotJson: if (input.Equals(ValidMessages.p_readyToRecieve)) {
+                protocol.ChangeState(new SendData(protocol, networkHandler));
+                MessageCommunication.SendMessage(networkHandler.networkStream, networkHandler.dataHandler.printDataAsJson());
+            }
         }
     }
 
@@ -34,13 +36,10 @@ namespace ClientApplication.State {
         public SendData(DataProtocol protocol, NetworkHandler networkHandler) : base(protocol, networkHandler) {
         }
 
-        public override string CheckInput(string input) {
-            string response = "";
+        public override void CheckInput(string input) {
             if (input.Equals("Ready to recieve data")) {
-                response = networkHandler.dataHandler.printDataAsJson();
-                return response;
+                MessageCommunication.SendMessage(networkHandler.networkStream, networkHandler.dataHandler.printDataAsJson());
             }
-            return response;
         }
     }
 
@@ -48,11 +47,10 @@ namespace ClientApplication.State {
         public Exit(DataProtocol protocol, NetworkHandler networkHandler) : base(protocol, networkHandler) {
         }
 
-        public override string CheckInput(string input) {
+        public override void CheckInput(string input) {
             if (input.Equals("Goodbye")) {
-                networkHandler.tcpClient.Close();
+                MessageCommunication.SendMessage(networkHandler.networkStream, "Quit Communication");
             }
-            return "";
         }
     }
 }

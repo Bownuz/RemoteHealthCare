@@ -16,7 +16,7 @@ namespace DoctorApplication {
         }
         public static void StartGui() {
             Form mainForm = new Form();
-            Form1 initialWindow = new Form1(mainForm);
+            LoginForm initialWindow = new LoginForm(mainForm);
 
             initialWindow.Dock = DockStyle.Fill;
 
