@@ -20,7 +20,8 @@ namespace DoctorApplication {
         private async Task ListenForLiveData() {
             try {
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 MessageBox.Show("Fout bij het ontvangen van gegevens: " + ex.Message);
             }
         }
@@ -34,16 +35,32 @@ namespace DoctorApplication {
         }
 
         private void StartTrainingButton_Click(object sender, EventArgs e) {
-            foreach (string client in GetSelectedClients()) {
-                //doctorState.startTraining.StartTraining(client);
-                MessageBox.Show($"Trainingssessie gestart voor {client}.");
+            serverConnection.protocol.doctorState.PerformAction(ValidMessages.d_startSession);
+            string[] selectedPatients = GetSelectedClients();
+
+            if (selectedPatients.Length == 0) {
+                selectedPatients = new string[1];
+                selectedPatients[0] = "null";
+            }
+
+            foreach (string clientName in selectedPatients) {
+                serverConnection.protocol.doctorState.PerformAction(clientName);
+                MessageBox.Show($"Session started {clientName}.");
             }
         }
 
-        private void StopTrainingButton_Click(object sender, EventArgs e) {
-            foreach (string client in GetSelectedClients()) {
-                //doctorState.stopTraining.StopTraining(client);
-                MessageBox.Show($"Trainingssessie gestopt voor {client}.");
+        private void EndTrainingButton_Click(object sender, EventArgs e) {
+            serverConnection.protocol.doctorState.PerformAction(ValidMessages.d_endSession);
+            string[] selectedPatients = GetSelectedClients();
+
+            if (selectedPatients.Length == 0) {
+                selectedPatients = new string[1];
+                selectedPatients[0] = "null";
+            }
+
+            foreach (string clientName in selectedPatients) {
+                serverConnection.protocol.doctorState.PerformAction(clientName);
+                MessageBox.Show($"Session stopt {clientName}.");
             }
         }
 
@@ -84,7 +101,7 @@ namespace DoctorApplication {
         }
 
         private void SubscribeButton_Click(object sender, EventArgs e) {
-            serverConnection.protocol.doctorState.PerformAction("Subscribe");
+            serverConnection.protocol.doctorState.PerformAction(ValidMessages.d_subscribe);
             string[] selectedPatients = GetSelectedClients();
 
             if (selectedPatients.Length == 0) {
@@ -96,14 +113,20 @@ namespace DoctorApplication {
                 serverConnection.protocol.doctorState.PerformAction(clientName);
                 MessageBox.Show($"Subscribed to {clientName}.");
             }
-
-
         }
 
         private void UnsubscribeButton_Click(object sender, EventArgs e) {
-            foreach (string client in GetSelectedClients()) {
-                //doctorState.unsubscribe.Unsubscribe(client);
-                MessageBox.Show($"Unsubscribed from {client}.");
+            serverConnection.protocol.doctorState.PerformAction(ValidMessages.d_unsubscribe);
+            string[] selectedPatients = GetSelectedClients();
+
+            if (selectedPatients.Length == 0) {
+                selectedPatients = new string[1];
+                selectedPatients[0] = "null";
+            }
+
+            foreach (string clientName in selectedPatients) {
+                serverConnection.protocol.doctorState.PerformAction(clientName);
+                MessageBox.Show($"Unsubscribed from {clientName}.");
             }
         }
 

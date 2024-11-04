@@ -21,7 +21,7 @@ public class ServerConnection {
     }
 
     public void ConnectToServer(string ipAdress) {
-        client = new TcpClient(ipAdress, 4790);
+        client = new TcpClient("192.168.163.244", 4790);
         networkStream = client.GetStream();
 
     }

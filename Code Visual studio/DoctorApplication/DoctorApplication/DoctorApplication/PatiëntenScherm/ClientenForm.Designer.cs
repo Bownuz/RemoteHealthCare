@@ -123,7 +123,7 @@
             this.StopTrainingButton.TabIndex = 4;
             this.StopTrainingButton.Text = "Stop Training";
             this.StopTrainingButton.UseVisualStyleBackColor = true;
-            this.StopTrainingButton.Click += new System.EventHandler(this.StopTrainingButton_Click);
+            this.StopTrainingButton.Click += new System.EventHandler(this.EndTrainingButton_Click);
             // 
             // NoodstopButton
             // 
