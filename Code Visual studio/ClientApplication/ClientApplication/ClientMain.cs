@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClientApplication.Vr;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,7 +11,7 @@ namespace ClientApplication {
         static async Task Main(string[] args) {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //VrInit.StandardInit("127.0.0.1");
+            VrInit.StandardInit("127.0.0.1");
             StartGui();
         }
 

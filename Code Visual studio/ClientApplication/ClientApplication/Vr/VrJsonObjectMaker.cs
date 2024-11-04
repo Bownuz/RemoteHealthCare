@@ -36,7 +36,7 @@ namespace ClientApplication.Vr {
             for (int i = 171; i < 210; i++) {
                 double step = 5 - (5 * (209 - i) / 38.0);
                 for (int j = 0; j < 256; j++) {
-                    heights[i*256+j] = step;
+                    heights[i * 256 + j] = step;
                 }
             }
             for (int i = 210; i < 216; i++) {
@@ -55,8 +55,8 @@ namespace ClientApplication.Vr {
                     heights[i * 256 + j] = 10;
                 }
             }
-            Data data = new Data(new List<int> { width, height },heights);
-            return JsonSerializer.Serialize(new ST("scene/terrain/add",data));
+            Data data = new Data(new List<int> { width, height }, heights);
+            return JsonSerializer.Serialize(new ST("scene/terrain/add", data));
         }
     }
 }

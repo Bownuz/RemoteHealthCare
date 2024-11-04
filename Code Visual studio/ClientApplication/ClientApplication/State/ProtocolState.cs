@@ -25,7 +25,7 @@ namespace ClientApplication.State {
             return;
 
 
-            NotJson: if (input.Equals(ValidMessages.p_readyToRecieve)) {
+        NotJson: if (input.Equals(ValidMessages.p_readyToRecieve)) {
                 protocol.ChangeState(new SendData(protocol, networkHandler));
                 MessageCommunication.SendMessage(networkHandler.networkStream, networkHandler.dataHandler.printDataAsJson());
             }

@@ -61,7 +61,7 @@ namespace ClientApplication.Vr {
 
         public static void NewNodeSceneAndTerrain() {
             //VrConnection.SendJsonObjectViaTunnelFromFile("scene_terrain_add.json");
-            VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes(SceneTerrain.SceneTerrainAdd(256,256)));
+            VrConnection.SendJsonObjectViaTunnelFromBytes(Encoding.ASCII.GetBytes(SceneTerrain.SceneTerrainAdd(256, 256)));
             VrConnection.SendJsonObjectViaTunnelFromFile("scene_node_add.json");
             GetScene();
         }
