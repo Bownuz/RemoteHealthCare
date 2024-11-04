@@ -6,8 +6,10 @@ using System.Text;
 namespace DoctorApplication {
     public class MessageCommunication {
         public static string ReceiveMessage(NetworkStream networkStream) {
-            var stream = new StreamReader(networkStream, Encoding.ASCII);
-            return stream.ReadLine();
+            var stream = new StreamReader(networkStream, Encoding.ASCII, true, 128);
+            String line = stream.ReadLine();
+            Console.WriteLine(line);
+            return line;
         }
 
         public static void SendMessage(NetworkStream networkStream, string message) {

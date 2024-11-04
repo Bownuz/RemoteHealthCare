@@ -132,6 +132,11 @@ namespace Server.Patterns.State.DoctorStates {
                 goto readyMessage;
             }
 
+            if (doctorHandler.fileStorage.GetPatient(input).currentSession == null) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, ValidMessages.p_noSessionActive);
+                goto readyMessage;
+            }
+
             if (doctorHandler.fileStorage.GetPatient(input).currentSession.observers.Contains(doctorHandler)) {
                 MessageCommunication.SendMessage(doctorHandler.networkStream, ValidMessages.d_personAlreadySubscribed);
                 goto readyMessage;
@@ -155,6 +160,11 @@ namespace Server.Patterns.State.DoctorStates {
 
             if (!doctorHandler.fileStorage.PatientExists(input)) {
                 MessageCommunication.SendMessage(doctorHandler.networkStream, ValidMessages.a_patientNotExist);
+                goto readyMessage;
+            }
+
+            if (doctorHandler.fileStorage.GetPatient(input).currentSession == null) {
+                MessageCommunication.SendMessage(doctorHandler.networkStream, ValidMessages.p_noSessionActive);
                 goto readyMessage;
             }
 
@@ -232,13 +242,19 @@ namespace Server.Patterns.State.DoctorStates {
             }
 
             protocol.ChangeState(new D_RecievingCommand(protocol, doctorHandler));
+            Patient patient = doctorHandler.fileStorage.GetPatient(input);
+
+
+            if (patient.currentSession == null) {
+                goto readyMessage;
+            }
 
             if (!doctorHandler.fileStorage.PatientExists(input)) {
                 MessageCommunication.SendMessage(doctorHandler.networkStream, ValidMessages.a_patientNotExist);
                 goto readyMessage;
             }
 
-            Patient patient = doctorHandler.fileStorage.GetPatient(input);
+
             patient.currentSession.sessionEnd = DateTime.Now;
             patient.currentSession = null;
 

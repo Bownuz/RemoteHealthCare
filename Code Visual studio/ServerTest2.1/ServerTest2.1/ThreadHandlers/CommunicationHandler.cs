@@ -24,11 +24,13 @@ namespace Server.ThreadHandlers {
 
 
                 if ((receivedMessage = MessageCommunication.ReceiveMessage(networkStream)) == null) {
-                    Console.WriteLine(receivedMessage);
                     client.Close();
                     continue;
                 }
+
                 Console.WriteLine(receivedMessage);
+
+
                 await protocol.processInput(receivedMessage);
             }
         }

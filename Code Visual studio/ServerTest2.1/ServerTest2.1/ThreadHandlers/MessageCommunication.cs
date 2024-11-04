@@ -11,7 +11,7 @@ namespace Server.ThreadHandlers {
 
         public static void SendMessage(NetworkStream networkStream, string message) {
             var stream = new StreamWriter(networkStream, Encoding.ASCII, 128, true);
-            Console.WriteLine(message);
+
             stream.WriteLine(message);
             stream.Flush();
         }

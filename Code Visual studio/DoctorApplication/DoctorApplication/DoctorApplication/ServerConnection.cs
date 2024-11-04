@@ -19,7 +19,7 @@ public class ServerConnection {
     }
 
     public void ConnectToServer(string ipAdress) {
-        client = new TcpClient("145.49.9.63", 4790);
+        client = new TcpClient("192.168.1.107", 4790);
         networkStream = client.GetStream();
     }
 
